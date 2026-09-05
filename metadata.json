@@ -1,0 +1,8 @@
+{
+  "name": "FraudGuard AI",
+  "description": "Enterprise Security \u0026 Intelligence platform with AI-powered fraud investigation, real-time risk analytics, and behavioral threat detection.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

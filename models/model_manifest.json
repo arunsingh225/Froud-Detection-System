@@ -1,0 +1,12 @@
+{
+  "fraud_model.pkl": {
+    "path": "models/fraud_model.pkl",
+    "sha256": "642a4c4ea003e00ef3394070f9d8b4427109d4b0e95012206eb4b9fa2b263367",
+    "size_bytes": 2071542
+  },
+  "preprocessing.pkl": {
+    "path": "models/preprocessing.pkl",
+    "sha256": "33144548a51d51ca02f66a1f3adefd287bba79403b16abc36e58b899a35c68cf",
+    "size_bytes": 1132478
+  }
+}

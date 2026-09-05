@@ -1,0 +1,380 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-app: #0A0A0A;
+    --bg-surface: #0D0D0D;
+    --bg-card: #141414;
+    --bg-card-hover: #1C1C1C;
+    --bg-elevated: #181818;
+    --bg-input: #141414;
+    --bg-modal: #0D0D0D;
+    --border-subtle: rgba(255, 255, 255, 0.05);
+    --border-medium: rgba(255, 255, 255, 0.1);
+    --border-gold: rgba(197, 160, 89, 0.35);
+    --text-primary: #FFFFFF;
+    --text-body: #D4D4D4;
+    --text-muted: #A3A3A3;
+    --text-dim: #737373;
+    --gold-primary: #C5A059;
+    --gold-hover: #dfba73;
+    --gold-surface: rgba(197, 160, 89, 0.1);
+    --gold-glow: rgba(197, 160, 89, 0.22);
+    --danger-bg: rgba(224, 83, 83, 0.12);
+    --danger-border: rgba(224, 83, 83, 0.3);
+    --danger-text: #ffb4ab;
+    --danger-solid: #e05353;
+    --success-bg: rgba(82, 183, 136, 0.12);
+    --success-border: rgba(82, 183, 136, 0.3);
+    --success-text: #52b788;
+    --scrollbar-track: #080808;
+    --scrollbar-thumb: #1F1F1F;
+    --grid-line: rgba(255, 255, 255, 0.03);
+  }
+
+  html.light {
+    --bg-app: #F7F6F2;
+    --bg-surface: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --bg-card-hover: #F2EFE9;
+    --bg-elevated: #EDEAE1;
+    --bg-input: #F3F1EB;
+    --bg-modal: #FFFFFF;
+    --border-subtle: rgba(0, 0, 0, 0.07);
+    --border-medium: rgba(0, 0, 0, 0.14);
+    --border-gold: rgba(156, 120, 43, 0.4);
+    --text-primary: #121212;
+    --text-body: #27272A;
+    --text-muted: #52525B;
+    --text-dim: #71717A;
+    --gold-primary: #9C782B;
+    --gold-hover: #826320;
+    --gold-surface: rgba(156, 120, 43, 0.09);
+    --gold-glow: rgba(156, 120, 43, 0.15);
+    --danger-bg: rgba(220, 38, 38, 0.08);
+    --danger-border: rgba(220, 38, 38, 0.28);
+    --danger-text: #991B1B;
+    --danger-solid: #DC2626;
+    --success-bg: rgba(16, 185, 129, 0.08);
+    --success-border: rgba(16, 185, 129, 0.28);
+    --success-text: #065F46;
+    --scrollbar-track: #EDEAE1;
+    --scrollbar-thumb: #D1CFCA;
+    --grid-line: rgba(0, 0, 0, 0.03);
+  }
+
+  * {
+    border-color: var(--border-subtle);
+  }
+
+  body {
+    background-color: var(--bg-app);
+    color: var(--text-body);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+}
+
+/* Light mode component overrides for existing dark hex classes */
+html.light .bg-\[\#0A0A0A\] { background-color: #F7F6F2 !important; }
+html.light .bg-\[\#0D0D0D\] { background-color: #FFFFFF !important; }
+html.light .bg-\[\#0D0D0D\]\/95 { background-color: rgba(255, 255, 255, 0.96) !important; }
+html.light .bg-\[\#0D0D0D\]\/90 { background-color: rgba(255, 255, 255, 0.92) !important; }
+html.light .bg-\[\#0D0D0D\]\/80 { background-color: rgba(255, 255, 255, 0.88) !important; }
+html.light .bg-\[\#141414\] { background-color: #F9F8F5 !important; }
+html.light .bg-\[\#181818\] { background-color: #F0EDE4 !important; }
+html.light .bg-\[\#1C1C1C\] { background-color: #E8E5DC !important; }
+html.light .bg-\[\#1F1F1F\] { background-color: #E4E0D6 !important; }
+html.light .bg-\[\#111111\] { background-color: #FFFFFF !important; }
+html.light .bg-\[\#1A1A1A\] { background-color: #F0EDE5 !important; }
+html.light .bg-\[\#222222\] { background-color: #E6E2D8 !important; }
+
+html.light .border-white\/5,
+html.light .border-white\/10 { border-color: rgba(0, 0, 0, 0.08) !important; }
+html.light .border-white\/20 { border-color: rgba(0, 0, 0, 0.16) !important; }
+
+html.light .text-white { color: #121212 !important; }
+html.light .text-\[\#D4D4D4\] { color: #27272A !important; }
+html.light .text-\[\#A3A3A3\] { color: #52525B !important; }
+html.light .text-\[\#737373\] { color: #71717A !important; }
+
+html.light .hover\:bg-\[\#141414\]:hover { background-color: #F3F1EB !important; }
+html.light .hover\:bg-\[\#181818\]:hover { background-color: #EFECE5 !important; }
+html.light .hover\:bg-\[\#1A1A1A\]:hover { background-color: #ECE9E0 !important; }
+html.light .hover\:bg-\[\#1C1C1C\]:hover { background-color: #E7E3D8 !important; }
+html.light .hover\:bg-\[\#222222\]:hover { background-color: #E2DDD2 !important; }
+html.light .hover\:text-white:hover { color: #000000 !important; }
+
+html.light .text-\[\#ffb4ab\] { color: #991B1B !important; }
+html.light .bg-\[\#e05353\]\/15 { background-color: rgba(220, 38, 38, 0.09) !important; }
+html.light .border-\[\#e05353\]\/30 { border-color: rgba(220, 38, 38, 0.28) !important; }
+
+html.light .text-\[\#52b788\] { color: #065F46 !important; }
+html.light .bg-\[\#52b788\]\/10,
+html.light .bg-\[\#52b788\]\/15 { background-color: rgba(16, 185, 129, 0.09) !important; }
+html.light .border-\[\#52b788\]\/20,
+html.light .border-\[\#52b788\]\/30 { border-color: rgba(16, 185, 129, 0.28) !important; }
+
+.font-serif {
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+}
+
+.font-mono-data {
+  font-family: 'Geist', monospace, ui-monospace, sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  line-height: 1;
+  display: inline-block;
+  user-select: none;
+}
+
+.material-symbols-outlined.fill-1 {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C5A059;
+}
+
+/* Glow effects & Glass */
+.ai-glow {
+  box-shadow: 0 0 16px 2px var(--gold-glow);
+}
+
+.gold-glow {
+  box-shadow: 0 0 20px 3px var(--gold-glow);
+}
+
+.brand-glow {
+  box-shadow: 0 0 20px 4px var(--gold-glow);
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  80%, 100% { transform: scale(2.5); opacity: 0; }
+}
+
+.pulse-dot {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(197, 160, 89, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); }
+}
+
+.cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+}
+
+.glass-panel {
+  background: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-medium);
+}
+
+/* Ensure Angular router-outlet and host components participate in full height flexbox scrolling */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+app-root {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+main > *:not(router-outlet),
+app-login,
+app-dashboard,
+app-transactions-list,
+app-transaction-detail,
+app-fraud-alerts,
+app-investigations-list,
+app-investigation-detail,
+app-investigation-reports,
+app-ai-investigator,
+app-customers-list,
+app-customer-detail,
+app-risk-analytics,
+app-audit-logs,
+app-settings {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+}
+
+/* Light mode login screen overrides */
+html.light app-login .login-card {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(0, 0, 0, 0.09) !important;
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.08), 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+html.light app-login .login-heading {
+  color: #121212 !important;
+}
+
+html.light app-login .login-subtext {
+  color: #52525B !important;
+}
+
+html.light app-login .login-label {
+  color: #3F3F46 !important;
+  font-weight: 500 !important;
+}
+
+html.light app-login .login-input-container {
+  background-color: #F7F6F2 !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+html.light app-login .login-input-container:focus-within {
+  border-color: #9C782B !important;
+  background-color: #FFFFFF !important;
+  box-shadow: 0 0 0 3px rgba(156, 120, 43, 0.15) !important;
+}
+
+html.light app-login .login-input {
+  color: #121212 !important;
+}
+
+html.light app-login .login-input::placeholder {
+  color: #8E8E93 !important;
+}
+
+html.light app-login .login-icon {
+  color: #71717A !important;
+}
+
+html.light app-login .login-toggle-pw {
+  color: #71717A !important;
+}
+
+html.light app-login .login-toggle-pw:hover {
+  color: #121212 !important;
+}
+
+html.light app-login .login-checkbox-label {
+  color: #3F3F46 !important;
+}
+
+html.light app-login .login-checkbox {
+  background-color: #FFFFFF !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+html.light app-login .login-verified-badge {
+  color: #065F46 !important;
+}
+
+html.light app-login .login-profile-section {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light app-login .login-profile-title {
+  color: #52525B !important;
+}
+
+html.light app-login .login-profile-btn {
+  background-color: #F7F6F2 !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+html.light app-login .login-profile-btn:hover {
+  background-color: #EDEAE1 !important;
+  border-color: rgba(156, 120, 43, 0.45) !important;
+}
+
+html.light app-login .login-profile-name {
+  color: #121212 !important;
+}
+
+html.light app-login .login-profile-role {
+  color: #826320 !important;
+  font-weight: 600 !important;
+}
+
+html.light app-login .login-error-banner {
+  background-color: rgba(220, 38, 38, 0.08) !important;
+  border-color: rgba(220, 38, 38, 0.25) !important;
+  color: #991B1B !important;
+}
+
+html.light app-login .login-theme-toggle {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #826320 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light app-login .login-theme-toggle:hover {
+  border-color: #9C782B !important;
+  color: #694F16 !important;
+}
+
+html.light app-login .login-brand-title {
+  color: #121212 !important;
+}
+
+html.light app-login .login-brand-badge {
+  color: #826320 !important;
+}
+
+html.light app-login .login-status-pill {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(156, 120, 43, 0.3) !important;
+  color: #826320 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light app-login .login-left-heading {
+  color: #121212 !important;
+}
+
+html.light app-login .login-left-subtext {
+  color: #52525B !important;
+}
+
+html.light app-login .login-feature-pill {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #27272A !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light app-login .login-left-footer {
+  color: #71717A !important;
+}

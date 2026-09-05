@@ -1,0 +1,27 @@
+{
+  "python_version": "3.13.5",
+  "os_system": "Windows",
+  "packages": {
+    "lightgbm": "4.7.0",
+    "scikit-learn": "1.9.0",
+    "pandas": "3.0.5",
+    "numpy": "2.5.2",
+    "joblib": "1.6.0"
+  },
+  "hyperparameters": {
+    "objective": "binary",
+    "metric": "auc",
+    "boosting_type": "gbdt",
+    "learning_rate": 0.05,
+    "num_leaves": 63,
+    "max_depth": 8,
+    "min_child_samples": 50,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "scale_pos_weight": 27.46147358274595,
+    "random_state": 42,
+    "n_jobs": -1,
+    "verbose": -1
+  },
+  "random_state": 42
+}

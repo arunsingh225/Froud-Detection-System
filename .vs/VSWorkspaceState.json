@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\public\\assets",
+    "\\public\\assets\\aistudio",
+    "\\src",
+    "\\src\\backend",
+    "\\src\\backend\\FraudGuard.Api",
+    "\\src\\backend\\FraudGuard.Api.Tests"
+  ],
+  "SelectedNode": "\\src\\backend\\FraudGuard.Api\\Controllers",
+  "PreviewInSolutionExplorer": false
+}

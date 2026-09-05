@@ -1,0 +1,11 @@
+Metric,Value
+raw_transaction_columns,394
+raw_identity_columns,41
+merged_initial_columns,434
+engineered_time_features,3
+engineered_identity_flags,1
+engineered_missing_indicators,7
+columns_removed_in_initial_cleaning,0
+total_clean_intermediate_columns,445
+total_clean_rows,590540
+memory_saved_percentage,46.1%

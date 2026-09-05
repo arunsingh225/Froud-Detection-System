@@ -1,0 +1,467 @@
+feature_name,dtype,feature_type,missing_percentage,unique_count,source_feature,transformation,training_use,reason
+TransactionID,int64,Identifier,0.0,472432,Database,Raw index,AuditTrackingOnly,Excluded from training to prevent sequence overfitting
+isFraud,uint8,Target,0.0,2,Target,Ground truth binary label,Target,Supervised learning binary objective
+TransactionDT,int32,Numerical,0.0,457939,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+TransactionAmt,float32,Numerical,0.0,18131,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+ProductCD,int32,Categorical,0.0,5,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+card1,int16,Numerical,0.0,12730,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+card2,float32,Numerical,1.49,500,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+card3,float32,Numerical,0.17,106,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+card4,int32,Categorical,0.0,5,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+card5,float32,Numerical,0.67,113,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+card6,int32,Categorical,0.0,5,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+addr1,float32,Numerical,11.38,328,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+addr2,float32,Numerical,11.38,70,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+dist1,float32,Numerical,60.78,2589,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+dist2,float32,Numerical,93.21,1664,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+P_emaildomain,int32,Categorical,0.0,60,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+R_emaildomain,int32,Categorical,0.0,61,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+C1,float32,Numerical,0.0,1591,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C2,float32,Numerical,0.0,1103,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C3,float32,Numerical,0.0,24,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C4,float32,Numerical,0.0,1218,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C5,float32,Numerical,0.0,312,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C6,float32,Numerical,0.0,1294,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C7,float32,Numerical,0.0,1102,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C8,float32,Numerical,0.0,1226,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C9,float32,Numerical,0.0,205,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C10,float32,Numerical,0.0,1163,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C11,float32,Numerical,0.0,1421,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C12,float32,Numerical,0.0,1194,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C13,float32,Numerical,0.0,1589,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+C14,float32,Numerical,0.0,1089,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D1,float32,Numerical,0.2,641,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D2,float32,Numerical,48.95,641,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D3,float32,Numerical,46.07,609,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D4,float32,Numerical,29.59,767,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D5,float32,Numerical,53.73,640,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D6,float32,Numerical,87.62,781,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D7,float32,Numerical,93.66,568,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D8,float32,Numerical,86.96,11359,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D9,float32,Numerical,86.96,24,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D10,float32,Numerical,14.05,777,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D11,float32,Numerical,52.07,636,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D12,float32,Numerical,88.84,600,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D13,float32,Numerical,89.63,527,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D14,float32,Numerical,89.45,763,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+D15,float32,Numerical,16.46,820,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+M1,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+M2,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+M3,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+M4,int32,Categorical,0.0,4,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+M5,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+M6,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+M7,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+M8,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+M9,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+V1,float32,Numerical,52.07,2,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V2,float32,Numerical,52.07,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V3,float32,Numerical,52.07,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V4,float32,Numerical,52.07,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V5,float32,Numerical,52.07,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V6,float32,Numerical,52.07,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V7,float32,Numerical,52.07,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V8,float32,Numerical,52.07,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V9,float32,Numerical,52.07,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V10,float32,Numerical,52.07,5,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V11,float32,Numerical,52.07,5,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V12,float32,Numerical,14.06,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V13,float32,Numerical,14.06,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V14,float32,Numerical,14.06,2,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V15,float32,Numerical,14.06,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V16,float32,Numerical,14.06,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V17,float32,Numerical,14.06,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V18,float32,Numerical,14.06,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V19,float32,Numerical,14.06,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V20,float32,Numerical,14.06,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V21,float32,Numerical,14.06,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V22,float32,Numerical,14.06,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V23,float32,Numerical,14.06,14,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V24,float32,Numerical,14.06,14,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V25,float32,Numerical,14.06,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V26,float32,Numerical,14.06,13,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V27,float32,Numerical,14.06,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V28,float32,Numerical,14.06,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V29,float32,Numerical,14.06,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V30,float32,Numerical,14.06,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V31,float32,Numerical,14.06,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V32,float32,Numerical,14.06,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V33,float32,Numerical,14.06,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V34,float32,Numerical,14.06,13,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V35,float32,Numerical,29.59,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V36,float32,Numerical,29.59,5,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V37,float32,Numerical,29.59,55,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V38,float32,Numerical,29.59,55,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V39,float32,Numerical,29.59,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V40,float32,Numerical,29.59,17,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V41,float32,Numerical,29.59,2,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V42,float32,Numerical,29.59,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V43,float32,Numerical,29.59,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V44,float32,Numerical,29.59,49,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V45,float32,Numerical,29.59,49,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V46,float32,Numerical,29.59,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V47,float32,Numerical,29.59,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V48,float32,Numerical,29.59,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V49,float32,Numerical,29.59,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V50,float32,Numerical,29.59,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V51,float32,Numerical,29.59,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V52,float32,Numerical,29.59,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V53,float32,Numerical,14.16,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V54,float32,Numerical,14.16,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V55,float32,Numerical,14.16,18,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V56,float32,Numerical,14.16,20,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V57,float32,Numerical,14.16,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V58,float32,Numerical,14.16,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V59,float32,Numerical,14.16,12,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V60,float32,Numerical,14.16,13,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V61,float32,Numerical,14.16,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V62,float32,Numerical,14.16,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V63,float32,Numerical,14.16,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V64,float32,Numerical,14.16,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V65,float32,Numerical,14.16,2,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V66,float32,Numerical,14.16,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V67,float32,Numerical,14.16,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V68,float32,Numerical,14.16,3,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V69,float32,Numerical,14.16,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V70,float32,Numerical,14.16,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V71,float32,Numerical,14.16,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V72,float32,Numerical,14.16,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V73,float32,Numerical,14.16,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V74,float32,Numerical,14.16,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V75,float32,Numerical,16.47,5,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V76,float32,Numerical,16.47,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V77,float32,Numerical,16.47,31,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V78,float32,Numerical,16.47,31,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V79,float32,Numerical,16.47,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V80,float32,Numerical,16.47,20,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V81,float32,Numerical,16.47,20,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V82,float32,Numerical,16.47,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V83,float32,Numerical,16.47,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V84,float32,Numerical,16.47,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V85,float32,Numerical,16.47,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V86,float32,Numerical,16.47,31,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V87,float32,Numerical,16.47,31,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V88,float32,Numerical,16.47,2,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V89,float32,Numerical,16.47,3,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V90,float32,Numerical,16.47,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V91,float32,Numerical,16.47,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V92,float32,Numerical,16.47,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V93,float32,Numerical,16.47,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V94,float32,Numerical,16.47,3,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V95,float32,Numerical,0.02,28,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V96,float32,Numerical,0.02,127,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V97,float32,Numerical,0.02,49,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V98,float32,Numerical,0.02,13,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V99,float32,Numerical,0.02,89,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V100,float32,Numerical,0.02,29,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V101,float32,Numerical,0.02,23,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V102,float32,Numerical,0.02,116,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V103,float32,Numerical,0.02,46,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V104,float32,Numerical,0.02,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V105,float32,Numerical,0.02,39,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V106,float32,Numerical,0.02,24,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V107,float32,Numerical,0.02,2,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V108,float32,Numerical,0.02,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V109,float32,Numerical,0.02,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V110,float32,Numerical,0.02,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V111,float32,Numerical,0.02,10,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V112,float32,Numerical,0.02,10,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V113,float32,Numerical,0.02,10,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V114,float32,Numerical,0.02,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V115,float32,Numerical,0.02,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V116,float32,Numerical,0.02,7,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V117,float32,Numerical,0.02,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V118,float32,Numerical,0.02,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V119,float32,Numerical,0.02,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V120,float32,Numerical,0.02,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V121,float32,Numerical,0.02,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V122,float32,Numerical,0.02,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V123,float32,Numerical,0.02,14,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V124,float32,Numerical,0.02,14,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V125,float32,Numerical,0.02,14,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V126,float32,Numerical,0.02,7664,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V127,float32,Numerical,0.02,19879,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V128,float32,Numerical,0.02,11339,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V129,float32,Numerical,0.02,1745,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V130,float32,Numerical,0.02,10745,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V131,float32,Numerical,0.02,3935,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V132,float32,Numerical,0.02,4522,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V133,float32,Numerical,0.02,7515,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V134,float32,Numerical,0.02,5972,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V135,float32,Numerical,0.02,3090,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V136,float32,Numerical,0.02,4030,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V137,float32,Numerical,0.02,3512,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V138,float32,Numerical,85.25,23,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V139,float32,Numerical,85.25,34,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V140,float32,Numerical,85.25,34,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V141,float32,Numerical,85.25,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V142,float32,Numerical,85.25,10,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V143,float32,Numerical,85.25,55,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V144,float32,Numerical,85.25,63,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V145,float32,Numerical,85.25,255,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V146,float32,Numerical,85.25,18,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V147,float32,Numerical,85.25,18,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V148,float32,Numerical,85.25,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V149,float32,Numerical,85.25,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V150,float32,Numerical,85.25,1985,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V151,float32,Numerical,85.25,56,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V152,float32,Numerical,85.25,29,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V153,float32,Numerical,85.25,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V154,float32,Numerical,85.25,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V155,float32,Numerical,85.25,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V156,float32,Numerical,85.25,17,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V157,float32,Numerical,85.25,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V158,float32,Numerical,85.25,17,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V159,float32,Numerical,85.25,6441,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V160,float32,Numerical,85.25,9088,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V161,float32,Numerical,85.25,75,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V162,float32,Numerical,85.25,155,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V163,float32,Numerical,85.25,98,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V164,float32,Numerical,85.25,710,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V165,float32,Numerical,85.25,1196,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V166,float32,Numerical,85.25,901,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V167,float32,Numerical,75.34,59,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V168,float32,Numerical,75.34,213,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V169,float32,Numerical,75.31,20,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V170,float32,Numerical,75.31,49,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V171,float32,Numerical,75.31,62,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V172,float32,Numerical,75.34,32,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V173,float32,Numerical,75.34,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V174,float32,Numerical,75.31,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V175,float32,Numerical,75.31,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V176,float32,Numerical,75.34,49,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V177,float32,Numerical,75.34,48,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V178,float32,Numerical,75.34,127,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V179,float32,Numerical,75.34,69,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V180,float32,Numerical,75.31,67,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V181,float32,Numerical,75.34,17,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V182,float32,Numerical,75.34,50,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V183,float32,Numerical,75.34,30,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V184,float32,Numerical,75.31,17,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V185,float32,Numerical,75.31,17,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V186,float32,Numerical,75.34,39,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V187,float32,Numerical,75.34,213,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V188,float32,Numerical,75.31,19,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V189,float32,Numerical,75.31,20,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V190,float32,Numerical,75.34,43,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V191,float32,Numerical,75.34,22,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V192,float32,Numerical,75.34,45,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V193,float32,Numerical,75.34,38,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V194,float32,Numerical,75.31,8,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V195,float32,Numerical,75.31,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V196,float32,Numerical,75.34,39,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V197,float32,Numerical,75.31,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V198,float32,Numerical,75.31,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V199,float32,Numerical,75.34,46,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V200,float32,Numerical,75.31,46,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V201,float32,Numerical,75.31,56,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V202,float32,Numerical,75.34,7921,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V203,float32,Numerical,75.34,10998,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V204,float32,Numerical,75.34,9411,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V205,float32,Numerical,75.34,1903,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V206,float32,Numerical,75.34,1502,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V207,float32,Numerical,75.34,2726,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V208,float32,Numerical,75.31,2112,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V209,float32,Numerical,75.31,2815,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V210,float32,Numerical,75.31,2330,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V211,float32,Numerical,75.34,5129,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V212,float32,Numerical,75.34,6078,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V213,float32,Numerical,75.34,5662,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V214,float32,Numerical,75.34,1813,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V215,float32,Numerical,75.34,2135,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V216,float32,Numerical,75.34,1972,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V217,float32,Numerical,76.73,54,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V218,float32,Numerical,76.73,110,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V219,float32,Numerical,76.73,78,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V220,float32,Numerical,75.02,26,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V221,float32,Numerical,75.02,72,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V222,float32,Numerical,75.02,72,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V223,float32,Numerical,76.73,17,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V224,float32,Numerical,76.73,77,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V225,float32,Numerical,76.73,35,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V226,float32,Numerical,76.73,40,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V227,float32,Numerical,75.02,44,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V228,float32,Numerical,76.73,55,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V229,float32,Numerical,76.73,91,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V230,float32,Numerical,76.73,66,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V231,float32,Numerical,76.73,52,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V232,float32,Numerical,76.73,57,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V233,float32,Numerical,76.73,52,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V234,float32,Numerical,75.02,121,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V235,float32,Numerical,76.73,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V236,float32,Numerical,76.73,29,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V237,float32,Numerical,76.73,17,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V238,float32,Numerical,75.02,19,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V239,float32,Numerical,75.02,19,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V240,float32,Numerical,76.73,6,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V241,float32,Numerical,76.73,5,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V242,float32,Numerical,76.73,21,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V243,float32,Numerical,76.73,43,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V244,float32,Numerical,76.73,23,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V245,float32,Numerical,75.02,51,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V246,float32,Numerical,76.73,46,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V247,float32,Numerical,76.73,13,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V248,float32,Numerical,76.73,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V249,float32,Numerical,76.73,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V250,float32,Numerical,75.02,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V251,float32,Numerical,75.02,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V252,float32,Numerical,76.73,19,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V253,float32,Numerical,76.73,61,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V254,float32,Numerical,76.73,39,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V255,float32,Numerical,75.02,36,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V256,float32,Numerical,75.02,42,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V257,float32,Numerical,76.73,49,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V258,float32,Numerical,76.73,67,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V259,float32,Numerical,75.02,64,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V260,float32,Numerical,76.73,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V261,float32,Numerical,76.73,41,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V262,float32,Numerical,76.73,21,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V263,float32,Numerical,76.73,8229,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V264,float32,Numerical,76.73,10620,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V265,float32,Numerical,76.73,9295,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V266,float32,Numerical,76.73,1846,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V267,float32,Numerical,76.73,3032,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V268,float32,Numerical,76.73,2333,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V269,float32,Numerical,76.73,136,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V270,float32,Numerical,75.02,1949,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V271,float32,Numerical,75.02,2326,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V272,float32,Numerical,75.02,2094,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V273,float32,Numerical,76.73,5501,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V274,float32,Numerical,76.73,6391,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V275,float32,Numerical,76.73,5950,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V276,float32,Numerical,76.73,1803,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V277,float32,Numerical,76.73,2029,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V278,float32,Numerical,76.73,1921,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V279,float32,Numerical,0.0,59,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V280,float32,Numerical,0.0,179,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V281,float32,Numerical,0.2,23,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V282,float32,Numerical,0.2,33,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V283,float32,Numerical,0.2,52,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V284,float32,Numerical,0.0,13,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V285,float32,Numerical,0.0,96,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V286,float32,Numerical,0.0,9,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V287,float32,Numerical,0.0,32,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V288,float32,Numerical,0.2,11,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V289,float32,Numerical,0.2,13,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V290,float32,Numerical,0.0,58,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V291,float32,Numerical,0.0,177,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V292,float32,Numerical,0.0,133,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V293,float32,Numerical,0.0,60,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V294,float32,Numerical,0.0,259,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V295,float32,Numerical,0.0,172,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V296,float32,Numerical,0.2,60,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V297,float32,Numerical,0.0,13,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V298,float32,Numerical,0.0,44,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V299,float32,Numerical,0.0,27,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V300,float32,Numerical,0.2,12,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V301,float32,Numerical,0.2,12,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V302,float32,Numerical,0.0,11,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V303,float32,Numerical,0.0,17,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V304,float32,Numerical,0.0,12,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V305,float32,Numerical,0.0,2,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V306,float32,Numerical,0.0,12610,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V307,float32,Numerical,0.0,30771,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V308,float32,Numerical,0.0,18380,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V309,float32,Numerical,0.0,3672,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V310,float32,Numerical,0.0,16697,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V311,float32,Numerical,0.0,2664,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V312,float32,Numerical,0.0,6999,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V313,float32,Numerical,0.2,4691,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V314,float32,Numerical,0.2,9907,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V315,float32,Numerical,0.2,5969,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V316,float32,Numerical,0.0,7135,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V317,float32,Numerical,0.0,11709,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V318,float32,Numerical,0.0,9269,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V319,float32,Numerical,0.0,3992,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V320,float32,Numerical,0.0,5362,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V321,float32,Numerical,0.0,4588,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V322,float32,Numerical,85.18,33,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V323,float32,Numerical,85.18,50,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V324,float32,Numerical,85.18,34,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V325,float32,Numerical,85.18,13,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V326,float32,Numerical,85.18,45,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V327,float32,Numerical,85.18,19,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V328,float32,Numerical,85.18,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V329,float32,Numerical,85.18,25,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V330,float32,Numerical,85.18,16,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V331,float32,Numerical,85.18,376,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V332,float32,Numerical,85.18,948,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V333,float32,Numerical,85.18,598,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V334,float32,Numerical,85.18,126,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V335,float32,Numerical,85.18,586,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V336,float32,Numerical,85.18,313,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V337,float32,Numerical,85.18,163,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V338,float32,Numerical,85.18,231,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+V339,float32,Numerical,85.18,192,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_01,float32,Numerical,74.5,71,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_02,float32,Numerical,75.09,99487,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_03,float32,Numerical,88.55,24,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_04,float32,Numerical,88.55,15,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_05,float32,Numerical,75.77,90,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_06,float32,Numerical,75.77,100,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_07,float32,Numerical,99.1,82,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_08,float32,Numerical,99.1,93,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_09,float32,Numerical,86.96,43,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_10,float32,Numerical,86.96,59,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_11,float32,Numerical,75.07,349,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_12,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_13,float32,Numerical,77.74,52,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_14,float32,Numerical,85.56,25,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_15,int32,Categorical,0.0,4,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_16,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_17,float32,Numerical,75.3,102,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_18,float32,Numerical,92.08,18,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_19,float32,Numerical,75.31,510,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_20,float32,Numerical,75.31,380,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_21,float32,Numerical,99.1,444,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_22,float32,Numerical,99.1,23,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_23,int32,Categorical,0.0,4,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_24,float32,Numerical,99.17,11,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_25,float32,Numerical,99.1,317,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_26,float32,Numerical,99.1,89,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_27,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_28,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_29,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_30,int32,Categorical,0.0,73,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_31,int32,Categorical,0.0,111,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_32,float32,Numerical,86.01,4,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+id_33,int32,Categorical,0.0,213,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_34,int32,Categorical,0.0,5,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_35,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_36,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_37,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+id_38,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+DeviceType,int32,Categorical,0.0,3,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+DeviceInfo,int32,Categorical,0.0,1640,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+TransactionHour,uint8,Numerical,0.0,24,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+TransactionDay,uint8,Numerical,0.0,141,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+TransactionWeek,uint8,Numerical,0.0,21,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+has_identity,uint8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+dist1_isna,uint8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+dist2_isna,uint8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+D2_isna,uint8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+P_emaildomain_isna,uint8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+R_emaildomain_isna,uint8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+id_01_isna,uint8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+id_31_isna,uint8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+TransactionAmt_log,float32,TransformedAmount,0.0,18131,TransactionAmt,log1p,ModelFeature,Normalizes heavy right-skewed monetary values
+TransactionAmt_decimal,float32,Numerical,0.0,1073,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+TransactionAmt_is_round,int8,Numerical,0.0,2,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+TransactionHour_sin,float32,CyclicalTime,0.0,14,TransactionHour,Trigonometric harmonic transformation,ModelFeature,Encodes diurnal periodicity continuously
+TransactionHour_cos,float32,CyclicalTime,0.0,14,TransactionHour,Trigonometric harmonic transformation,ModelFeature,Encodes diurnal periodicity continuously
+device_info_available,int8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+os_info_available,int8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+browser_info_available,int8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+card1_card2,int32,Categorical,0.0,12685,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+card1_card3,int32,Categorical,0.0,12741,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+card1_card5,int32,Categorical,0.0,12828,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+card4_card6,int32,Categorical,0.0,12,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+email_both_provided,int8,Numerical,0.0,2,Raw,Downcasted float32/int32,ModelFeature,Direct numerical feature
+email_domain_match,int8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+addr1_addr2,int32,Categorical,0.0,421,Raw/Interaction,Ordinal integer encoding with -1 for null,ModelFeature,Native categorical feature for gradient boosting trees
+addr1_isna,int8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+addr2_isna,int8,BinaryIndicator,0.0,2,Multiple,Boolean missingness / presence flag,ModelFeature,High-signal structural presence/evasion pattern
+card1_frequency,float32,FrequencyEncoding,0.0,477,card1,Training-split relative frequency count,ModelFeature,Captures category rarity without cardinality expansion
+card1_card2_frequency,float32,FrequencyEncoding,0.0,463,card1_card2,Training-split relative frequency count,ModelFeature,Captures category rarity without cardinality expansion
+addr1_frequency,float32,FrequencyEncoding,0.0,97,addr1,Training-split relative frequency count,ModelFeature,Captures category rarity without cardinality expansion
+P_emaildomain_frequency,float32,FrequencyEncoding,0.0,57,P_emaildomain,Training-split relative frequency count,ModelFeature,Captures category rarity without cardinality expansion
