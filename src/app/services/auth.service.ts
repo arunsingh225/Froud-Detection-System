@@ -47,8 +47,8 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
 
+  // Only user profile display data is stored in localStorage (non-sensitive)
   private readonly AUTH_KEY = 'fraudguard_auth';
-  private readonly TOKEN_KEY = 'fraudguard_token';
   private readonly USER_KEY = 'fraudguard_user';
 
   // Signals
@@ -57,15 +57,10 @@ export class AuthService {
   userRole = computed<UserRole | null>(() => this.currentUser()?.role ?? null);
 
   constructor() {
-    // If token exists, verify validity against server claims
-    if (this.getToken()) {
+    // If we believe we're authenticated (from stored profile), verify against server
+    if (this.isLoggedIn()) {
       this.verifyAndRefreshProfile();
     }
-  }
-
-  getToken(): string | null {
-    if (typeof localStorage === 'undefined') return null;
-    return localStorage.getItem(this.TOKEN_KEY);
   }
 
   hasRole(role: string): boolean {
@@ -86,7 +81,7 @@ export class AuthService {
       this.http.post<ApiResponse<LoginResponseData>>(`${environment.apiUrl}/auth/login`, {
         email,
         password
-      })
+      }, { withCredentials: true })
     );
 
     if (res && res.success && res.data) {
@@ -108,8 +103,8 @@ export class AuthService {
         department: u.department
       };
 
+      // Store only non-sensitive display data — JWT is in HttpOnly cookie
       if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(this.TOKEN_KEY, res.data.token);
         localStorage.setItem(this.AUTH_KEY, 'true');
         localStorage.setItem(this.USER_KEY, JSON.stringify(profile));
       }
@@ -125,7 +120,9 @@ export class AuthService {
   async verifyAndRefreshProfile(): Promise<void> {
     try {
       const res = await firstValueFrom(
-        this.http.get<ApiResponse<UserProfileData>>(`${environment.apiUrl}/auth/me`).pipe(
+        this.http.get<ApiResponse<UserProfileData>>(`${environment.apiUrl}/auth/me`, {
+          withCredentials: true
+        }).pipe(
           catchError(() => of(null))
         )
       );
@@ -150,7 +147,7 @@ export class AuthService {
         this.currentUser.set(profile);
         this.isLoggedIn.set(true);
       } else {
-        // Token invalid or expired
+        // Cookie is invalid or expired — server rejected
         this.logout();
       }
     } catch {
@@ -158,13 +155,23 @@ export class AuthService {
     }
   }
 
-  logout(): void {
+  async logout(): Promise<void> {
+    // Call server to clear cookie and revoke token
+    try {
+      await firstValueFrom(
+        this.http.post(`${environment.apiUrl}/auth/logout`, {}, {
+          withCredentials: true
+        }).pipe(catchError(() => of(null)))
+      );
+    } catch {
+      // Best-effort — if server is unreachable, still clear local state
+    }
+
     this.isLoggedIn.set(false);
     this.currentUser.set(null);
 
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem(this.AUTH_KEY);
-      localStorage.removeItem(this.TOKEN_KEY);
       localStorage.removeItem(this.USER_KEY);
     }
 
@@ -175,8 +182,9 @@ export class AuthService {
 
   private checkInitialAuth(): boolean {
     if (typeof localStorage === 'undefined') return false;
-    const token = localStorage.getItem(this.TOKEN_KEY);
-    return !!token && token.length > 10;
+    // We check if auth flag exists — actual authentication is verified by the HttpOnly cookie
+    // which is sent automatically by the browser. The AUTH_KEY is just a UI state hint.
+    return localStorage.getItem(this.AUTH_KEY) === 'true';
   }
 
   private loadInitialUser(): UserProfile | null {

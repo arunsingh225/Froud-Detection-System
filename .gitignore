@@ -1,8 +1,41 @@
+# === Node / Angular ===
 node_modules/
-build/
 dist/
+.angular/
 coverage/
+
+# === .NET / ASP.NET Core ===
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# === Python ===
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+venv/
+.venv/
+
+# === IDE ===
+.idea/
+*.swp
+*.swo
+.vscode/settings.json
+
+# === OS ===
 .DS_Store
+Thumbs.db
+
+# === Build / Logs ===
+build/
 *.log
-.env*
+
+# === Environment / Secrets ===
+.env
+.env.local
+.env.*.local
 !.env.example

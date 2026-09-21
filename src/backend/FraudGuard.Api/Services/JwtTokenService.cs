@@ -51,7 +51,8 @@ namespace FraudGuard.Api.Services
                 new Claim(ClaimTypes.Role, user.Role.ToUpperInvariant()),
                 new Claim(ClaimTypes.UserData, user.UserCode),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
             };
 
             if (!string.IsNullOrEmpty(user.Department))

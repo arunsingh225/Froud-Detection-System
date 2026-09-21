@@ -242,7 +242,7 @@ namespace FraudGuard.Api.Services
                 Label = "Decision Submitted",
                 Description = $"Decision '{dto.Decision}' submitted by {callerFullName} ({callerRole}). Notes: {dto.Notes ?? "None"}",
                 Status = "completed",
-                ActorType = callerRole.ToLowerInvariant(),
+                ActorType = "human",
                 ActorName = callerFullName,
                 StepTimestamp = DateTimeOffset.UtcNow
             };

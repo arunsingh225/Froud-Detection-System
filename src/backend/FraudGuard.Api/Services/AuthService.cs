@@ -27,17 +27,20 @@ namespace FraudGuard.Api.Services
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly IAuditLogService _auditLogService;
+        private readonly ITokenRevocationService _revocationService;
 
         public AuthService(
             FraudGuardDbContext db,
             IJwtTokenService jwtTokenService,
             IPasswordHasher<User> passwordHasher,
-            IAuditLogService auditLogService)
+            IAuditLogService auditLogService,
+            ITokenRevocationService revocationService)
         {
             _db = db;
             _jwtTokenService = jwtTokenService;
             _passwordHasher = passwordHasher;
             _auditLogService = auditLogService;
+            _revocationService = revocationService;
         }
 
         public async Task<AuthResponseDto?> LoginAsync(LoginRequestDto request, string? ipAddress = null)
@@ -287,6 +290,9 @@ namespace FraudGuard.Api.Services
             user.UpdatedAt = DateTimeOffset.UtcNow;
             await _db.SaveChangesAsync();
 
+            // Revoke existing tokens so the user must re-authenticate with the new role
+            _revocationService.RevokeUser(userId);
+
             await _auditLogService.LogActivityAsync(
                 actorName: "ADMIN",
                 actorType: "ADMIN",
@@ -336,6 +342,12 @@ namespace FraudGuard.Api.Services
             user.IsActive = isActive;
             user.UpdatedAt = DateTimeOffset.UtcNow;
             await _db.SaveChangesAsync();
+
+            // Revoke tokens immediately — if deactivated, user loses access right away
+            if (!isActive)
+            {
+                _revocationService.RevokeUser(userId);
+            }
 
             await _auditLogService.LogActivityAsync(
                 actorName: "ADMIN",

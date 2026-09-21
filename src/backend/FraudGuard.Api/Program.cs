@@ -86,13 +86,21 @@ var jwtConfig = builder.Configuration.GetSection("Jwt");
 var jwtIssuer = jwtConfig.GetValue<string>("Issuer") ?? "FraudGuardAI";
 var jwtAudience = jwtConfig.GetValue<string>("Audience") ?? "FraudGuardAI.Client";
 var jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
-    ?? builder.Configuration["JWT_SECRET_KEY"];
+    ?? builder.Configuration["JWT_SECRET_KEY"]
+    ?? builder.Configuration["Jwt:SecretKey"];
 
 if (string.IsNullOrWhiteSpace(jwtSecretKey) || Encoding.UTF8.GetByteCount(jwtSecretKey) < 32)
 {
-    throw new InvalidOperationException(
-        "CRITICAL SECURITY CONFIGURATION ERROR: 'JWT_SECRET_KEY' environment variable is missing, empty, or shorter than 32 bytes (256 bits). " +
-        "Set the 'JWT_SECRET_KEY' environment variable before launching the service.");
+    if (builder.Environment.IsDevelopment())
+    {
+        jwtSecretKey = "FraudGuardAI_Super_Secret_Key_For_Development_Must_Be_At_Least_32_Bytes_Long!";
+    }
+    else
+    {
+        throw new InvalidOperationException(
+            "CRITICAL SECURITY CONFIGURATION ERROR: 'JWT_SECRET_KEY' environment variable is missing, empty, or shorter than 32 bytes (256 bits). " +
+            "Set the 'JWT_SECRET_KEY' environment variable before launching the service.");
+    }
 }
 var jwtKeyBytes = Encoding.UTF8.GetBytes(jwtSecretKey);
 
@@ -120,11 +128,11 @@ builder.Services.AddAuthentication(options =>
     {
         OnMessageReceived = context =>
         {
-            var accessToken = context.Request.Query["access_token"];
-            var path = context.HttpContext.Request.Path;
-            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+            // Priority 1: Read JWT from HttpOnly cookie (primary auth mechanism)
+            if (context.Request.Cookies.TryGetValue("FG_Auth", out var cookieToken)
+                && !string.IsNullOrEmpty(cookieToken))
             {
-                context.Token = accessToken;
+                context.Token = cookieToken;
             }
             return Task.CompletedTask;
         }
@@ -180,6 +188,7 @@ builder.Services.AddHttpClient<IFastApiClient, FastApiClient>(client =>
 
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
+builder.Services.AddSingleton<ITokenRevocationService, TokenRevocationService>();
 builder.Services.AddSingleton<FraudPredictionMapper>();
 builder.Services.AddScoped<IFraudPredictionService, FraudPredictionService>();
 
@@ -270,6 +279,7 @@ app.UseCors("AllowAngularApp");
 app.UseRateLimiter();
 
 app.UseAuthentication();
+app.UseMiddleware<TokenRevocationMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

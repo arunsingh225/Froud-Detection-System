@@ -6,20 +6,14 @@ import { catchError, throwError } from 'rxjs';
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
-  // Retrieve auth token if available
-  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('fraudguard_token') : null;
-
   // Check if request is login
   const isLoginUrl = req.url.toLowerCase().includes('/auth/login');
 
-  let authReq = req;
-  if (token && !isLoginUrl) {
-    authReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-  }
+  // Attach withCredentials so the browser sends the HttpOnly auth cookie automatically.
+  // No Authorization header is injected — the JWT lives exclusively in the cookie.
+  const authReq = req.clone({
+    withCredentials: true
+  });
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -41,7 +35,6 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
         if (!isLoginUrl) {
           friendlyMessage = 'Session expired or unauthorized. Please log in.';
           if (typeof localStorage !== 'undefined') {
-            localStorage.removeItem('fraudguard_token');
             localStorage.removeItem('fraudguard_auth');
             localStorage.removeItem('fraudguard_user');
           }

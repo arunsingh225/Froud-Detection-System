@@ -51,6 +51,8 @@ CREATE TABLE dbo.Users (
     Role                NVARCHAR(30)        NOT NULL,
     Department          NVARCHAR(100)       NULL,
     IsActive            BIT                 NOT NULL DEFAULT 1,
+    AccessFailedCount   INT                 NOT NULL DEFAULT 0,
+    LockoutEnd          DATETIMEOFFSET      NULL,
     LastLoginAt         DATETIMEOFFSET      NULL,
     CreatedAt           DATETIMEOFFSET      NOT NULL DEFAULT SYSDATETIMEOFFSET(),
     UpdatedAt           DATETIMEOFFSET      NOT NULL DEFAULT SYSDATETIMEOFFSET(),

@@ -54,6 +54,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "fraudguard-ai:build:production"
@@ -66,5 +69,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "b9dbe401-5e04-48be-a0fb-b1f273c63e73"
   }
 }

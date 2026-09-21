@@ -37,10 +37,10 @@ DECLARE @U_Amit UNIQUEIDENTIFIER = '11111111-1111-1111-1111-111111111104';
 
 INSERT INTO dbo.Users (UserId, UserCode, FullName, Email, PasswordHash, Role, Department)
 VALUES 
-(@U_Riya, N'USR-INV-001', N'Riya Desai', N'riya.desai@fraudguard.enterprise.io', N'$2a$12$e8Y6bF8Qz...demo_hash', N'INVESTIGATOR', N'Fraud Investigation Unit'),
-(@U_Suresh, N'USR-INV-002', N'Suresh Menon', N'suresh.menon@fraudguard.enterprise.io', N'$2a$12$e8Y6bF8Qz...demo_hash', N'INVESTIGATOR', N'Special Investigations'),
-(@U_Priyanka, N'USR-ADM-001', N'Priyanka Iyer', N'priyanka.iyer@fraudguard.enterprise.io', N'$2a$12$e8Y6bF8Qz...demo_hash', N'ADMIN', N'Chief Compliance Officer'),
-(@U_Amit, N'USR-ANL-001', N'Amit Bose', N'amit.bose@fraudguard.enterprise.io', N'$2a$12$e8Y6bF8Qz...demo_hash', N'ANALYST', N'AML Analytics');
+(@U_Riya, N'USR-INV-001', N'Riya Desai', N'riya.desai@fraudguard.enterprise.io', N'AQAAAAIAAYagAAAAEOpZjC23Kzple0MYWZHBXVm3QStrJQEzZva1fUv6GXE347f7p3hUv4vnCeJ8IDXswA==', N'INVESTIGATOR', N'Fraud Investigation Unit'),
+(@U_Suresh, N'USR-INV-002', N'Suresh Menon', N'suresh.menon@fraudguard.enterprise.io', N'AQAAAAIAAYagAAAAEOpZjC23Kzple0MYWZHBXVm3QStrJQEzZva1fUv6GXE347f7p3hUv4vnCeJ8IDXswA==', N'INVESTIGATOR', N'Special Investigations'),
+(@U_Priyanka, N'USR-ADM-001', N'Priyanka Iyer', N'priyanka.iyer@fraudguard.enterprise.io', N'AQAAAAIAAYagAAAAEOpZjC23Kzple0MYWZHBXVm3QStrJQEzZva1fUv6GXE347f7p3hUv4vnCeJ8IDXswA==', N'ADMIN', N'Chief Compliance Officer'),
+(@U_Amit, N'USR-ANL-001', N'Amit Bose', N'amit.bose@fraudguard.enterprise.io', N'AQAAAAIAAYagAAAAEOpZjC23Kzple0MYWZHBXVm3QStrJQEzZva1fUv6GXE347f7p3hUv4vnCeJ8IDXswA==', N'ANALYST', N'AML Analytics');
 
 -- ============================================================================
 -- 2. Insert Merchants

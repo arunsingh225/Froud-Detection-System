@@ -1,4 +1,4 @@
-﻿# FraudGuard AI - Phase 7 Walkthrough
+# FraudGuard AI - Phase 7 Walkthrough
 
 ## Phase 7: Angular 17 <-> ASP.NET Core 8 Real API Integration
 **Status: COMPLETE**
@@ -41,4 +41,4 @@ Priyanka Iyer: priyanka.iyer@fraudguard.enterprise.io / password123 / ADMIN
 ## Running the Full Stack
 Terminal 1: cd src/backend/FraudGuard.Api; dotnet run
 Terminal 2: cd src/ai_engine; python -m uvicorn app:app --host 127.0.0.1 --port 8000
-Terminal 3: npm start (open http://localhost:4200)
+Terminal 3: npm start (open http://localhost:3000)

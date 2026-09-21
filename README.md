@@ -7,7 +7,7 @@ FraudGuard AI is an enterprise-grade platform for financial fraud detection, aut
 ## System Architecture
 
 ```
-[ Angular 17 Frontend ] (Port 4200)
+[ Angular 17 Frontend ] (Port 3000)
         │
         ▼  (HTTP REST)
 [ ASP.NET Core 8 Web API ] (Port 5000)
@@ -51,7 +51,7 @@ dotnet run --urls "http://localhost:5000"
 ### Terminal 3: Angular 17 Frontend
 ```bash
 npm start
-# Runs on http://localhost:4200
+# Runs on http://localhost:3000
 ```
 
 ---
@@ -64,13 +64,13 @@ npm start
 | :--- | :--- | :--- | :--- |
 | **ADMIN** | `priyanka.iyer@fraudguard.enterprise.io` | `password123` | Full access, user management, audit logs, system telemetry |
 | **INVESTIGATOR** | `riya.desai@fraudguard.enterprise.io` | `password123` | Transactions, fraud alerts, case investigations, AI scoring |
-| **COMPLIANCE** | `amit.bose@fraudguard.enterprise.io` | `password123` | Audit logs, regulatory SAR reports, alert review, compliance decisions |
+| **ANALYST** | `amit.bose@fraudguard.enterprise.io` | `password123` | Audit logs, regulatory SAR reports, alert review, analytics dashboards |
 
 ---
 
 ## Testing & Verification
 
-### ASP.NET Core xUnit Test Suite (21 tests)
+### ASP.NET Core xUnit Test Suite (43 tests)
 ```bash
 # Run backend security, JWT, and authorization unit tests
 dotnet test src/backend/FraudGuard.Api.Tests

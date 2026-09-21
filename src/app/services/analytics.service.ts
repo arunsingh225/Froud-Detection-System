@@ -194,10 +194,12 @@ export class AnalyticsService {
   private initSignalR(): void {
     if (typeof window === 'undefined') return;
     try {
-      const hubUrl = environment.apiUrl.replace('/api', '') + '/hubs/analytics';
+      // With proxy, hub URL is same-origin — cookies sent automatically
+      const hubUrl = '/hubs/analytics';
       this.hubConnection = new HubConnectionBuilder()
         .withUrl(hubUrl, {
-          accessTokenFactory: () => (typeof localStorage !== 'undefined' ? localStorage.getItem('fraudguard_token') || '' : '')
+          // Send HttpOnly cookie for authentication — no token in JS
+          withCredentials: true
         })
         .withAutomaticReconnect()
         .configureLogging(LogLevel.None)
@@ -221,7 +223,7 @@ export class AnalyticsService {
   }
 
   constructor() {
-    if (typeof localStorage !== 'undefined' && localStorage.getItem('fraudguard_token')) {
+    if (this.authService.isLoggedIn()) {
       this.loadDashboardData();
     }
     this.initRealTimePolling();
@@ -229,7 +231,7 @@ export class AnalyticsService {
   }
 
   loadDashboardData(): void {
-    if (typeof localStorage === 'undefined' || !localStorage.getItem('fraudguard_token')) {
+    if (!this.authService.isLoggedIn()) {
       return;
     }
     this.loading.set(true);
@@ -252,7 +254,7 @@ export class AnalyticsService {
     // 10-second resilient polling interval for live queue and KPI updates (active only when logged in)
     interval(10000).pipe(
       switchMap(() => {
-        if (typeof localStorage === 'undefined' || !localStorage.getItem('fraudguard_token')) {
+        if (!this.authService.isLoggedIn()) {
           return of([]);
         }
         return this.getLiveAlerts(10);
@@ -261,7 +263,7 @@ export class AnalyticsService {
 
     interval(15000).pipe(
       switchMap(() => {
-        if (typeof localStorage === 'undefined' || !localStorage.getItem('fraudguard_token')) {
+        if (!this.authService.isLoggedIn()) {
           return of(null);
         }
         return this.getDashboardKpis();

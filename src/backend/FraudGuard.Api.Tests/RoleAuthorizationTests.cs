@@ -67,7 +67,7 @@ namespace FraudGuard.Api.Tests
             db.Users.Add(adminUser);
             await db.SaveChangesAsync();
 
-            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object);
+            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, new TokenRevocationService());
 
             // Act: try demoting the last active ADMIN to INVESTIGATOR
             var (success, message, user) = await authService.UpdateUserRoleAsync(adminId, "INVESTIGATOR", adminId);
@@ -97,7 +97,7 @@ namespace FraudGuard.Api.Tests
             db.Users.Add(adminUser);
             await db.SaveChangesAsync();
 
-            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object);
+            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, new TokenRevocationService());
 
             // Act: try deactivating the last active ADMIN
             var (success, message, user) = await authService.UpdateUserStatusAsync(adminId, false, adminId);
@@ -114,7 +114,7 @@ namespace FraudGuard.Api.Tests
             // Arrange
             using var db = CreateInMemoryDbContext();
             var adminId = Guid.NewGuid();
-            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object);
+            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, new TokenRevocationService());
 
             var createDto = new CreateUserRequestDto
             {
