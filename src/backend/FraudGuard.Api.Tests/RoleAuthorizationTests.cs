@@ -140,5 +140,14 @@ namespace FraudGuard.Api.Tests
             var verified = _passwordHasher.VerifyHashedPassword(inDb, inDb.PasswordHash, "CompliantPassword#2026");
             Assert.Equal(PasswordVerificationResult.Success, verified);
         }
+
+        [Fact]
+        public void EveryRole_MatchesDtoPattern()
+        {
+            foreach (var r in Roles.All)
+            {
+                Assert.Matches(Roles.Pattern, r);
+            }
+        }
     }
 }

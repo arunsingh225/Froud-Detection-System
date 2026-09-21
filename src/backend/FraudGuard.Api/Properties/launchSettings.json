@@ -16,8 +16,7 @@
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5000;http://localhost:5012",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "JWT_SECRET_KEY": "FraudGuardAI_Super_Secret_Key_For_Development_Must_Be_At_Least_32_Bytes_Long!"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "https": {
@@ -27,8 +26,7 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7219;http://localhost:5000;http://localhost:5012",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "JWT_SECRET_KEY": "FraudGuardAI_Super_Secret_Key_For_Development_Must_Be_At_Least_32_Bytes_Long!"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "IIS Express": {
@@ -36,8 +34,7 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "JWT_SECRET_KEY": "FraudGuardAI_Super_Secret_Key_For_Development_Must_Be_At_Least_32_Bytes_Long!"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }

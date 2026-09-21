@@ -24,18 +24,7 @@ namespace FraudGuard.Api.Services
             _audience = configuration["Jwt:Audience"] ?? "FraudGuardAI.Client";
             _expiryMinutes = int.TryParse(configuration["Jwt:ExpiryMinutes"], out var exp) ? exp : 60;
 
-            var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
-                ?? configuration["JWT_SECRET_KEY"]
-                ?? configuration["Jwt:SecretKey"];
-
-            if (string.IsNullOrWhiteSpace(secretKey) || Encoding.UTF8.GetByteCount(secretKey) < 32)
-            {
-                throw new InvalidOperationException(
-                    "CRITICAL SECURITY CONFIGURATION ERROR: 'JWT_SECRET_KEY' environment variable is missing, empty, or shorter than 32 bytes (256 bits). " +
-                    "Set the 'JWT_SECRET_KEY' environment variable before launching the service.");
-            }
-
-            _keyBytes = Encoding.UTF8.GetBytes(secretKey);
+            _keyBytes = JwtKeyResolver.Resolve(configuration);
         }
 
         public (string Token, DateTimeOffset ExpiresAt) GenerateToken(User user)

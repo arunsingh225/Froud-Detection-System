@@ -14,8 +14,8 @@ class ModelInfoResponse(BaseModel):
     """Trained model operational metadata."""
     model_name: str = Field(..., examples=["LightGBM_Fraud_Classifier"])
     model_version: str = Field("1.0", examples=["1.0"])
-    roc_auc: float = Field(..., examples=[0.9168])
-    pr_auc: float = Field(..., examples=[0.5393])
+    roc_auc: Optional[float] = Field(None, examples=[0.9168], description="Null when not recorded in model metadata")
+    pr_auc: Optional[float] = Field(None, examples=[0.5393], description="Null when not recorded in model metadata")
     threshold: float = Field(..., examples=[0.80])
     feature_count: int = Field(..., examples=[464])
     training_date: Optional[str] = Field(None, examples=["2026-09-03 07:11:40 UTC"])

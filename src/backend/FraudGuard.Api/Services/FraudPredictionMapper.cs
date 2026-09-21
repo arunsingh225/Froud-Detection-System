@@ -1,5 +1,8 @@
 using System;
+using System.Buffers.Binary;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using FraudGuard.Api.DTOs.FastApi;
 using FraudGuard.Api.DTOs.Fraud;
 using FraudGuard.Api.Models;
@@ -8,12 +11,26 @@ namespace FraudGuard.Api.Services
 {
     /// <summary>
     /// Translates domain application transactions into the IEEE-CIS machine learning feature schema.
-    /// Unavailable or non-analogous features are intentionally left null to allow the Phase 5 
-    /// PreprocessingService to handle them natively as NaN/defaults, strictly preserving model fidelity.
+    /// 
+    /// IMPORTANT: This is a demo/approximation mapping. The underlying model was trained on
+    /// IEEE-CIS Vesta e-commerce data whose features (card1, addr1, C13, D15, etc.) don't have
+    /// direct real-world equivalents in this application's transaction schema. Several features
+    /// are derived heuristically or set to constants. Fraud scores are not calibrated for
+    /// production use and should be treated as relative risk indicators, not true probabilities.
     /// </summary>
     public class FraudPredictionMapper
     {
         private const decimal UsdInrConversionRate = 83.50m;
+
+        /// <summary>
+        /// Deterministic hash that is stable across process restarts.
+        /// .NET Core randomizes string.GetHashCode() per process, so we use SHA-256 instead.
+        /// </summary>
+        private static int StableHash(string s)
+        {
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(s));
+            return (int)(BinaryPrimitives.ReadUInt32BigEndian(bytes) & 0x7FFFFFFF);
+        }
 
         /// <summary>
         /// Map a persisted EF Core Transaction entity to a FastApiPredictionRequest.
@@ -78,6 +95,7 @@ namespace FraudGuard.Api.Services
 
         /// <summary>
         /// Map an ad-hoc PredictFraudRequestDto payload to a FastApiPredictionRequest.
+        /// Uses TransactionId when available for deterministic scoring; falls back to Guid.Empty.
         /// </summary>
         public FastApiPredictionRequest MapDtoToFastApiRequest(PredictFraudRequestDto dto)
         {
@@ -87,7 +105,7 @@ namespace FraudGuard.Api.Services
             decimal amtUsd = Math.Round(rawAmt / UsdInrConversionRate, 2);
             if (amtUsd <= 0) amtUsd = 1.00m;
 
-            int card1Val = DeriveCard1(dto.CardLast4, Guid.NewGuid());
+            int card1Val = DeriveCard1(dto.CardLast4, dto.TransactionId ?? Guid.Empty);
             string card4Val = DeriveCardBrand(dto.PaymentMethod ?? "Credit Card");
             string card6Val = DeriveCardFundingType(dto.PaymentMethod ?? "Credit Card");
             decimal addr1Val = DeriveRegionCode(dto.City ?? "Mumbai");
@@ -118,7 +136,7 @@ namespace FraudGuard.Api.Services
             {
                 return 10000 + (last4 % 20000);
             }
-            return 10000 + Math.Abs(accountId.GetHashCode() % 15000);
+            return 10000 + StableHash(accountId.ToString()) % 15000;
         }
 
         private static string DeriveCardBrand(string? paymentMethod)
@@ -142,8 +160,7 @@ namespace FraudGuard.Api.Services
         private static decimal DeriveRegionCode(string? city)
         {
             if (string.IsNullOrWhiteSpace(city)) return 299.0m;
-            int hash = Math.Abs(city.Trim().ToLowerInvariant().GetHashCode());
-            return (decimal)(100 + (hash % 400));
+            return 100 + StableHash(city.Trim().ToLowerInvariant()) % 400;
         }
 
         private static string? DeriveEmailDomain(string? email)

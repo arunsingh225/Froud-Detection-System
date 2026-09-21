@@ -114,13 +114,13 @@ namespace FraudGuard.Api.Services
             {
                 AuditCode = code,
                 ActorId = actorId,
-                ActorName = actorName,
-                ActorType = actorType,
-                Action = action,
-                SubAction = subAction,
-                ResourceTarget = resourceTarget,
-                Result = result,
-                Category = category,
+                ActorName = Trunc(actorName, 200),
+                ActorType = Trunc(actorType, 50),
+                Action = Trunc(action, 100),
+                SubAction = subAction is null ? null : Trunc(subAction, 200),
+                ResourceTarget = Trunc(resourceTarget, 200),
+                Result = Trunc(result, 50),
+                Category = Trunc(category, 100),
                 IPAddress = ipAddress,
                 MerkleHash = hashString,
                 CreatedAt = DateTimeOffset.UtcNow
@@ -131,5 +131,8 @@ namespace FraudGuard.Api.Services
 
             return (await GetAuditLogByIdAsync(entity.AuditLogId))!;
         }
+
+        private static string Trunc(string? s, int max) =>
+            string.IsNullOrEmpty(s) ? string.Empty : (s.Length <= max ? s : s[..max]);
     }
 }

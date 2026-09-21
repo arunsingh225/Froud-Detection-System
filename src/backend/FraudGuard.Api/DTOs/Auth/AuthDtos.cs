@@ -1,14 +1,15 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using FraudGuard.Api.Models;
 
 namespace FraudGuard.Api.DTOs.Auth
 {
     public class LoginRequestDto
     {
-        [Required, EmailAddress]
+        [Required, EmailAddress, MaxLength(254)]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
+        [Required, MaxLength(128)]
         public string Password { get; set; } = string.Empty;
     }
 
@@ -49,23 +50,24 @@ namespace FraudGuard.Api.DTOs.Auth
         [Required, MinLength(2), MaxLength(100)]
         public string FullName { get; set; } = string.Empty;
 
-        [Required, EmailAddress]
+        [Required, EmailAddress, MaxLength(254)]
         public string Email { get; set; } = string.Empty;
 
-        [Required, MinLength(8)]
+        [Required, MinLength(8), MaxLength(128)]
         public string Password { get; set; } = string.Empty;
 
         [Required]
-        [RegularExpression("^(ADMIN|INVESTIGATOR|COMPLIANCE)$", ErrorMessage = "Role must be ADMIN, INVESTIGATOR, or COMPLIANCE.")]
+        [RegularExpression(Roles.Pattern, ErrorMessage = "Role must be ADMIN, INVESTIGATOR, COMPLIANCE, ANALYST or VIEWER.")]
         public string Role { get; set; } = "INVESTIGATOR";
 
+        [MaxLength(100)]
         public string? Department { get; set; }
     }
 
     public class UpdateUserRoleRequestDto
     {
         [Required]
-        [RegularExpression("^(ADMIN|INVESTIGATOR|COMPLIANCE)$", ErrorMessage = "Role must be ADMIN, INVESTIGATOR, or COMPLIANCE.")]
+        [RegularExpression(Roles.Pattern, ErrorMessage = "Role must be ADMIN, INVESTIGATOR, COMPLIANCE, ANALYST or VIEWER.")]
         public string Role { get; set; } = string.Empty;
     }
 

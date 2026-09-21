@@ -43,16 +43,25 @@ namespace FraudGuard.Api.Services
             _revocationService = revocationService;
         }
 
+        // Dummy user and hash for timing equalization — prevents email enumeration via response time.
+        private static readonly User _dummyUser = new();
+        private static string? _dummyHash;
+
         public async Task<AuthResponseDto?> LoginAsync(LoginRequestDto request, string? ipAddress = null)
         {
             var emailClean = request.Email.Trim().ToLowerInvariant();
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == emailClean);
+            // Use direct equality — emails are stored lowercase, SQL Server default collation is CI.
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == emailClean);
 
             if (user == null || !user.IsActive)
             {
+                // Perform a dummy hash to equalize timing with the valid-user path.
+                _dummyHash ??= _passwordHasher.HashPassword(_dummyUser, "timing-equalizer");
+                _passwordHasher.VerifyHashedPassword(_dummyUser, _dummyHash, request.Password);
+
                 // Record failed login audit log without exposing if user exists
                 await _auditLogService.LogActivityAsync(
-                    actorName: request.Email,
+                    actorName: request.Email.Length <= 200 ? request.Email : request.Email[..200],
                     actorType: "EXTERNAL",
                     action: "LOGIN_FAILURE",
                     resourceTarget: "Authentication",
@@ -80,6 +89,13 @@ namespace FraudGuard.Api.Services
                     ipAddress: ipAddress
                 );
                 return null;
+            }
+
+            // Reset lockout counter when the lockout period has expired
+            if (user.LockoutEnd.HasValue && user.LockoutEnd.Value <= DateTimeOffset.UtcNow)
+            {
+                user.LockoutEnd = null;
+                user.AccessFailedCount = 0;
             }
 
             // Verify password using PBKDF2 (Cryptographic hash verification only, no backdoors)
@@ -140,7 +156,7 @@ namespace FraudGuard.Api.Services
             // Audit successful login
             await _auditLogService.LogActivityAsync(
                 actorName: user.FullName,
-                actorType: user.Role == "ADMIN" ? "ADMIN" : "INVESTIGATOR",
+                actorType: user.Role,
                 action: "LOGIN_SUCCESS",
                 resourceTarget: "Authentication",
                 result: "SUCCESS",
@@ -212,7 +228,7 @@ namespace FraudGuard.Api.Services
         public async Task<UserDto> CreateUserAsync(CreateUserRequestDto request, Guid adminUserId, string? ipAddress = null)
         {
             var emailClean = request.Email.Trim().ToLowerInvariant();
-            var existing = await _db.Users.AnyAsync(u => u.Email.ToLower() == emailClean);
+            var existing = await _db.Users.AnyAsync(u => u.Email == emailClean);
             if (existing)
             {
                 throw new InvalidOperationException($"User with email '{request.Email}' already exists.");

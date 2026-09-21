@@ -53,8 +53,10 @@ namespace FraudGuard.Api.Services
             // 2. Map domain transaction to ML inference schema
             var fastApiRequest = _mapper.MapToFastApiRequest(transaction);
 
-            // 3. Dispatch to FastAPI microservice
+            // 3. Dispatch to FastAPI microservice (measure real latency)
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var fastApiResult = await _fastApiClient.PredictAsync(fastApiRequest, cancellationToken);
+            sw.Stop();
 
             // 4. Save or update FraudPrediction record in SQL Server
             var prediction = transaction.FraudPrediction;
@@ -74,7 +76,7 @@ namespace FraudGuard.Api.Services
             // Store probability as percentage (0.00 to 100.00) matching decimal(5, 2) DB convention
             prediction.FraudProbability = Math.Round(fastApiResult.FraudProbability * 100m, 2);
             prediction.RiskTier = NormalizeRiskTier(fastApiResult.RiskLevel);
-            prediction.InferenceLatencyMs = 15;
+            prediction.InferenceLatencyMs = (int)sw.ElapsedMilliseconds;
             prediction.AnomalyReason = $"FastAPI AI Engine scored transaction with {fastApiResult.FraudProbability:P1} probability ({fastApiResult.RiskLevel} Risk).";
             prediction.PredictedAt = DateTimeOffset.UtcNow;
 

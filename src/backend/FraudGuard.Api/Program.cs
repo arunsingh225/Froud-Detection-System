@@ -35,20 +35,7 @@ builder.Services.AddDbContext<FraudGuardDbContext>(options =>
 });
 
 // 2. CORS Policy for Angular Frontend (Environment Restricted)
-var configuredOrigins = builder.Configuration.GetSection("CorsOrigins").Get<string[]>() ?? Array.Empty<string>();
-var defaultOrigins = new[]
-{
-    "http://localhost:3000",
-    "http://localhost:4200",
-    "http://localhost:64988",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:4200",
-    "http://127.0.0.1:64988",
-    "http://192.168.1.109:3000",
-    "http://192.168.1.110:3000"
-};
-
-var corsOrigins = configuredOrigins.Union(defaultOrigins).Distinct().ToArray();
+var corsOrigins = builder.Configuration.GetSection("CorsOrigins").Get<string[]>() ?? Array.Empty<string>();
 
 builder.Services.AddCors(options =>
 {
@@ -62,22 +49,22 @@ builder.Services.AddCors(options =>
                 if (corsOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase)) return true;
                 if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
                 {
-                    return (uri.Host == "localhost" || uri.Host == "127.0.0.1" || uri.Host.StartsWith("192.168."))
+                    return (uri.Host == "localhost" || uri.Host == "127.0.0.1")
                         && uri.Scheme == "http";
                 }
                 return false;
-            })
-            .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-            .AllowAnyHeader()
-            .AllowCredentials();
+            });
         }
         else
         {
-            policy.WithOrigins(corsOrigins)
-                  .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                  .AllowAnyHeader()
-                  .AllowCredentials();
+            if (corsOrigins.Length == 0)
+                throw new InvalidOperationException("Set CorsOrigins in production configuration.");
+            policy.WithOrigins(corsOrigins);
         }
+
+        policy.WithMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -85,24 +72,7 @@ builder.Services.AddCors(options =>
 var jwtConfig = builder.Configuration.GetSection("Jwt");
 var jwtIssuer = jwtConfig.GetValue<string>("Issuer") ?? "FraudGuardAI";
 var jwtAudience = jwtConfig.GetValue<string>("Audience") ?? "FraudGuardAI.Client";
-var jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
-    ?? builder.Configuration["JWT_SECRET_KEY"]
-    ?? builder.Configuration["Jwt:SecretKey"];
-
-if (string.IsNullOrWhiteSpace(jwtSecretKey) || Encoding.UTF8.GetByteCount(jwtSecretKey) < 32)
-{
-    if (builder.Environment.IsDevelopment())
-    {
-        jwtSecretKey = "FraudGuardAI_Super_Secret_Key_For_Development_Must_Be_At_Least_32_Bytes_Long!";
-    }
-    else
-    {
-        throw new InvalidOperationException(
-            "CRITICAL SECURITY CONFIGURATION ERROR: 'JWT_SECRET_KEY' environment variable is missing, empty, or shorter than 32 bytes (256 bits). " +
-            "Set the 'JWT_SECRET_KEY' environment variable before launching the service.");
-    }
-}
-var jwtKeyBytes = Encoding.UTF8.GetBytes(jwtSecretKey);
+var jwtKeyBytes = JwtKeyResolver.Resolve(builder.Configuration);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -141,31 +111,24 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// 4. Rate Limiting for Login & Sensitive Endpoints
+// 4. Rate Limiting for Login & Sensitive Endpoints (partitioned per-IP/user)
 builder.Services.AddRateLimiter(options =>
 {
-    options.AddFixedWindowLimiter("login_policy", opt =>
-    {
-        opt.PermitLimit = 10;
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        opt.QueueLimit = 0;
-    });
-    options.AddFixedWindowLimiter("ai_policy", opt =>
-    {
-        opt.PermitLimit = 10;
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        opt.QueueLimit = 0;
-    });
-    options.AddFixedWindowLimiter("fraud_policy", opt =>
-    {
-        opt.PermitLimit = 30;
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        opt.QueueLimit = 0;
-    });
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    static string ClientKey(HttpContext ctx) =>
+        ctx.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+        ?? ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+    options.AddPolicy("login_policy", ctx => RateLimitPartition.GetFixedWindowLimiter(
+        ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+    options.AddPolicy("ai_policy", ctx => RateLimitPartition.GetFixedWindowLimiter(
+        ClientKey(ctx),
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+    options.AddPolicy("fraud_policy", ctx => RateLimitPartition.GetFixedWindowLimiter(
+        ClientKey(ctx),
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 30, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
 });
 
 // 5. Domain Services Dependency Injection
@@ -273,13 +236,12 @@ if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("Ena
     });
 }
 
-// 10. Pipeline Routing, Rate Limiting, Authentication & Authorization
+// 10. Pipeline Routing, Authentication, Rate Limiting & Authorization
 app.UseCors("AllowAngularApp");
-
-app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseMiddleware<TokenRevocationMiddleware>();
+app.UseRateLimiter();
 app.UseAuthorization();
 
 app.MapControllers();

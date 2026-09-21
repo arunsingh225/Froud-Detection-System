@@ -10,6 +10,11 @@ from app.logging_config import logger
 router = APIRouter()
 
 
+def _as_float(value):
+    """Return float(value), or None when the metric was never recorded (never invent one)."""
+    return float(value) if value is not None else None
+
+
 @router.get(
     "/health",
     response_model=HealthResponse,
@@ -44,8 +49,8 @@ def get_model_info() -> ModelInfoResponse:
     return ModelInfoResponse(
         model_name=model_service.model_name,
         model_version=model_service.model_version,
-        roc_auc=float(meta.get("roc_auc", 0.9168)),
-        pr_auc=float(meta.get("pr_auc", 0.5393)),
+        roc_auc=_as_float(meta.get("roc_auc")),
+        pr_auc=_as_float(meta.get("pr_auc")),
         threshold=model_service.threshold,
         feature_count=model_service.feature_count,
         training_date=meta.get("training_date")
