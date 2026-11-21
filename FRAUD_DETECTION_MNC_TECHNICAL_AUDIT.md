@@ -471,3 +471,11 @@ Also: the ML tests assert only structural properties (keys present, 200 OK), not
 | **Real bug found:** `TransactionService`, `CustomerService`, `FraudAlertService` constructors called `this.loadX()`, which returns a cold Observable that nobody subscribed to. The call did nothing except set `loading = true` forever until a page subscribed | Dead constructor calls removed (pages already subscribe explicitly); regression test added | ran |
 | Specs rewritten for current behaviour (analytics spec now stubs `AuthService`, covers logged-out and role-gated calls) | Karma: 13/13 pass; `ng build` OK | ran |
 | Still open | No component, guard or interceptor tests; no ESLint; no coverage threshold | n/a |
+
+### Eighth pass: frontend security-path tests
+
+| Item | Result | Verified by |
+|---|---|---|
+| `apiInterceptor`, `authGuard`, `roleGuard` had zero tests | 11 new Karma specs: credentials + anti-CSRF header sent and no Authorization header injected; 401 handling (normal vs login call); friendly messages without leaking backend details; connection failure; guard redirects (anonymous, role denied with `accessDenied`, case-insensitive roles, empty roles) | Karma 24/24 |
+| Are the tests real? | Mutation check: removing the `X-Requested-With` header made exactly that test fail; file restored | ran |
+| Still open | Component tests, ESLint, coverage threshold | n/a |
