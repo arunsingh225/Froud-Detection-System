@@ -59,27 +59,15 @@ class InvestigatorService:
         if ctx.customer_name:
             ctx.customer_name = self.sanitize_untrusted_input(ctx.customer_name)
 
-        # Step 2: Ensure ML model score is available
-        if ctx.model_fraud_probability is None and model_service.is_loaded:
-            try:
-                from app.schemas.prediction import PredictionRequest
-                pred_req = PredictionRequest(
-                    TransactionAmt=ctx.amount_inr,
-                    ProductCD=ctx.payment_method or "W",
-                    card1=10000,
-                    addr1=100.0,
-                    P_emaildomain="gmail.com",
-                    C1=1.0, C2=1.0,
-                    D1=0.0, D2=0.0,
-                    V1=1.0, V2=1.0, V3=1.0
-                )
-                pred_res = model_service.predict(pred_req)
-                ctx.model_fraud_probability = pred_res["fraud_probability"] * 100.0
-                ctx.model_risk_tier = pred_res["risk_level"]
-                ctx.model_is_fraud = pred_res["is_fraud"]
-            except Exception as e:
-                logger.warning(f"Failed to calculate inline ML score: {e}")
-                ctx.model_fraud_probability = 82.4  # Fallback based on metadata
+        # Step 2: Use the ML score supplied by the caller. Never invent one.
+        # The engine cannot score a transaction from an InvestigationContext alone (the model
+        # expects IEEE-CIS features), so a missing score is reported as unavailable and the
+        # investigation proceeds on rule-based evidence only.
+        ml_score_available = ctx.model_fraud_probability is not None
+        if not ml_score_available:
+            logger.warning(
+                f"No ML score supplied for {ctx.transaction_id}; continuing with rule-based evidence only."
+            )
 
         # Step 3: Extract multi-vector evidence
         evidence = evidence_service.extract_evidence(ctx)
@@ -112,7 +100,7 @@ class InvestigatorService:
         synthesis = provider.synthesize_investigation(ctx, evidence, citations)
 
         # Step 6: Determine risk tier and decision
-        prob = ctx.model_fraud_probability or 0.0
+        prob = ctx.model_fraud_probability if ml_score_available else 0.0
         if prob >= 90.0 or any(e.severity == "critical" for e in evidence):
             risk_tier = "CRITICAL"
             decision = "FLAGGED"
@@ -126,6 +114,14 @@ class InvestigatorService:
             risk_tier = "LOW"
             decision = "ROUTINE"
 
+        recommended_action = synthesis["recommended_action"]
+        summary = synthesis["summary"]
+        if not ml_score_available:
+            summary += " NOTE: No ML fraud score was available; this assessment is based on rule evidence only."
+            if recommended_action == RecommendedActionEnum.NO_ACTION:
+                # Absence of a score is not evidence of safety.
+                recommended_action = RecommendedActionEnum.REQUEST_ADDITIONAL_REVIEW
+
         investigation_id = f"INV-{uuid.uuid4().hex[:8].upper()}"
 
         return InvestigationResult(
@@ -134,11 +130,12 @@ class InvestigatorService:
             risk_tier=risk_tier,
             fraud_probability=round(prob, 2),
             decision=decision,
-            summary=synthesis["summary"],
+            summary=summary,
             findings=synthesis["findings"],
             evidence=evidence,
             policy_references=citations,
-            recommended_action=synthesis["recommended_action"],
+            recommended_action=recommended_action,
+            ml_score_available=ml_score_available,
             confidence=synthesis["confidence"],
             disclaimer=(
                 "AI-generated investigation assistance. Autonomous financial actions (account freezes, "

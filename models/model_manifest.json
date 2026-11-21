@@ -8,5 +8,10 @@
     "path": "models/preprocessing.pkl",
     "sha256": "33144548a51d51ca02f66a1f3adefd287bba79403b16abc36e58b899a35c68cf",
     "size_bytes": 1132478
+  },
+  "calibration.json": {
+    "path": "models/calibration.json",
+    "sha256": "8d9892e897e887c98da5b2aaf0515fc328e3638849692457241455413ea10e92",
+    "size_bytes": 6008
   }
 }

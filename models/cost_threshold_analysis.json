@@ -1,0 +1,116 @@
+{
+  "test_rows": 39370,
+  "test_fraud_rate": 0.0392,
+  "mean_fraud_amount_usd": 160.59,
+  "assumptions": "missed fraud = transaction amount; each alert costs review_cost_usd",
+  "sweep": [
+    {
+      "review_cost_usd": 1,
+      "cost_optimal_on_cal": {
+        "threshold": 0.1963,
+        "alerts": 13706,
+        "precision": 0.105,
+        "recall": 0.929,
+        "cost_usd": 26114.0
+      },
+      "production_0.80": {
+        "threshold": 0.8,
+        "alerts": 1290,
+        "precision": 0.591,
+        "recall": 0.494,
+        "cost_usd": 136864.0
+      },
+      "no_model": 248118.0
+    },
+    {
+      "review_cost_usd": 5,
+      "cost_optimal_on_cal": {
+        "threshold": 0.3704,
+        "alerts": 6721,
+        "precision": 0.189,
+        "recall": 0.823,
+        "cost_usd": 76452.0
+      },
+      "production_0.80": {
+        "threshold": 0.8,
+        "alerts": 1290,
+        "precision": 0.591,
+        "recall": 0.494,
+        "cost_usd": 142024.0
+      },
+      "no_model": 248118.0
+    },
+    {
+      "review_cost_usd": 10,
+      "cost_optimal_on_cal": {
+        "threshold": 0.5987,
+        "alerts": 3093,
+        "precision": 0.343,
+        "recall": 0.687,
+        "cost_usd": 109825.0
+      },
+      "production_0.80": {
+        "threshold": 0.8,
+        "alerts": 1290,
+        "precision": 0.591,
+        "recall": 0.494,
+        "cost_usd": 148474.0
+      },
+      "no_model": 248118.0
+    },
+    {
+      "review_cost_usd": 25,
+      "cost_optimal_on_cal": {
+        "threshold": 0.6926,
+        "alerts": 2174,
+        "precision": 0.436,
+        "recall": 0.613,
+        "cost_usd": 152190.0
+      },
+      "production_0.80": {
+        "threshold": 0.8,
+        "alerts": 1290,
+        "precision": 0.591,
+        "recall": 0.494,
+        "cost_usd": 167824.0
+      },
+      "no_model": 248118.0
+    },
+    {
+      "review_cost_usd": 50,
+      "cost_optimal_on_cal": {
+        "threshold": 0.7701,
+        "alerts": 1514,
+        "precision": 0.544,
+        "recall": 0.533,
+        "cost_usd": 199320.0
+      },
+      "production_0.80": {
+        "threshold": 0.8,
+        "alerts": 1290,
+        "precision": 0.591,
+        "recall": 0.494,
+        "cost_usd": 200074.0
+      },
+      "no_model": 248118.0
+    },
+    {
+      "review_cost_usd": 100,
+      "cost_optimal_on_cal": {
+        "threshold": 0.9988,
+        "alerts": 20,
+        "precision": 1.0,
+        "recall": 0.013,
+        "cost_usd": 247092.0
+      },
+      "production_0.80": {
+        "threshold": 0.8,
+        "alerts": 1290,
+        "precision": 0.591,
+        "recall": 0.494,
+        "cost_usd": 264574.0
+      },
+      "no_model": 248118.0
+    }
+  ]
+}

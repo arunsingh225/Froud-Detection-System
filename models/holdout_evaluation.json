@@ -1,0 +1,212 @@
+{
+  "generated_at": "2026-11-12T13:29:33+00:00",
+  "protocol": {
+    "split": "chronological halves of validation_features.parquet",
+    "cal_rows": 59054,
+    "test_rows": 59054,
+    "cal_transaction_dt": [
+      12192900,
+      13990904
+    ],
+    "test_transaction_dt": [
+      13990941,
+      15811131
+    ],
+    "fitted_on_cal_only": [
+      "isotonic calibrator"
+    ],
+    "model_best_iteration": 299,
+    "model_n_estimators": 300,
+    "caveats": [
+      "Model family selection and the 0.80 threshold were chosen on the full validation set (incl. TEST).",
+      "TEST is held out for calibration and reporting; it is not a pristine estimate for threshold choice.",
+      "Isotonic calibration is monotonic, so ranking metrics (ROC-AUC) are essentially unchanged."
+    ]
+  },
+  "operating_point": {
+    "raw_threshold": 0.8,
+    "equivalent_calibrated_probability": 0.2697
+  },
+  "cal_set": {
+    "raw": {
+      "rows": 59054,
+      "fraud_rate": 0.03134,
+      "roc_auc": 0.9165,
+      "pr_auc": 0.5268,
+      "brier": 0.07,
+      "ece": 0.16556
+    },
+    "confusion_at_0.80": {
+      "tp": 844,
+      "fp": 696,
+      "fn": 1007,
+      "tn": 56507,
+      "precision": 0.5481,
+      "recall": 0.456
+    }
+  },
+  "test_set": {
+    "raw": {
+      "rows": 59054,
+      "fraud_rate": 0.03747,
+      "roc_auc": 0.9167,
+      "pr_auc": 0.5497,
+      "brier": 0.0746,
+      "ece": 0.16768
+    },
+    "calibrated": {
+      "rows": 59054,
+      "fraud_rate": 0.03747,
+      "roc_auc": 0.9161,
+      "pr_auc": 0.5327,
+      "brier": 0.02351,
+      "ece": 0.00212
+    },
+    "log_loss_raw": 0.26338,
+    "log_loss_calibrated": 0.09368,
+    "confusion_at_0.80": {
+      "tp": 1047,
+      "fp": 824,
+      "fn": 1166,
+      "tn": 56017,
+      "precision": 0.5596,
+      "recall": 0.4731
+    },
+    "bootstrap_95ci_raw": {
+      "roc_auc": [
+        0.9107,
+        0.9222
+      ],
+      "pr_auc": [
+        0.53,
+        0.5687
+      ],
+      "precision": [
+        0.539,
+        0.581
+      ],
+      "recall": [
+        0.4553,
+        0.4921
+      ]
+    },
+    "reliability_raw": [
+      {
+        "bin": 1,
+        "n": 5906,
+        "mean_predicted": 0.01405,
+        "observed_rate": 0.00017
+      },
+      {
+        "bin": 2,
+        "n": 5905,
+        "mean_predicted": 0.03307,
+        "observed_rate": 0.00135
+      },
+      {
+        "bin": 3,
+        "n": 5905,
+        "mean_predicted": 0.0527,
+        "observed_rate": 0.00271
+      },
+      {
+        "bin": 4,
+        "n": 5906,
+        "mean_predicted": 0.07659,
+        "observed_rate": 0.00559
+      },
+      {
+        "bin": 5,
+        "n": 5905,
+        "mean_predicted": 0.10749,
+        "observed_rate": 0.00474
+      },
+      {
+        "bin": 6,
+        "n": 5905,
+        "mean_predicted": 0.14605,
+        "observed_rate": 0.0061
+      },
+      {
+        "bin": 7,
+        "n": 5906,
+        "mean_predicted": 0.19695,
+        "observed_rate": 0.01338
+      },
+      {
+        "bin": 8,
+        "n": 5905,
+        "mean_predicted": 0.27247,
+        "observed_rate": 0.02472
+      },
+      {
+        "bin": 9,
+        "n": 5905,
+        "mean_predicted": 0.41662,
+        "observed_rate": 0.04826
+      },
+      {
+        "bin": 10,
+        "n": 5906,
+        "mean_predicted": 0.73555,
+        "observed_rate": 0.26769
+      }
+    ],
+    "reliability_calibrated": [
+      {
+        "bin": 1,
+        "n": 11725,
+        "mean_predicted": 0.00086,
+        "observed_rate": 0.00077
+      },
+      {
+        "bin": 2,
+        "n": 611,
+        "mean_predicted": 0.00161,
+        "observed_rate": 0.0
+      },
+      {
+        "bin": 3,
+        "n": 5443,
+        "mean_predicted": 0.00193,
+        "observed_rate": 0.00312
+      },
+      {
+        "bin": 4,
+        "n": 11310,
+        "mean_predicted": 0.00494,
+        "observed_rate": 0.00495
+      },
+      {
+        "bin": 5,
+        "n": 9838,
+        "mean_predicted": 0.00603,
+        "observed_rate": 0.00844
+      },
+      {
+        "bin": 6,
+        "n": 2643,
+        "mean_predicted": 0.01094,
+        "observed_rate": 0.01551
+      },
+      {
+        "bin": 7,
+        "n": 7946,
+        "mean_predicted": 0.02227,
+        "observed_rate": 0.02819
+      },
+      {
+        "bin": 8,
+        "n": 3699,
+        "mean_predicted": 0.0481,
+        "observed_rate": 0.05704
+      },
+      {
+        "bin": 9,
+        "n": 5839,
+        "mean_predicted": 0.26932,
+        "observed_rate": 0.26922
+      }
+    ]
+  }
+}

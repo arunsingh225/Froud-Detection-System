@@ -95,7 +95,8 @@ class InvestigationResult(BaseModel):
     evidence: List[EvidenceItem] = Field(default_factory=list, description="Corroborating multi-vector evidence.")
     policy_references: List[Citation] = Field(default_factory=list, description="Retrieved regulatory & SOP citations.")
     recommended_action: RecommendedActionEnum = Field(..., description="Controlled recommendation.")
-    confidence: float = Field(..., ge=0.0, le=1.0, description="Overall confidence score (0.0 to 1.0).")
+    ml_score_available: bool = Field(True, description="False when no ML fraud score was supplied; fraud_probability is then 0.0 and must not be shown as a model output.")
+    confidence: float = Field(..., ge=0.0, le=1.0, description="Heuristic evidence-corroboration score (0.0 to 1.0). NOT a calibrated probability.")
     disclaimer: str = Field(
         "AI-generated investigation assistance. Autonomous financial action prohibited; final decision requires human review.",
         description="Mandatory human-in-the-loop safety disclaimer."

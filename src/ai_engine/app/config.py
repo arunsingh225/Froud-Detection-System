@@ -33,6 +33,11 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     FASTAPI_INTERNAL_SECRET: str = os.getenv("FASTAPI_INTERNAL_SECRET", "")
 
+    # Optional business override of the fraud decision threshold (raw model score, 0-1).
+    # Unset = use selected_threshold from model_metadata.json (0.80). See models/cost_threshold_analysis.json
+    # for how expected cost varies with the threshold under different analyst-review costs.
+    DECISION_THRESHOLD: float | None = None
+
     # Relative or absolute artifact paths
     MODEL_PATH: str = "models/fraud_model.pkl"
     PREPROCESSING_PATH: str = "models/preprocessing.pkl"

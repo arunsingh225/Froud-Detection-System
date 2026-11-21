@@ -1,6 +1,8 @@
+import json
 import time
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, status
+from app.config import settings
 from app.schemas.prediction import PredictionRequest
 from app.schemas.response import PredictionResponse, HealthResponse, ModelInfoResponse
 from app.services.model_service import model_service
@@ -46,6 +48,10 @@ def get_model_info() -> ModelInfoResponse:
         )
 
     meta = model_service.metadata or {}
+    holdout = {}
+    holdout_path = settings.get_resolved_model_path().parent / "holdout_evaluation.json"
+    if holdout_path.exists():
+        holdout = json.loads(holdout_path.read_text(encoding="utf-8")).get("test_set", {}).get("raw", {})
     return ModelInfoResponse(
         model_name=model_service.model_name,
         model_version=model_service.model_version,
@@ -53,7 +59,10 @@ def get_model_info() -> ModelInfoResponse:
         pr_auc=_as_float(meta.get("pr_auc")),
         threshold=model_service.threshold,
         feature_count=model_service.feature_count,
-        training_date=meta.get("training_date")
+        training_date=meta.get("training_date"),
+        calibration_method=(model_service.calibration or {}).get("method"),
+        holdout_roc_auc=_as_float(holdout.get("roc_auc")),
+        holdout_pr_auc=_as_float(holdout.get("pr_auc")),
     )
 
 
@@ -89,6 +98,8 @@ def predict_fraud(request: PredictionRequest) -> PredictionResponse:
         return PredictionResponse(
             request_id=req_id,
             fraud_probability=result["fraud_probability"],
+            raw_score=result["raw_score"],
+            calibrated_probability=result["calibrated_probability"],
             risk_level=result["risk_level"],
             is_fraud=result["is_fraud"],
             threshold=result["threshold"],

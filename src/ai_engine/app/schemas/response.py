@@ -19,12 +19,17 @@ class ModelInfoResponse(BaseModel):
     threshold: float = Field(..., examples=[0.80])
     feature_count: int = Field(..., examples=[464])
     training_date: Optional[str] = Field(None, examples=["2026-09-03 07:11:40 UTC"])
+    calibration_method: Optional[str] = Field(None, examples=["isotonic_regression"])
+    holdout_roc_auc: Optional[float] = Field(None, description="ROC-AUC on the held-out TEST half (models/holdout_evaluation.json)")
+    holdout_pr_auc: Optional[float] = Field(None, description="PR-AUC on the held-out TEST half")
 
 
 class PredictionResponse(BaseModel):
     """Prediction assessment response schema."""
     request_id: str = Field(..., description="Unique distributed tracking ID (UUID v4)")
-    fraud_probability: float = Field(..., ge=0.0, le=1.0, description="Model-inferred fraud posterior probability [0.0, 1.0]")
+    fraud_probability: float = Field(..., ge=0.0, le=1.0, description="UNCALIBRATED model score in [0, 1]. Class-weighted training inflates it, so use it for ranking and the existing tier/threshold policy, not as a real probability. See calibrated_probability.")
+    raw_score: Optional[float] = Field(None, ge=0.0, le=1.0, description="Same value as fraud_probability, named for what it is.")
+    calibrated_probability: Optional[float] = Field(None, ge=0.0, le=1.0, description="Isotonic-calibrated estimate of the true fraud probability (null if no calibrator is loaded). Held-out ECE 0.002 vs 0.168 raw.")
     risk_level: str = Field(..., description="Risk tier: 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'")
     is_fraud: bool = Field(..., description="Binary decision based on recommended operating threshold")
     threshold: float = Field(..., description="Operating decision threshold applied")

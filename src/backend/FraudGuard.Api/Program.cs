@@ -5,6 +5,7 @@ using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,18 @@ using FraudGuard.Api.Services;
 using FraudGuard.Api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 0. Reverse-proxy support: honour X-Forwarded-For/Proto so rate limiting, audit IPs and
+//    HTTPS detection are correct behind nginx/ingress. Trusted proxies are loopback by default;
+//    extend via ForwardedHeaders:KnownProxies (array of IPs) in configuration.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    foreach (var proxy in builder.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>() ?? Array.Empty<string>())
+    {
+        if (System.Net.IPAddress.TryParse(proxy, out var ip)) options.KnownProxies.Add(ip);
+    }
+});
 
 // 1. Database Context (SQL Server 2022)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -221,6 +234,16 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
+
+// Enforce HTTPS + HSTS outside Development. Disable with RequireHttps=false only when a
+// trusted proxy terminates TLS AND forwards X-Forwarded-Proto (or in local containers).
+if (!app.Environment.IsDevelopment() && builder.Configuration.GetValue("RequireHttps", true))
+{
+    app.UseHsts();
+    app.UseHttpsRedirection();
+}
+
 // 8. Global Exception & Security Headers Middleware
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<SecurityHeadersMiddleware>();
@@ -244,6 +267,7 @@ app.UseMiddleware<TokenRevocationMiddleware>();
 app.UseRateLimiter();
 app.UseAuthorization();
 
+app.MapGet("/health", () => Results.Ok(new { status = "healthy" })).AllowAnonymous();
 app.MapControllers();
 app.MapHub<AnalyticsHub>("/hubs/analytics");
 

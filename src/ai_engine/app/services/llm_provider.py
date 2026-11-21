@@ -116,22 +116,25 @@ class DeterministicTemplateProvider(ILLMProvider):
             + (" ".join(reasoning_lines) if reasoning_lines else "No severe risk drivers identified.")
         )
 
-        # Calibrate Recommended Action
+        # Recommended action from evidence severity and ML score
         if critical_count >= 2 or prob >= 90.0:
             action = RecommendedActionEnum.HIGH_PRIORITY_INVESTIGATION
-            confidence = 0.94
         elif critical_count >= 1 or high_count >= 2 or prob >= 80.0:
             action = RecommendedActionEnum.ESCALATE_FOR_MANUAL_REVIEW
-            confidence = 0.89
         elif high_count >= 1 or medium_count >= 2 or prob >= 50.0:
             action = RecommendedActionEnum.REQUEST_ADDITIONAL_REVIEW
-            confidence = 0.82
         elif medium_count >= 1 or prob >= 30.0:
             action = RecommendedActionEnum.MONITOR
-            confidence = 0.85
         else:
             action = RecommendedActionEnum.NO_ACTION
-            confidence = 0.92
+
+        # Heuristic corroboration score (not a calibrated probability): more independent
+        # evidence pillars at high/critical severity -> higher; no ML score -> reduced.
+        pillars = len({e.category for e in evidence if e.severity in ("critical", "high")})
+        confidence = 0.50 + 0.10 * min(pillars, 4) + (0.05 if citations else 0.0)
+        if not ml_ev:
+            confidence -= 0.10
+        confidence = round(max(0.1, min(confidence, 0.95)), 2)
 
         return {
             "summary": summary,
@@ -140,6 +143,7 @@ class DeterministicTemplateProvider(ILLMProvider):
             "confidence": confidence,
             "provider_metadata": {
                 "provider": "deterministic_rule_engine",
+                "confidence_basis": "heuristic: corroborating high/critical evidence pillars",
                 "is_fallback": True,
                 "model": "FraudGuard-Core-TemplateEngine-v1",
                 "citations_applied": len(citations),
@@ -148,14 +152,20 @@ class DeterministicTemplateProvider(ILLMProvider):
         }
 
 
+SUPPORTED_PROVIDERS = {"deterministic"}
+
+
 def get_llm_provider() -> ILLMProvider:
-    """Factory selecting provider based on environment configuration."""
-    api_key = os.environ.get("LLM_API_KEY", "").strip()
-    provider_type = os.environ.get("LLM_PROVIDER", "deterministic").lower()
+    """
+    Factory selecting the synthesis provider from LLM_PROVIDER.
 
-    if api_key and provider_type in ["openai", "azure", "gemini"]:
-        # When an external LLM is configured, return configured provider
-        # For now, deterministic provider serves as zero-dependency safe baseline
-        return DeterministicTemplateProvider()
-
+    Only the deterministic rule engine is implemented. Requesting any other provider
+    logs a warning (rather than silently pretending) and falls back to it; the response
+    metadata reports is_fallback=True.
+    """
+    provider_type = os.environ.get("LLM_PROVIDER", "deterministic").strip().lower()
+    if provider_type not in SUPPORTED_PROVIDERS:
+        logger.warning(
+            f"LLM_PROVIDER='{provider_type}' is not implemented; using deterministic rule engine."
+        )
     return DeterministicTemplateProvider()

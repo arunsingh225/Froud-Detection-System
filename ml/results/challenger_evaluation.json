@@ -1,0 +1,100 @@
+{
+  "generated_at": "2026-11-19T12:52:55+00:00",
+  "protocol": {
+    "train_rows": 472432,
+    "es_rows": 39369,
+    "cal_rows": 39369,
+    "test_rows": 39370,
+    "best_iteration": 689,
+    "max_trees": 3000,
+    "review_cost_usd": 5.0,
+    "feature_reproducibility": {
+      "same_shape": true,
+      "features_identical": false
+    },
+    "note": "champion saw ES/CAL/TEST rows when its 0.80 threshold and model family were chosen"
+  },
+  "test": {
+    "fraud_rate": 0.03924,
+    "challenger": {
+      "roc_auc": 0.9153,
+      "pr_auc": 0.5713,
+      "op_cost_optimal_on_cal": {
+        "threshold": 0.25562,
+        "flagged": 6097,
+        "tp": 1256,
+        "fp": 4841,
+        "fn": 289,
+        "precision": 0.206,
+        "recall": 0.8129,
+        "total_cost_usd": 76659.28,
+        "cost_if_no_model_usd": 248118.27
+      },
+      "bootstrap_95ci_at_cost_optimal": {
+        "roc_auc": [
+          0.9062,
+          0.9234
+        ],
+        "pr_auc": [
+          0.547,
+          0.5933
+        ],
+        "recall": [
+          0.7929,
+          0.8326
+        ],
+        "precision": [
+          0.1964,
+          0.2158
+        ],
+        "cost_usd": [
+          65599.6011,
+          87887.6881
+        ]
+      },
+      "calibration": {
+        "brier_raw": 0.04532,
+        "brier_calibrated": 0.02392,
+        "ece_raw": 0.09308,
+        "ece_calibrated": 0.00506
+      }
+    },
+    "champion": {
+      "roc_auc": 0.9195,
+      "pr_auc": 0.5752,
+      "op_at_0.80": {
+        "threshold": 0.8,
+        "flagged": 1290,
+        "tp": 763,
+        "fp": 527,
+        "fn": 782,
+        "precision": 0.5915,
+        "recall": 0.4939,
+        "total_cost_usd": 142024.34,
+        "cost_if_no_model_usd": 248118.27
+      },
+      "bootstrap_95ci_at_0.80": {
+        "roc_auc": [
+          0.9125,
+          0.927
+        ],
+        "pr_auc": [
+          0.5537,
+          0.6035
+        ],
+        "recall": [
+          0.4692,
+          0.5211
+        ],
+        "precision": [
+          0.5693,
+          0.6179
+        ],
+        "cost_usd": [
+          129168.7744,
+          158207.7512
+        ]
+      }
+    }
+  }
+}

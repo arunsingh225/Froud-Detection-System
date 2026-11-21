@@ -1,0 +1,14 @@
+.git
+.github
+.vs
+.angular
+node_modules
+dist
+data
+notebooks
+**/bin
+**/obj
+**/__pycache__
+**/.pytest_cache
+*.log
+.env

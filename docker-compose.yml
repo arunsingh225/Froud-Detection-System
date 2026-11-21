@@ -1,0 +1,59 @@
+# One-command local stack:  cp .env.example .env  (set secrets)  &&  docker compose up --build
+# Web http://localhost:3000   API http://localhost:5000   AI engine :8000 (internal only)
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SQL_SA_PASSWORD:?set SQL_SA_PASSWORD in .env}
+    volumes: [dbdata:/var/opt/mssql]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q \"SELECT 1\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  # Applies the schema always, and the demo seed only if SEED_DEMO_DATA=true (known demo passwords!).
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    depends_on:
+      db: { condition: service_healthy }
+    volumes: ["./src/backend/sql:/sql:ro"]
+    environment:
+      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
+      SA: ${SQL_SA_PASSWORD}
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        S=/opt/mssql-tools18/bin/sqlcmd
+        $$S -C -S db -U sa -P "$$SA" -b -i /sql/01_create_database_and_schema.sql
+        if [ "$$SEED_DEMO_DATA" = "true" ]; then $$S -C -S db -U sa -P "$$SA" -b -i /sql/02_seed_demo_data.sql; fi
+    restart: "no"
+
+  ai-engine:
+    build: { context: ., dockerfile: deploy/ai-engine.Dockerfile }
+    environment:
+      FASTAPI_INTERNAL_SECRET: ${FASTAPI_INTERNAL_SECRET:?set FASTAPI_INTERNAL_SECRET in .env}
+
+  api:
+    build: { context: ., dockerfile: deploy/api.Dockerfile }
+    depends_on:
+      ai-engine: { condition: service_healthy }
+      db-init: { condition: service_completed_successfully }
+    environment:
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?set JWT_SECRET_KEY in .env (at least 32 chars)}
+      FASTAPI_INTERNAL_SECRET: ${FASTAPI_INTERNAL_SECRET}
+      ConnectionStrings__DefaultConnection: "Server=db;Database=FraudGuardAI_DB;User Id=sa;Password=${SQL_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=True"
+      FastApi__BaseUrl: http://ai-engine:8000/
+      CorsOrigins__0: http://localhost:3000
+      AllowedHosts: "*"
+      RequireHttps: "false" # local compose is plain HTTP; keep true behind real TLS
+    ports: ["5000:5000"]
+
+  web:
+    build: { context: ., dockerfile: deploy/web.Dockerfile }
+    depends_on: [api]
+    ports: ["3000:80"]
+
+volumes:
+  dbdata:

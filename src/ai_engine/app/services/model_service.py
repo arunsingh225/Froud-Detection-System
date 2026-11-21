@@ -4,6 +4,7 @@ import joblib
 from pathlib import Path
 from typing import Dict, Any, Optional
 import lightgbm as lgb
+import numpy as np
 import pandas as pd
 
 from app.config import settings
@@ -27,6 +28,30 @@ def calculate_sha256(file_path: Path) -> str:
     return hasher.hexdigest()
 
 
+def check_runtime_versions(training_config_path: Path) -> list:
+    """
+    Compare installed ML library versions with those the model was trained with
+    (models/training_config.json). Pickled models can silently mis-predict or crash on a
+    mismatch, so every difference is logged loudly and returned.
+    """
+    from importlib import metadata
+
+    if not training_config_path.exists():
+        return []
+    expected = json.loads(training_config_path.read_text(encoding="utf-8")).get("packages", {})
+    mismatches = []
+    for pkg, want in expected.items():
+        try:
+            have = metadata.version(pkg)
+        except metadata.PackageNotFoundError:
+            have = "not installed"
+        if have != want:
+            mismatches.append(f"{pkg}: trained with {want}, installed {have}")
+    for m in mismatches:
+        logger.error(f"ML version mismatch - {m}. Predictions may be wrong; install requirements.txt.")
+    return mismatches
+
+
 class ModelService:
     """
     Singleton AI inference service managing the production LightGBM model,
@@ -43,6 +68,10 @@ class ModelService:
         self.model_version: str = "1.0"
         self.feature_count: int = 464
         self.is_loaded: bool = False
+        self.version_mismatches: list = []
+        self.calibration: Optional[Dict[str, Any]] = None
+        self._cal_x: Optional[np.ndarray] = None
+        self._cal_y: Optional[np.ndarray] = None
 
     def load(self) -> None:
         """Load trained model, preprocessing bundle, and metadata from disk after SHA-256 verification."""
@@ -91,6 +120,8 @@ class ModelService:
                 "Artifact may have been tampered with or corrupted. Loading aborted."
             )
 
+        self.version_mismatches = check_runtime_versions(model_path.parent / "training_config.json")
+
         logger.info("Cryptographic model integrity verified against manifest: SHA-256 signatures match.")
 
         # 1. Load trained LightGBM model
@@ -104,6 +135,9 @@ class ModelService:
         self.preprocessing_bundle = joblib.load(preproc_path)
         self.preprocessing_service = PreprocessingService(self.preprocessing_bundle)
 
+        # 2b. Optional probability calibrator (plain JSON, integrity-checked against the manifest)
+        self._load_calibration(model_path.parent / "calibration.json", manifest)
+
         # 3. Load Metadata
         if metadata_path.exists():
             with open(metadata_path, "r", encoding="utf-8") as f:
@@ -115,11 +149,39 @@ class ModelService:
             self.threshold = float(self.preprocessing_bundle.get("recommended_threshold", 0.80))
             self.feature_count = len(self.preprocessing_bundle.get("model_features", []))
 
+        if settings.DECISION_THRESHOLD is not None:
+            if not 0.0 < settings.DECISION_THRESHOLD < 1.0:
+                raise ValueError("DECISION_THRESHOLD must be strictly between 0 and 1")
+            logger.warning(f"DECISION_THRESHOLD override active: {settings.DECISION_THRESHOLD} "
+                           f"(trained/metadata value was {self.threshold})")
+            self.threshold = float(settings.DECISION_THRESHOLD)
+
         self.is_loaded = True
         logger.info(
             f"Model loaded successfully: {self.model_name} "
             f"(features: {self.feature_count}, threshold: {self.threshold:.2f})"
         )
+
+    def _load_calibration(self, path: Path, manifest: Dict[str, Any]) -> None:
+        self.calibration = self._cal_x = self._cal_y = None
+        if not path.exists():
+            logger.warning("No calibration.json found; calibrated_probability will be null.")
+            return
+        expected = manifest.get(path.name, {}).get("sha256")
+        if not expected or calculate_sha256(path).lower() != expected.lower():
+            raise ModelIntegrityError(f"{path.name} is missing from the manifest or its SHA-256 does not match.")
+        cal = json.loads(path.read_text(encoding="utf-8"))
+        x, y = np.asarray(cal["x_thresholds"], dtype=float), np.asarray(cal["y_thresholds"], dtype=float)
+        if len(x) < 2 or len(x) != len(y) or np.any(np.diff(x) < 0) or np.any(np.diff(y) < 0):
+            raise ModelIntegrityError("calibration.json is not a valid monotonic mapping.")
+        self.calibration, self._cal_x, self._cal_y = cal, x, y
+        logger.info(f"Loaded {cal.get('method')} calibrator ({len(x)} knots).")
+
+    def calibrate(self, raw_score: float) -> Optional[float]:
+        """Map the raw model score to an empirically calibrated fraud probability (None if unavailable)."""
+        if self._cal_x is None:
+            return None
+        return float(np.interp(raw_score, self._cal_x, self._cal_y))
 
     def predict(self, request: PredictionRequest) -> Dict[str, Any]:
         """
@@ -143,6 +205,8 @@ class ModelService:
 
         return {
             "fraud_probability": fraud_prob_rounded,
+            "raw_score": fraud_prob_rounded,
+            "calibrated_probability": None if self._cal_x is None else round(self.calibrate(fraud_prob), 4),
             "risk_level": risk_level,
             "is_fraud": is_fraud,
             "threshold": self.threshold,
