@@ -307,7 +307,7 @@ namespace FraudGuard.Api.Services
             await _db.SaveChangesAsync();
 
             // Revoke existing tokens so the user must re-authenticate with the new role
-            _revocationService.RevokeUser(userId);
+            await _revocationService.RevokeUserAsync(userId);
 
             await _auditLogService.LogActivityAsync(
                 actorName: "ADMIN",
@@ -362,7 +362,7 @@ namespace FraudGuard.Api.Services
             // Revoke tokens immediately — if deactivated, user loses access right away
             if (!isActive)
             {
-                _revocationService.RevokeUser(userId);
+                await _revocationService.RevokeUserAsync(userId);
             }
 
             await _auditLogService.LogActivityAsync(

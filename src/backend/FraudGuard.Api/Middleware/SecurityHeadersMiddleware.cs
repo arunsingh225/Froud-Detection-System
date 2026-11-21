@@ -50,7 +50,10 @@ namespace FraudGuard.Api.Middleware
 
                 if (!headers.ContainsKey("Content-Security-Policy"))
                 {
-                    headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' http://localhost:* http://127.0.0.1:* http://192.168.* ws://localhost:* ws://127.0.0.1:* ws://192.168.* wss://localhost:* wss://127.0.0.1:* wss://192.168.*; frame-ancestors 'none';";
+                    // The API only returns JSON: forbid everything. Swagger UI (dev) needs the relaxed policy.
+                    headers["Content-Security-Policy"] = context.Request.Path.StartsWithSegments("/swagger")
+                        ? "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' http://localhost:* http://127.0.0.1:* http://192.168.* ws://localhost:* ws://127.0.0.1:* ws://192.168.* wss://localhost:* wss://127.0.0.1:* wss://192.168.*; frame-ancestors 'none';"
+                        : "default-src 'none'; frame-ancestors 'none'";
                 }
 
                 return Task.CompletedTask;

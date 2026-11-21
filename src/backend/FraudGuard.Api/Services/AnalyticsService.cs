@@ -114,10 +114,21 @@ namespace FraudGuard.Api.Services
                 .Where(t => t.FraudPrediction != null && (t.FraudPrediction.RiskTier == "Critical" || t.FraudPrediction.RiskTier == "High"))
                 .SumAsync(t => (decimal?)t.AmountInr) ?? 0m;
 
-            var atoCount = await _db.FraudAlerts.CountAsync(fa => fa.AlertType.Contains("Takeover") || fa.Reason.Contains("Device") || fa.Reason.Contains("Root"));
-            var velocityCount = await _db.FraudAlerts.CountAsync(fa => fa.AlertType.Contains("Velocity") || fa.Reason.Contains("Velocity"));
-            var syntheticCount = await _db.FraudAlerts.CountAsync(fa => fa.AlertType.Contains("Synthetic") || fa.Reason.Contains("Synthetic") || fa.Reason.Contains("AML"));
-            var cardTestingCount = await _db.FraudAlerts.CountAsync(fa => fa.AlertType.Contains("Auth") || fa.Reason.Contains("Auth") || fa.Reason.Contains("PIN"));
+            // One round-trip (conditional aggregates) instead of four separate table scans.
+            var threats = await _db.FraudAlerts.AsNoTracking()
+                .GroupBy(_ => 1)
+                .Select(g => new
+                {
+                    Ato = g.Count(fa => fa.AlertType.Contains("Takeover") || fa.Reason.Contains("Device") || fa.Reason.Contains("Root")),
+                    Velocity = g.Count(fa => fa.AlertType.Contains("Velocity") || fa.Reason.Contains("Velocity")),
+                    Synthetic = g.Count(fa => fa.AlertType.Contains("Synthetic") || fa.Reason.Contains("Synthetic") || fa.Reason.Contains("AML")),
+                    CardTesting = g.Count(fa => fa.AlertType.Contains("Auth") || fa.Reason.Contains("Auth") || fa.Reason.Contains("PIN"))
+                })
+                .FirstOrDefaultAsync();
+            var atoCount = threats?.Ato ?? 0;
+            var velocityCount = threats?.Velocity ?? 0;
+            var syntheticCount = threats?.Synthetic ?? 0;
+            var cardTestingCount = threats?.CardTesting ?? 0;
 
             var kpis = new AdvancedDashboardKpisDto
             {

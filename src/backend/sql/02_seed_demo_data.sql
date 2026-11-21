@@ -3,6 +3,13 @@
 -- Seed Script: Deterministic Baseline Entities Matching UI
 -- Database: FraudGuardAI_DB
 -- ============================================================================
+-- SAFETY: creates users that share ONE publicly documented password. Local development only.
+-- Requires an explicit opt-in:  sqlcmd ... -b -v ALLOW_DEMO_SEED=YES -i 02_seed_demo_data.sql
+-- (if the variable is missing or not YES, the script aborts before touching any data)
+:on error exit
+IF N'$(ALLOW_DEMO_SEED)' <> N'YES'
+    THROW 50001, N'Refusing to seed demo users with a known password. Re-run with -v ALLOW_DEMO_SEED=YES (local development only).', 1;
+GO
 
 USE [FraudGuardAI_DB];
 GO

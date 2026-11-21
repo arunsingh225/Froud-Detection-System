@@ -27,7 +27,7 @@ services:
       - |
         S=/opt/mssql-tools18/bin/sqlcmd
         $$S -C -S db -U sa -P "$$SA" -b -i /sql/01_create_database_and_schema.sql
-        if [ "$$SEED_DEMO_DATA" = "true" ]; then $$S -C -S db -U sa -P "$$SA" -b -i /sql/02_seed_demo_data.sql; fi
+        if [ "$$SEED_DEMO_DATA" = "true" ]; then $$S -C -S db -U sa -P "$$SA" -b -v ALLOW_DEMO_SEED=YES -i /sql/02_seed_demo_data.sql; fi
     restart: "no"
 
   ai-engine:

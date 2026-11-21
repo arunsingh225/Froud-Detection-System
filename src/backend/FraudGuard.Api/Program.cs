@@ -164,7 +164,7 @@ builder.Services.AddHttpClient<IFastApiClient, FastApiClient>(client =>
 
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
-builder.Services.AddSingleton<ITokenRevocationService, TokenRevocationService>();
+builder.Services.AddSingleton<ITokenRevocationService, TokenRevocationService>(); // DB-backed + short per-instance cache
 builder.Services.AddSingleton<FraudPredictionMapper>();
 builder.Services.AddScoped<IFraudPredictionService, FraudPredictionService>();
 
@@ -261,6 +261,7 @@ if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("Ena
 
 // 10. Pipeline Routing, Authentication, Rate Limiting & Authorization
 app.UseCors("AllowAngularApp");
+app.UseMiddleware<CsrfHeaderMiddleware>(); // anti-CSRF header required on cookie-authenticated unsafe requests
 
 app.UseAuthentication();
 app.UseMiddleware<TokenRevocationMiddleware>();

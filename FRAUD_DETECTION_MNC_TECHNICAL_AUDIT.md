@@ -440,3 +440,24 @@ Also: the ML tests assert only structural properties (keys present, 200 OK), not
 | Hard-coded foreign path | `download_and_extract_ieee.ps1` pointed at another user's `kaggle.exe`; now resolves `kaggle` from PATH | read |
 | Non-deterministic feature engineering | Sort now `['TransactionDT','TransactionID']`, `kind='stable'` in the notebook and generator. Old sort gave a different order in 5/5 shuffled inputs (2,698 tied timestamps); new gives identical order in 5/5 | ran on committed validation IDs. **A full end-to-end FE rerun was not repeated** |
 | Python coverage | `pytest-cov` added to dev requirements and CI (report and artifact, no threshold yet) | **not run**: CI has not executed |
+
+### Fifth pass: security items
+
+| Item | Result | Verified by |
+|---|---|---|
+| Token revocation was in-memory (lost on restart) | Now persisted: `Users.TokensRevokedAt`, DB-backed with a 30 s per-instance cache (the revoking node is immediate; other nodes converge within 30 s). Deactivated or deleted users are rejected. Upgrade script: `sql/05_security_hardening_migration.sql` | 5 new xUnit tests incl. a simulated restart; dotnet 57/57 |
+| **New bug found:** SQL `CK_Users_Role` omitted `COMPLIANCE`, so creating that role via the API would fail at the database | Fixed in schema and migration | read; **not run against SQL Server** |
+| Demo seed users with one known password | `02_seed_demo_data.sql` now aborts unless run with `-v ALLOW_DEMO_SEED=YES` (compose passes it only when `SEED_DEMO_DATA=true`) | read; **not run against SQL Server** |
+| FastAPI `/docs`, `/redoc`, `/openapi.json` public | Off by default; `ENABLE_DOCS=true` for local dev | 3 new pytest cases; pytest 37/37 |
+| CSRF | New `CsrfHeaderMiddleware`: cookie-authenticated POST/PUT/PATCH/DELETE must send `X-Requested-With: XMLHttpRequest` (the Angular interceptor sends it). Layered on `SameSite=Strict` | 8 new xUnit cases |
+| CSP too loose | The JSON API now serves `default-src 'none'` (relaxed only under `/swagger`). The SPA gets nginx security headers with CSP in **Report-Only** mode, because inline-style handling could not be checked in a browser | read; **no browser test** |
+
+**Still open:** FastAPI shared-secret rotation/mTLS, enforcing (not report-only) the SPA CSP after a browser check, EF migrations.
+
+### Sixth pass: query efficiency
+
+| Item | Result | Verified by |
+|---|---|---|
+| **Correction to §4.7:** "read paths are tracked by default" | Wrong for the main paths: list and detail queries in Transaction/Customer/FraudAlert/Investigation/Report services already use `AsNoTracking`. Not changed | read |
+| Dashboard KPIs ran 4 separate `LIKE '%..%'` counts over `FraudAlerts` | Consolidated into one conditional-aggregate query (`GroupBy(_ => 1)`) | 2 new xUnit tests (overlapping categories counted exactly like the old four queries); dotnet 59/59 |
+| Caveat | Tests use the EF InMemory provider, which proves the semantics but **not the SQL translation**; not run against SQL Server. The `LIKE '%..%'` predicates still cannot use an index; a category column is the real fix (open) | n/a |

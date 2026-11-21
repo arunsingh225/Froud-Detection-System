@@ -82,7 +82,7 @@ namespace FraudGuard.Api.Controllers
         [HttpPost("logout")]
         [Authorize]
         [ProducesResponseType(typeof(ApiResponse<object>), 200)]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             // Clear the authentication cookie
             Response.Cookies.Delete(AuthCookieName, new CookieOptions
@@ -93,12 +93,12 @@ namespace FraudGuard.Api.Controllers
                 Path = "/"
             });
 
-            // Revoke the user's tokens in-memory so any existing JWT is immediately invalid
+            // Revoke the user's tokens (persisted) so any existing JWT is immediately invalid
             var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                 ?? User.FindFirst("sub")?.Value;
             if (!string.IsNullOrEmpty(userIdStr) && Guid.TryParse(userIdStr, out var userId))
             {
-                _revocationService.RevokeUser(userId);
+                await _revocationService.RevokeUserAsync(userId);
             }
 
             return Ok(ApiResponse<object>.Ok(new { }, "Logged out successfully. Session invalidated."));

@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     FASTAPI_INTERNAL_SECRET: str = os.getenv("FASTAPI_INTERNAL_SECRET", "")
 
+    # Interactive API docs (/docs, /redoc, /openapi.json) are PUBLIC by design of FastAPI, so they are
+    # off unless explicitly enabled (set ENABLE_DOCS=true for local development).
+    ENABLE_DOCS: bool = False
+
     # Optional business override of the fraud decision threshold (raw model score, 0-1).
     # Unset = use selected_threshold from model_metadata.json (0.80). See models/cost_threshold_analysis.json
     # for how expected cost varies with the threshold under different analyst-review costs.

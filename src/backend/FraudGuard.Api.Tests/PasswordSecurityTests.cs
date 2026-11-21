@@ -100,7 +100,7 @@ namespace FraudGuard.Api.Tests
             db.Users.Add(user);
             await db.SaveChangesAsync();
 
-            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, new TokenRevocationService());
+            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, TestRevocation.Create(db));
 
             // Act
             var loginResult = await authService.LoginAsync(new LoginRequestDto
@@ -139,7 +139,7 @@ namespace FraudGuard.Api.Tests
             db.Users.Add(user);
             await db.SaveChangesAsync();
 
-            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, new TokenRevocationService());
+            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, TestRevocation.Create(db));
 
             // Act
             var loginResult = await authService.LoginAsync(new LoginRequestDto
@@ -176,7 +176,7 @@ namespace FraudGuard.Api.Tests
             db.Users.Add(user);
             await db.SaveChangesAsync();
 
-            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, new TokenRevocationService());
+            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, TestRevocation.Create(db));
 
             // Act: 5th failed attempt
             var loginResult = await authService.LoginAsync(new LoginRequestDto
@@ -215,7 +215,7 @@ namespace FraudGuard.Api.Tests
             db.Users.Add(user);
             await db.SaveChangesAsync();
 
-            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, new TokenRevocationService());
+            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, TestRevocation.Create(db));
 
             // Act
             var loginResult = await authService.LoginAsync(new LoginRequestDto
@@ -246,7 +246,7 @@ namespace FraudGuard.Api.Tests
             db.Users.Add(user);
             await db.SaveChangesAsync();
 
-            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, new TokenRevocationService());
+            var authService = new AuthService(db, _jwtService, _passwordHasher, _mockAudit.Object, TestRevocation.Create(db));
 
             // Act
             var loginResult = await authService.LoginAsync(new LoginRequestDto

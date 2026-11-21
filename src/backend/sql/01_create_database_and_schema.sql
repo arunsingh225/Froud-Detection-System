@@ -54,13 +54,14 @@ CREATE TABLE dbo.Users (
     AccessFailedCount   INT                 NOT NULL DEFAULT 0,
     LockoutEnd          DATETIMEOFFSET      NULL,
     LastLoginAt         DATETIMEOFFSET      NULL,
+    TokensRevokedAt     DATETIMEOFFSET      NULL,   -- JWTs issued at/before this instant are rejected
     CreatedAt           DATETIMEOFFSET      NOT NULL DEFAULT SYSDATETIMEOFFSET(),
     UpdatedAt           DATETIMEOFFSET      NOT NULL DEFAULT SYSDATETIMEOFFSET(),
 
     CONSTRAINT PK_Users PRIMARY KEY CLUSTERED (UserId),
     CONSTRAINT UQ_Users_UserCode UNIQUE (UserCode),
     CONSTRAINT UQ_Users_Email UNIQUE (Email),
-    CONSTRAINT CK_Users_Role CHECK (Role IN ('ADMIN', 'INVESTIGATOR', 'ANALYST', 'VIEWER'))
+    CONSTRAINT CK_Users_Role CHECK (Role IN ('ADMIN', 'INVESTIGATOR', 'COMPLIANCE', 'ANALYST', 'VIEWER'))
 );
 GO
 

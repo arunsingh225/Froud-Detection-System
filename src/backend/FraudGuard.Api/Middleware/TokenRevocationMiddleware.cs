@@ -10,7 +10,7 @@ namespace FraudGuard.Api.Middleware
 {
     /// <summary>
     /// Validates that the authenticated user's token has not been revoked.
-    /// Checks the JWT "iat" (issued-at) claim against the in-memory revocation store.
+    /// Checks the JWT "iat" (issued-at) claim against the persistent (database-backed, briefly cached) revocation store.
     /// If the token was issued before the user was revoked, returns 401.
     /// </summary>
     public class TokenRevocationMiddleware
@@ -40,7 +40,7 @@ namespace FraudGuard.Api.Middleware
                         issuedAt = DateTimeOffset.FromUnixTimeSeconds(epoch);
                     }
 
-                    if (revocationService.IsTokenRevoked(userId, issuedAt))
+                    if (await revocationService.IsTokenRevokedAsync(userId, issuedAt, context.RequestAborted))
                     {
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.ContentType = "application/json";

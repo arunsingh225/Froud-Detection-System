@@ -30,6 +30,8 @@ namespace FraudGuard.Api.Models
         public int AccessFailedCount { get; set; } = 0;
         public DateTimeOffset? LockoutEnd { get; set; }
         public DateTimeOffset? LastLoginAt { get; set; }
+        /// <summary>Tokens issued at or before this instant are rejected (logout, role change, deactivation).</summary>
+        public DateTimeOffset? TokensRevokedAt { get; set; }
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 

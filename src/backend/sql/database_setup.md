@@ -72,7 +72,7 @@ Customers ───► Accounts ───► Transactions ───► FraudPred
 
 2. **Seed Baseline Demo Entities (Matching UI):**
    ```powershell
-   sqlcmd -S "localhost\SQLEXPRESS" -E -i "src\backend\sql\02_seed_demo_data.sql"
+   sqlcmd -S "localhost\SQLEXPRESS" -E -b -v ALLOW_DEMO_SEED=YES -i "src\backend\sql\02_seed_demo_data.sql"
    ```
 
 3. **Generate Synthetic Data for Development:**

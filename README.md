@@ -57,7 +57,8 @@ docker compose up --build
 Serves real-time inference using the pre-trained LightGBM model.
 ```bash
 # Navigate to project root
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --app-dir src/ai_engine
+# Swagger UI is off by default; add ENABLE_DOCS=true for local development
+ENABLE_DOCS=true python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --app-dir src/ai_engine
 ```
 - **FastAPI Swagger:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 - **Health Check:** `http://127.0.0.1:8000/health`

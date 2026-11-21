@@ -11,8 +11,11 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
 
   // Attach withCredentials so the browser sends the HttpOnly auth cookie automatically.
   // No Authorization header is injected — the JWT lives exclusively in the cookie.
+  // X-Requested-With is the anti-CSRF header the API requires on cookie-authenticated unsafe requests
+  // (a cross-site page cannot set it without a CORS preflight).
   const authReq = req.clone({
-    withCredentials: true
+    withCredentials: true,
+    setHeaders: { 'X-Requested-With': 'XMLHttpRequest' }
   });
 
   return next(authReq).pipe(
