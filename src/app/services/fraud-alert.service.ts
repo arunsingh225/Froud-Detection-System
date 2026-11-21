@@ -37,10 +37,6 @@ export class FraudAlertService {
   error = signal<string | null>(null);
   totalCount = signal<number>(0);
 
-  constructor() {
-    this.loadAlerts();
-  }
-
   loadAlerts(
     status?: string,
     severity?: string,

@@ -55,10 +55,6 @@ export class TransactionService {
   error = signal<string | null>(null);
   totalCount = signal<number>(0);
 
-  constructor() {
-    this.loadTransactions();
-  }
-
   loadTransactions(
     search?: string,
     riskTier?: string,

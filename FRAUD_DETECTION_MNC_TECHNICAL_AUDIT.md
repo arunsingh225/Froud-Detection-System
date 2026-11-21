@@ -461,3 +461,13 @@ Also: the ML tests assert only structural properties (keys present, 200 OK), not
 | **Correction to §4.7:** "read paths are tracked by default" | Wrong for the main paths: list and detail queries in Transaction/Customer/FraudAlert/Investigation/Report services already use `AsNoTracking`. Not changed | read |
 | Dashboard KPIs ran 4 separate `LIKE '%..%'` counts over `FraudAlerts` | Consolidated into one conditional-aggregate query (`GroupBy(_ => 1)`) | 2 new xUnit tests (overlapping categories counted exactly like the old four queries); dotnet 59/59 |
 | Caveat | Tests use the EF InMemory provider, which proves the semantics but **not the SQL translation**; not run against SQL Server. The `LIKE '%..%'` predicates still cannot use an index; a category column is the real fix (open) | n/a |
+
+### Seventh pass: frontend test runner
+
+| Item | Result | Verified by |
+|---|---|---|
+| **No Angular test runner existed** (the 11 spec files had never been executed) | Added Karma + Jasmine (`npm test`, headless Chrome), `tsconfig.spec.json`, `karma.conf.js`, angular.json `test` target, CI step | ran locally |
+| First real run: **11 of 11 existing specs failed** | They asserted stale behaviour (a hard-coded `http://localhost:5000/api` URL; constructor-triggered HTTP calls) | ran |
+| **Real bug found:** `TransactionService`, `CustomerService`, `FraudAlertService` constructors called `this.loadX()`, which returns a cold Observable that nobody subscribed to. The call did nothing except set `loading = true` forever until a page subscribed | Dead constructor calls removed (pages already subscribe explicitly); regression test added | ran |
+| Specs rewritten for current behaviour (analytics spec now stubs `AuthService`, covers logged-out and role-gated calls) | Karma: 13/13 pass; `ng build` OK | ran |
+| Still open | No component, guard or interceptor tests; no ESLint; no coverage threshold | n/a |

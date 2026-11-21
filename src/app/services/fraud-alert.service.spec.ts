@@ -52,11 +52,12 @@ describe('FraudAlertService', () => {
 
     service = TestBed.inject(FraudAlertService);
     httpMock = TestBed.inject(HttpTestingController);
-
-    // Drain initial loadAlerts
-    const initReq = httpMock.expectOne(req => req.url.includes('/api/fraud-alerts'));
-    initReq.flush(mockPagedResponse);
   });
+
+  function loadAlerts(): void {
+    service.loadAlerts().subscribe();
+    httpMock.expectOne(req => req.url.includes('/api/fraud-alerts')).flush(mockPagedResponse);
+  }
 
   afterEach(() => {
     httpMock.verify();
@@ -64,12 +65,14 @@ describe('FraudAlertService', () => {
 
   it('should be created and load alerts from backend', () => {
     expect(service).toBeTruthy();
+    loadAlerts();
     expect(service.alerts().length).toBe(1);
     expect(service.alerts()[0].id).toBe('ALT-2026-0891');
     expect(service.alerts()[0].status).toBe('Open');
   });
 
   it('should resolve alert via PATCH /api/fraud-alerts/:id/resolve', () => {
+    loadAlerts();
     const resolveResponse: ApiResponse<FraudAlertDto> = {
       success: true,
       message: 'Alert resolved',

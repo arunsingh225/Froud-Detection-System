@@ -51,11 +51,12 @@ describe('CustomerService', () => {
 
     service = TestBed.inject(CustomerService);
     httpMock = TestBed.inject(HttpTestingController);
-
-    // Drain initial loadCustomers
-    const initReq = httpMock.expectOne(req => req.url.includes('/api/customers'));
-    initReq.flush(mockPagedResponse);
   });
+
+  function loadCustomers(): void {
+    service.loadCustomers().subscribe();
+    httpMock.expectOne(req => req.url.includes('/api/customers')).flush(mockPagedResponse);
+  }
 
   afterEach(() => {
     httpMock.verify();
@@ -63,12 +64,14 @@ describe('CustomerService', () => {
 
   it('should be created and load customers from backend', () => {
     expect(service).toBeTruthy();
+    loadCustomers();
     expect(service.customers().length).toBe(1);
     expect(service.customers()[0].name).toBe('Arjun Mehta');
     expect(service.customers()[0].riskTier).toBe('Critical');
   });
 
   it('should select customer into signal', () => {
+    loadCustomers();
     const cust = service.customers()[0];
     service.selectCustomer(cust);
     expect(service.selectedCustomer()?.id).toBe('CUS-2026-4821');

@@ -48,10 +48,6 @@ export class CustomerService {
   error = signal<string | null>(null);
   totalCount = signal<number>(0);
 
-  constructor() {
-    this.loadCustomers();
-  }
-
   loadCustomers(
     search?: string,
     riskTier?: string,

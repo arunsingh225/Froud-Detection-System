@@ -148,7 +148,8 @@ powershell -ExecutionPolicy Bypass -File scripts/e2e/test_phase10_analytics.ps1
 
 ### Angular Production Build
 ```bash
-# Compile Angular 17 AOT production bundle (0 errors, 0 warnings)
+npm test         # unit tests: Karma + Jasmine, headless Chrome (set CHROME_BIN if not auto-detected)
+# Compile Angular 17 AOT production bundle
 npm run build
 ```
 

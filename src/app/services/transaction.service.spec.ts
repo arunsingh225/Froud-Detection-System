@@ -58,10 +58,6 @@ describe('TransactionService', () => {
 
     service = TestBed.inject(TransactionService);
     httpMock = TestBed.inject(HttpTestingController);
-
-    // Drain constructor loadTransactions request
-    const initReq = httpMock.expectOne(req => req.url.includes('/api/transactions'));
-    initReq.flush(mockPagedResponse);
   });
 
   afterEach(() => {
@@ -70,7 +66,13 @@ describe('TransactionService', () => {
 
   it('should be created and use centralized environment apiUrl', () => {
     expect(service).toBeTruthy();
-    expect(environment.apiUrl).toBe('http://localhost:5000/api');
+    expect(environment.apiUrl).toBe('/api');
+  });
+
+  it('should not fire requests or report loading until a caller subscribes (regression: dead constructor call)', () => {
+    httpMock.expectNone(() => true);
+    expect(service.loading()).toBeFalse();
+    expect(service.transactions().length).toBe(0);
   });
 
   it('should load transactions and populate reactive signals', () => {
