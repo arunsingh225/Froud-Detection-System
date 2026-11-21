@@ -165,13 +165,13 @@ def main() -> None:
         "y_thresholds": [float(v) for v in iso.y_thresholds_],
         "apply": "np.interp(raw_score, x_thresholds, y_thresholds)  (clipped at the ends)",
     }
-    (MODELS / "calibration.json").write_text(json.dumps(cal_json, indent=2), encoding="utf-8")
-    (MODELS / "holdout_evaluation.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    (MODELS / "calibration.json").write_bytes(json.dumps(cal_json, indent=2).encode("utf-8"))  # bytes: no CRLF translation, hash must match git blob
+    (MODELS / "holdout_evaluation.json").write_bytes(json.dumps(report, indent=2).encode("utf-8"))
 
     manifest["calibration.json"] = {"path": "models/calibration.json",
                                     "sha256": sha256(MODELS / "calibration.json"),
                                     "size_bytes": (MODELS / "calibration.json").stat().st_size}
-    (MODELS / "model_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    (MODELS / "model_manifest.json").write_bytes(json.dumps(manifest, indent=2).encode("utf-8"))
 
     try:
         import matplotlib

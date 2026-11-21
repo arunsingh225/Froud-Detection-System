@@ -11,7 +11,7 @@
   },
   "calibration.json": {
     "path": "models/calibration.json",
-    "sha256": "8d9892e897e887c98da5b2aaf0515fc328e3638849692457241455413ea10e92",
-    "size_bytes": 6008
+    "sha256": "d68f2f412c0c873b642d886df526f2c15e44397c739d119af041ffaa38c858b0",
+    "size_bytes": 5767
   }
 }

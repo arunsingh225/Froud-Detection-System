@@ -1,0 +1,4 @@
+# Model artifacts are integrity-checked by SHA-256 (models/model_manifest.json): never convert line endings.
+models/** -text
+*.pkl binary
+*.parquet binary
