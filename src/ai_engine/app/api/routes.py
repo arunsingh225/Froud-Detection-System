@@ -1,7 +1,7 @@
 import json
 import time
 from datetime import datetime, timezone
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 from app.config import settings
 from app.schemas.prediction import PredictionRequest
 from app.schemas.response import PredictionResponse, HealthResponse, ModelInfoResponse
@@ -72,7 +72,11 @@ def get_model_info() -> ModelInfoResponse:
     summary="Evaluate Transaction Fraud Risk",
     tags=["Inference"]
 )
-def predict_fraud(request: PredictionRequest) -> PredictionResponse:
+def predict_fraud(
+    request: PredictionRequest,
+    explain: bool = Query(False, description="Also return the top feature attributions (TreeSHAP)"),
+    top_k: int = Query(5, ge=1, le=20, description="Number of attributions to return when explain=true"),
+) -> PredictionResponse:
     """
     Score an incoming transaction in real-time. Returns fraud probability, 
     risk tier, binary intervention decision, and applied threshold.
@@ -87,7 +91,7 @@ def predict_fraud(request: PredictionRequest) -> PredictionResponse:
     t_start = time.perf_counter()
 
     try:
-        result = model_service.predict(request)
+        result = model_service.predict(request, explain=explain, top_k=top_k)
         latency_ms = round((time.perf_counter() - t_start) * 1000, 2)
 
         logger.info(
@@ -105,7 +109,9 @@ def predict_fraud(request: PredictionRequest) -> PredictionResponse:
             threshold=result["threshold"],
             model_name=result["model_name"],
             model_version=result["model_version"],
-            prediction_timestamp=datetime.now(timezone.utc).isoformat()
+            prediction_timestamp=datetime.now(timezone.utc).isoformat(),
+            top_factors=result.get("top_factors"),
+            base_value=result.get("base_value"),
         )
 
     except ValueError as ve:

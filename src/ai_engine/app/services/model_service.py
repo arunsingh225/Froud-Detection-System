@@ -129,6 +129,9 @@ class ModelService:
         self.model = joblib.load(model_path)
         if not hasattr(self.model, "predict_proba"):
             raise ValueError(f"Loaded object from {model_path} does not implement predict_proba()")
+        # Single-row inference: LightGBM threads only add overhead (measured 5.0 -> 3.7 ms); request concurrency
+        # comes from the server threadpool. The training-time setting (n_jobs=-1) is irrelevant for scoring.
+        self.model.set_params(n_jobs=1)
 
         # 2. Load Preprocessing Bundle
         logger.info(f"Loading preprocessing bundle from {preproc_path.name}...")
@@ -183,10 +186,33 @@ class ModelService:
             return None
         return float(np.interp(raw_score, self._cal_x, self._cal_y))
 
-    def predict(self, request: PredictionRequest) -> Dict[str, Any]:
+    def explain(self, df_input: pd.DataFrame, top_k: int = 5) -> Dict[str, Any]:
+        """
+        Per-prediction feature attributions via LightGBM's built-in TreeSHAP (pred_contrib).
+
+        Contributions are in log-odds of the RAW model score and, together with the bias term, sum exactly to
+        that score's log-odds (it explains the raw score, not the calibrated probability). Positive values push
+        towards fraud. Returns the top_k features by absolute contribution.
+        """
+        contrib = np.asarray(self.model.predict(df_input, pred_contrib=True))[0]
+        names = list(df_input.columns)
+        bias, values = float(contrib[-1]), contrib[:-1]
+        order = np.argsort(-np.abs(values))[:top_k]
+        factors = []
+        for i in order:
+            v = df_input.iloc[0, i]
+            factors.append({
+                "feature": names[i],
+                "value": None if pd.isna(v) else float(v),
+                "contribution": round(float(values[i]), 5),
+            })
+        return {"top_factors": factors, "base_value": round(bias, 5)}
+
+    def predict(self, request: PredictionRequest, explain: bool = False, top_k: int = 5) -> Dict[str, Any]:
         """
         Execute real-time inference on an incoming transaction payload.
         Returns fraud probability, risk level, decision, and applied threshold.
+        With explain=True also returns the top feature attributions (see explain()).
         """
         if not self.is_loaded or self.model is None or self.preprocessing_service is None:
             raise RuntimeError("ModelService is not loaded. Ensure startup lifecycle completed.")
@@ -203,7 +229,10 @@ class ModelService:
         risk_level = RiskService.calculate_risk_level(fraud_prob_rounded)
         is_fraud = RiskService.evaluate_fraud_decision(fraud_prob_rounded, self.threshold)
 
+        explanation = self.explain(df_input, top_k) if explain else {}
+
         return {
+            **explanation,
             "fraud_probability": fraud_prob_rounded,
             "raw_score": fraud_prob_rounded,
             "calibrated_probability": None if self._cal_x is None else round(self.calibrate(fraud_prob), 4),

@@ -525,3 +525,12 @@ Also: the ML tests assert only structural properties (keys present, 200 OK), not
 | npm | **68 advisories (4 critical, 24 high) in the full tree, 8 (4 high, 4 moderate) in production dependencies**, all Angular 17 framework packages; the fix is a major Angular upgrade (`ng update`), a separate project. No critical advisory in production dependencies | ran |
 | New blocking CI gates | pip-audit; NuGet vulnerable-package check; `npm audit --omit=dev --audit-level=critical`; Python coverage minimum 85% (currently 91%). Full-tree npm audit stays informational | local equivalents pass; **CI not yet run** |
 | Open | Angular 17 to a supported major (clears the production npm advisories); the 4 critical full-tree advisories are in build tooling (piscina, proxy-addr, shell-quote, tar) | n/a |
+
+### Fourteenth pass: explanations and a real latency benchmark
+
+| Item | Result | Verified by |
+|---|---|---|
+| No per-prediction explanation (audit §5 item 5) | `/predict?explain=true&top_k=N` (N from 1 to 20) returns top feature attributions via LightGBM's built-in TreeSHAP (`pred_contrib`), plus `base_value`. Opt-in; does not change the score or decision. Contributions explain the **raw** score in log-odds, not the calibrated probability | 9 new tests; the identity test checks that base value plus all contributions equals the model margin (mutation check: dropping the bias term fails it) |
+| "Sub-10 ms inference" claim, never measured | Measured in-process on a 12-core laptop (300 calls after warm-up): p50 13.6 ms, p95 16.7 ms, p99 20.6 ms; with explanations p50 25.0 ms. Breakdown: preprocessing 6.8 ms, LightGBM 5.0 ms. The claim was **false**; README corrected | ran |
+| Cheap speed-up | Scoring model now uses `n_jobs=1` (single-row inference gains nothing from threads): LightGBM 5.0 to 3.7 ms, end-to-end p50 13.6 to 12.2 ms, identical scores (asserted) | ran |
+| Not covered | HTTP and API-layer latency, load or concurrency testing, and any non-laptop hardware. Preprocessing (6.8 ms, pandas per request) is now the largest cost | open |

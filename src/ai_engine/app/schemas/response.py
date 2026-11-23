@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
@@ -24,6 +24,13 @@ class ModelInfoResponse(BaseModel):
     holdout_pr_auc: Optional[float] = Field(None, description="PR-AUC on the held-out TEST half")
 
 
+class FactorContribution(BaseModel):
+    """One feature's TreeSHAP contribution to the raw model score (log-odds; positive = towards fraud)."""
+    feature: str = Field(..., description="Model feature name (categorical features are integer-encoded)")
+    value: Optional[float] = Field(None, description="Feature value fed to the model (null = missing)")
+    contribution: float = Field(..., description="Log-odds contribution to the raw score")
+
+
 class PredictionResponse(BaseModel):
     """Prediction assessment response schema."""
     request_id: str = Field(..., description="Unique distributed tracking ID (UUID v4)")
@@ -36,3 +43,5 @@ class PredictionResponse(BaseModel):
     model_name: str = Field(..., description="Name of the scoring model")
     model_version: str = Field("1.0", description="Model release version")
     prediction_timestamp: str = Field(..., description="ISO 8601 UTC timestamp")
+    top_factors: Optional[List[FactorContribution]] = Field(None, description="Top feature attributions; only present when explain=true")
+    base_value: Optional[float] = Field(None, description="Log-odds bias; base_value + sum of ALL contributions = log-odds of raw_score")

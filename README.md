@@ -15,7 +15,7 @@ FraudGuard AI is an enterprise-grade platform for financial fraud detection, aut
         ├──► [ SQL Server 2022 ] (Transactions, Alerts, Predictions, Audit Logs)
         │
         └──► [ FastAPI AI Engine ] (Port 8000)
-                    │  (single-row inference; latency not yet benchmarked)
+                    │  (single-row, in-process: p50 ~12 ms, p95 ~16 ms)
                     ▼
              [ LightGBM Classifier ] (464 features, 0.80 operating threshold)
 ```
@@ -33,6 +33,8 @@ This is an **end-to-end demo platform**, not a production fraud system.
   - Caveats: model-family selection and the 0.80 threshold were chosen on the full validation set (including TEST), so TEST is held out for calibration and reporting, not a pristine estimate for those choices. A fully clean 3-way split with retraining is still open.
 - **Threshold is a business choice, not 0.80 by nature.** `python ml/cost_threshold_analysis.py` (assumption: a missed fraud costs its amount, each alert costs `review_cost`) shows on held-out data that 0.80 is cost-optimal only when an alert costs about $50 of analyst time; at $5 the optimal threshold is about 0.37 (recall 0.82 instead of 0.49, cost $76k vs $142k per 39k transactions, at the price of about 5x more alerts). Override without code changes via `DECISION_THRESHOLD` (default: 0.80). See `models/cost_threshold_analysis.json`.
 - **Retrain experiment (`ml/train_challenger.py`):** a challenger with early stopping on a separate chunk (689 trees vs 300) did **not** beat the champion on a clean TEST third (ROC-AUC 0.915 vs 0.920, overlapping 95% CIs), so the model was not promoted. Evidence: `ml/results/challenger_evaluation.json`.
+- **Explanations:** `POST /predict?explain=true&top_k=5` returns the top feature attributions (LightGBM TreeSHAP, log-odds of the raw score; `base_value` + all contributions equals the model margin, which `tests/test_explanations.py` asserts). Opt-in because it adds ~8-11 ms.
+- **Latency (measured, 12-core laptop, 300 calls after warm-up, in-process, excluding HTTP):** p50 12.2 ms / p95 16.4 ms (p50 20.4 ms with explanations). About 6.8 ms is preprocessing (single-row pandas, 464 features), 3.7 ms is LightGBM. The old "sub-10 ms" claim was never true.
 - **Feature mapping:** the app's transactions are synthetic and do not carry IEEE-CIS features. `FraudPredictionMapper` derives a handful of them and fills the rest with constants, so scores shown in the UI are **relative risk indicators for the demo**, not validated probabilities for these transactions.
 - **"AI Investigator":** a deterministic, evidence-grounded rule engine with TF-IDF policy retrieval and cited knowledge-base chunks. It does **not** call an LLM (`LLM_PROVIDER` values other than `deterministic` log a warning and fall back). Its `confidence` is a heuristic corroboration score, and when no ML score is supplied it says so (`ml_score_available=false`) instead of inventing one.
 - **Single-instance state:** token revocation, rate limits and the analytics cache are in memory.

@@ -42,3 +42,9 @@ build/
 
 # === Data ===
 data/raw/
+
+# === Test coverage output ===
+.coverage
+.coverage.*
+coverage-python.xml
+htmlcov/
