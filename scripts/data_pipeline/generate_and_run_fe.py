@@ -356,11 +356,19 @@ print(f"  - Low Cardinality (<10):       {(df_cardinality['cardinality_category'
 print("\\nTop 15 Highest-Cardinality Categorical Features:")
 display(df_cardinality.head(15))
 
-# Memory-efficient encoding for all categorical columns (Ordinal integer codes with -1 for missing)
+# Memory-efficient encoding for all categorical columns (ordinal integer codes; -1 = value unseen in train, missing values get their own code)
 print("\\nApplying memory-efficient integer category codes for LightGBM/XGBoost/CatBoost...")
+def _text_keep_missing(series):
+    # Explicit and pandas-version independent. astype(str) turns NaN into the STRING 'nan' on pandas 2 (excluded
+    # from the vocabulary below, so missing -> -1) but keeps NaN on pandas 3 (NaN becomes a normal vocabulary
+    # entry with a real code). The shipped model/vocabularies were built under pandas 3, so that behaviour is
+    # made explicit here: real values become strings, missing stays NaN and gets its own code.
+    obj = series.astype(object)
+    return obj.where(obj.notna(), np.nan).map(lambda v: v if pd.isna(v) else str(v))
+
 for c in cat_columns:
-    train_str = train_df[c].astype(str)
-    val_str = val_df[c].astype(str)
+    train_str = _text_keep_missing(train_df[c])
+    val_str = _text_keep_missing(val_df[c])
     
     # Build vocabulary strictly from train set (excluding null string markers)
     unique_vals = {val: idx for idx, val in enumerate(train_str.unique()) if val not in ['nan', 'None', 'NA']}
