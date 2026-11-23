@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="flex items-center gap-2">
       <span class="font-mono-data font-bold text-[13px] min-w-[38px]" [ngClass]="textColor">
-        {{ value.toFixed(1) }}%
+        {{ hasValue ? safeValue.toFixed(1) + '%' : '—' }}
       </span>
       <div
         class="flex-1 bg-[#1A1A1A] rounded-full overflow-hidden min-w-[60px]"
@@ -25,24 +25,35 @@ import { CommonModule } from '@angular/common';
   `
 })
 export class ProbabilityBarComponent {
-  @Input() value: number = 0;
+  // API data can legitimately lack a probability (transaction not scored yet): accept null/undefined.
+  @Input() value: number | null | undefined = 0;
   @Input() size: 'sm' | 'md' = 'sm';
 
+  get hasValue(): boolean {
+    return typeof this.value === 'number' && Number.isFinite(this.value);
+  }
+
+  get safeValue(): number {
+    return this.hasValue ? (this.value as number) : 0;
+  }
+
   get clampedValue(): number {
-    return Math.min(Math.max(this.value, 0), 100);
+    return Math.min(Math.max(this.safeValue, 0), 100);
   }
 
   get barColor(): string {
-    if (this.value >= 90) return '#e05353';
-    if (this.value >= 70) return '#C5A059';
-    if (this.value >= 50) return '#C5A059';
+    if (!this.hasValue) return '#404040';
+    if (this.safeValue >= 90) return '#e05353';
+    if (this.safeValue >= 70) return '#C5A059';
+    if (this.safeValue >= 50) return '#C5A059';
     return '#52b788';
   }
 
   get textColor(): string {
-    if (this.value >= 90) return 'text-[#ffb4ab]';
-    if (this.value >= 70) return 'text-[#C5A059]';
-    if (this.value >= 50) return 'text-[#C5A059]';
+    if (!this.hasValue) return 'text-[#737373]';
+    if (this.safeValue >= 90) return 'text-[#ffb4ab]';
+    if (this.safeValue >= 70) return 'text-[#C5A059]';
+    if (this.safeValue >= 50) return 'text-[#C5A059]';
     return 'text-[#52b788]';
   }
 }
