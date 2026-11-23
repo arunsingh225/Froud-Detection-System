@@ -496,3 +496,13 @@ Also: the ML tests assert only structural properties (keys present, 200 OK), not
 | Item | Result | Verified by |
 |---|---|---|
 | "One command brings up the whole stack" was never exercised (db-init, API, engine, nginx together) | New CI job `compose-smoke`: `docker compose up --build` with the demo seed, then real HTTP checks through nginx: SPA served + security headers; anonymous call is 401; ADMIN login sets an HttpOnly cookie; authenticated call works; AI engine reachable via `/api/fraud/engine-health`; cookie POST without `X-Requested-With` is 403; after logout the old token is 401 (persistent revocation) | workflow YAML parses; routes and response field names checked against the controllers. **Not run**: Docker Desktop was not running locally and was deliberately not started; the first CI run will show it |
+
+### Eleventh pass: train/serve parity (a real skew bug)
+
+| Item | Result | Verified by |
+|---|---|---|
+| Serving re-implements feature engineering by hand with no parity test (audit §5 item 6) | Built a parity check: rebuild a request from a validation row, run the serving transform, compare with the training vector | ran |
+| **Bug found:** training encodes a missing categorical value as a normal vocabulary entry (a float-NaN key with its own integer code, for 35 columns). Serving looked up the string "nan" and fell back to `-1` ("unseen"). Real API calls usually omit `id_*`, `M*`, `DeviceInfo`, so those scores were computed from a skewed vector | Fixed in `PreprocessingService` (`_na_codes`, `_is_missing`). On a 2,002-row sample: mean abs score difference 0.0156 to 0.0017; AUC on serving vectors 0.8918 to 0.8988 (training vectors 0.8990); rows flagged differently at 0.80: 15 to 4 | ran |
+| Regression tests (8): NaN code used for every missing spelling, unseen stays -1, known categories map to their code, statistical parity on about 800 rows | pytest 45/45. Mutation check: reverting the fix makes 6 of 8 fail | ran |
+| **Behaviour change:** scores returned by `/predict` for payloads with missing categoricals change (they were wrong before). Offline metrics (ROC-AUC etc.) are unaffected because they are computed on training-format vectors. Previously stored predictions in a database are not recomputed | note |
+| Known residual (not a serving bug) | A few percent of rows still differ: values absent from the training vocabulary carry code -1 in the parquet and cannot be turned back into strings; 29 of 2,002 rows differ on `card1_card2` for a related reason. The stored vocabularies also suggest categories were encoded before the train/validation split, which is worth checking in the FE notebook | open |

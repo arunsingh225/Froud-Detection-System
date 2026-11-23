@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, List
@@ -16,7 +17,24 @@ class PreprocessingService:
         self.expected_feature_count: int = len(self.model_features)
         self.frequency_maps: Dict[str, Dict[Any, float]] = preprocessing_bundle.get("frequency_maps", {})
         self.categorical_vocabularies: Dict[str, Dict[str, int]] = preprocessing_bundle.get("categorical_vocabularies", {})
+        # Training encoded missing values (NaN) as an ordinary vocabulary entry with its own integer code.
+        # That key is a float NaN, which a string lookup can never hit, so resolve the codes once here.
+        self._na_codes: Dict[str, int] = {
+            col: code
+            for col, vocab in self.categorical_vocabularies.items()
+            for key, code in vocab.items()
+            if self._is_missing(key)
+        }
         logger.info(f"PreprocessingService initialized with {self.expected_feature_count} expected model features.")
+
+    @staticmethod
+    def _is_missing(value: Any) -> bool:
+        """True for None, float NaN and the strings 'nan'/'None' (how absent values appear in raw payloads)."""
+        if value is None:
+            return True
+        if isinstance(value, float) and math.isnan(value):
+            return True
+        return isinstance(value, str) and value in ("nan", "None")
 
     def transform(self, request: PredictionRequest) -> pd.DataFrame:
         """
@@ -135,9 +153,13 @@ class PreprocessingService:
                 val_str = composite_strings[cat_col]
             else:
                 raw_val = raw.get(cat_col)
-                val_str = str(raw_val) if raw_val is not None else "nan"
-            
-            code = vocab.get(val_str, -1)
+                val_str = None if self._is_missing(raw_val) else str(raw_val)
+
+            if val_str is None:
+                # missing value: use the code training assigned to NaN (not "unseen")
+                code = self._na_codes.get(cat_col, -1)
+            else:
+                code = vocab.get(val_str, -1)
             row[cat_col] = np.int32(code)
 
         # 10. Populate All Remaining Model Features
