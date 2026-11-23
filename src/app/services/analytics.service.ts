@@ -1,6 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, tap, catchError, of, map, interval, switchMap, startWith } from 'rxjs';
+import { Observable, catchError, of, map, interval, switchMap } from 'rxjs';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { environment } from '../../environments/environment';
 import { AuditLogItem } from '../models/audit-log.model';

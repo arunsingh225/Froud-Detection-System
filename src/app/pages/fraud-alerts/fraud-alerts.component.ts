@@ -181,7 +181,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
     </div>
   `
 })
-export class FraudAlertsComponent {
+export class FraudAlertsComponent implements OnInit {
   activeTab: AlertStatus | 'All' = 'All';
   riskFilter: RiskTier | 'All' = 'All';
 

@@ -37,6 +37,7 @@ This is an **end-to-end demo platform**, not a production fraud system.
 - **Latency (measured, 12-core laptop, 300 calls after warm-up, in-process, excluding HTTP):** p50 12.2 ms / p95 16.4 ms (p50 20.4 ms with explanations). About 6.8 ms is preprocessing (single-row pandas, 464 features), 3.7 ms is LightGBM. The old "sub-10 ms" claim was never true.
 - **Drift monitoring:** `GET /model/drift` reports the Population Stability Index of the 20 most important features over a rolling window of recent `/predict` requests (default 2,000; at least 200 before reporting) against `models/drift_reference.json` (built by `ml/build_drift_reference.py` from the earlier half of the validation set). Stable < 0.1, moderate 0.1-0.25, significant > 0.25. Traffic from the API's approximate transaction mapping will legitimately show drift against IEEE-CIS data.
 - **Secret rotation:** the engine accepts `FASTAPI_INTERNAL_SECRET_PREVIOUS` in addition to the current secret and logs a warning while the old one is still used: set new + previous on the engine, switch the API to the new secret, then remove previous.
+- **Surfaced through the API and UI:** `POST /api/fraud/predict` now also returns `calibratedProbability` and `topFactors`; `GET /api/fraud/model-drift` (ADMIN/COMPLIANCE) proxies the engine's PSI report; Transaction Detail has an "AI Score Explanation" panel (investigators and admins: "Re-score & explain" shows the calibrated probability, the model score and the top factors); the Model Monitoring tab's drift status is the measured PSI status, or UNAVAILABLE / INSUFFICIENT DATA, never an assumed STABLE. Re-scoring updates the stored prediction for that transaction.
 - **Feature mapping:** the app's transactions are synthetic and do not carry IEEE-CIS features. `FraudPredictionMapper` derives a handful of them and fills the rest with constants, so scores shown in the UI are **relative risk indicators for the demo**, not validated probabilities for these transactions.
 - **"AI Investigator":** a deterministic, evidence-grounded rule engine with TF-IDF policy retrieval and cited knowledge-base chunks. It does **not** call an LLM (`LLM_PROVIDER` values other than `deterministic` log a warning and fall back). Its `confidence` is a heuristic corroboration score, and when no ML score is supplied it says so (`ml_score_available=false`) instead of inventing one.
 - **Single-instance state:** token revocation, rate limits and the analytics cache are in memory.
@@ -158,6 +159,7 @@ powershell -ExecutionPolicy Bypass -File scripts/e2e/test_phase10_analytics.ps1
 
 ### Angular Production Build
 ```bash
+npm run lint     # ESLint (errors fail CI; the explicit-any warning count is pinned and may not grow)
 npm test         # unit tests: Karma + Jasmine, headless Chrome (set CHROME_BIN if not auto-detected)
 # Compile Angular 17 AOT production bundle
 npm run build

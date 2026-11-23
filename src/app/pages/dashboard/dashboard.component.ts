@@ -5,7 +5,6 @@ import { TransactionService } from '../../services/transaction.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { ModalService } from '../../services/modal.service';
 import { AuthService } from '../../services/auth.service';
-import { Transaction } from '../../models/transaction.model';
 import { LiveAlertItem, FraudTrendPoint } from '../../models/advanced-analytics.model';
 import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
 

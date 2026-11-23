@@ -1,6 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, tap, catchError, of, map } from 'rxjs';
+import { Observable, catchError, of, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Customer } from '../models/customer.model';
 import {

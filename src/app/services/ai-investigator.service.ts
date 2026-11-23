@@ -5,7 +5,6 @@ import { environment } from '../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import {
   InvestigationDetailFull,
-  InvestigateRequest,
   EvidenceItem,
   InvestigationTimelineStep
 } from '../models/ai-investigator.model';

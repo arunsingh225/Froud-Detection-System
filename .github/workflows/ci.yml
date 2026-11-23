@@ -74,6 +74,8 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: npm }
       - run: npm ci
+      - name: Lint (errors fail; the warning count may not grow beyond the current debt)
+        run: npm run lint:ci
       - run: npm test
       - run: npm run build
       - name: npm audit (production dependencies, fail on critical)
