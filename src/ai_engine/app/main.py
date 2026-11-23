@@ -65,7 +65,15 @@ async def verify_internal_secret_middleware(request: Request, call_next):
             content={"detail": "Microservice internal secret is not configured on server."}
         )
 
-    if not provided_secret or not secrets.compare_digest(provided_secret, expected_secret):
+    previous_secret = settings.FASTAPI_INTERNAL_SECRET_PREVIOUS
+    # Evaluate both comparisons unconditionally so timing does not reveal which secret matched.
+    matches_current = bool(provided_secret) and secrets.compare_digest(provided_secret, expected_secret)
+    matches_previous = bool(provided_secret) and bool(previous_secret) and secrets.compare_digest(provided_secret, previous_secret)
+
+    if matches_previous and not matches_current:
+        logger.warning("Request authenticated with the PREVIOUS internal secret: finish rotating the caller.")
+
+    if not (matches_current or matches_previous):
         logger.warning(
             f"Unauthorized microservice request to {request.url.path} from "
             f"{request.client.host if request.client else 'unknown'}"

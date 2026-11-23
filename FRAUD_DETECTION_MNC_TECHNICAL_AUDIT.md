@@ -534,3 +534,13 @@ Also: the ML tests assert only structural properties (keys present, 200 OK), not
 | "Sub-10 ms inference" claim, never measured | Measured in-process on a 12-core laptop (300 calls after warm-up): p50 13.6 ms, p95 16.7 ms, p99 20.6 ms; with explanations p50 25.0 ms. Breakdown: preprocessing 6.8 ms, LightGBM 5.0 ms. The claim was **false**; README corrected | ran |
 | Cheap speed-up | Scoring model now uses `n_jobs=1` (single-row inference gains nothing from threads): LightGBM 5.0 to 3.7 ms, end-to-end p50 13.6 to 12.2 ms, identical scores (asserted) | ran |
 | Not covered | HTTP and API-layer latency, load or concurrency testing, and any non-laptop hardware. Preprocessing (6.8 ms, pandas per request) is now the largest cost | open |
+
+### Fifteenth pass: secret rotation, shared-component tests, drift monitoring
+
+| Item | Result | Verified by |
+|---|---|---|
+| Internal secret could not be rotated without downtime | Engine also accepts `FASTAPI_INTERNAL_SECRET_PREVIOUS` (warning logged while used); both comparisons are always evaluated; an empty PREVIOUS never matches an empty header | 5 tests; mutation (dropping the non-empty guard) fails 2 |
+| Shared frontend components and the INR pipe were untested | 17 new Karma specs (risk/status badges, probability bar, empty state, pipe). **They found 3 real bugs, all fixed:** (1) the pipe's crore threshold was `10_00_00_000` (100 crore), so the dashboard's ₹350 Cr volume rendered as "₹3.50 Cr" and ₹1-100 Cr amounts rendered in lakhs (e.g. "₹1000.00 L"); (2) 99,999 rendered as "₹100.0K"; (3) `ProbabilityBar` threw on null/undefined (`toFixed`) when a probability is not available yet, now shows "—" | Karma 41/41 (was 24); `ng build` OK |
+| No drift monitoring (audit §5 item 5) | `GET /model/drift`: PSI over a rolling window of the 20 most important features vs a stored reference; `ml/build_drift_reference.py` builds the reference (SHA-256 in the manifest) | 17 tests: PSI worked example, tamper rejection, stable on same-distribution rows, a shifted amount and a vanished field flagged significant and ranked first, window cap, never raises, endpoint requires the secret; pytest 77/77, coverage 92% |
+| Baseline | PSI of the later validation half against the earlier half is below 0.025 for all 20 features (no drift within the validation period) | ran |
+| Caveats | The reference is the earlier validation half (the training split is not committed). Only `/predict` traffic is observed, in memory and per process (resets on restart, not shared across replicas). The C# API and the UI do not read the endpoint yet | n/a |

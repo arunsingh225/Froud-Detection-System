@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Query, status
 from app.config import settings
 from app.schemas.prediction import PredictionRequest
-from app.schemas.response import PredictionResponse, HealthResponse, ModelInfoResponse
+from app.schemas.response import DriftReport, PredictionResponse, HealthResponse, ModelInfoResponse
 from app.services.model_service import model_service
 from app.utils.request_id import generate_request_id
 from app.logging_config import logger
@@ -64,6 +64,17 @@ def get_model_info() -> ModelInfoResponse:
         holdout_roc_auc=_as_float(holdout.get("roc_auc")),
         holdout_pr_auc=_as_float(holdout.get("pr_auc")),
     )
+
+
+@router.get(
+    "/model/drift",
+    response_model=DriftReport,
+    summary="Input Drift (PSI) of Recent Scoring Traffic",
+    tags=["Model"]
+)
+def get_model_drift() -> DriftReport:
+    """PSI of the most important features over the rolling window of /predict requests versus the reference data."""
+    return DriftReport(**model_service.drift.report())
 
 
 @router.post(

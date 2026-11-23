@@ -32,10 +32,18 @@ class Settings(BaseSettings):
     PORT: int = 8000
     LOG_LEVEL: str = "INFO"
     FASTAPI_INTERNAL_SECRET: str = os.getenv("FASTAPI_INTERNAL_SECRET", "")
+    # Zero-downtime rotation: while rolling a new secret out, the engine also accepts the previous one.
+    # Procedure: (1) set SECRET=new and SECRET_PREVIOUS=old on the engine, (2) switch the API to the new secret,
+    # (3) remove SECRET_PREVIOUS. Warnings in the engine log show callers still using the old secret.
+    FASTAPI_INTERNAL_SECRET_PREVIOUS: str = os.getenv("FASTAPI_INTERNAL_SECRET_PREVIOUS", "")
 
     # Interactive API docs (/docs, /redoc, /openapi.json) are PUBLIC by design of FastAPI, so they are
     # off unless explicitly enabled (set ENABLE_DOCS=true for local development).
     ENABLE_DOCS: bool = False
+
+    # Drift monitor: rolling window of scored requests and the minimum sample size before PSI is reported.
+    DRIFT_WINDOW: int = 2000
+    DRIFT_MIN_SAMPLES: int = 200
 
     # Optional business override of the fraud decision threshold (raw model score, 0-1).
     # Unset = use selected_threshold from model_metadata.json (0.80). See models/cost_threshold_analysis.json

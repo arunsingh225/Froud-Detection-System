@@ -31,6 +31,22 @@ class FactorContribution(BaseModel):
     contribution: float = Field(..., description="Log-odds contribution to the raw score")
 
 
+class DriftFeature(BaseModel):
+    feature: str
+    psi: float = Field(..., description="Population Stability Index versus the reference distribution")
+    status: str = Field(..., description="stable (<0.1), moderate (0.1-0.25) or significant (>0.25)")
+
+
+class DriftReport(BaseModel):
+    """Input drift of recent /predict traffic against the reference distribution."""
+    status: str = Field(..., description="stable | moderate | significant | insufficient_data | unavailable")
+    n_samples: int
+    min_samples: int
+    window: int
+    max_psi: Optional[float] = None
+    features: List[DriftFeature] = Field(default_factory=list)
+
+
 class PredictionResponse(BaseModel):
     """Prediction assessment response schema."""
     request_id: str = Field(..., description="Unique distributed tracking ID (UUID v4)")

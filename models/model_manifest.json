@@ -13,5 +13,10 @@
     "path": "models/calibration.json",
     "sha256": "d68f2f412c0c873b642d886df526f2c15e44397c739d119af041ffaa38c858b0",
     "size_bytes": 5767
+  },
+  "drift_reference.json": {
+    "path": "models/drift_reference.json",
+    "sha256": "aa8b45227ca5e59b161aa97083fe2c3edb6aa2b8f328bee3d9b61722912997d7",
+    "size_bytes": 7748
   }
 }

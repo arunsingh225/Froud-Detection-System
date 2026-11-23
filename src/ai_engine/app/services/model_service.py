@@ -10,6 +10,7 @@ import pandas as pd
 from app.config import settings
 from app.logging_config import logger
 from app.services.preprocessing_service import PreprocessingService
+from app.services.drift_service import DriftMonitor
 from app.services.risk_service import RiskService
 from app.schemas.prediction import PredictionRequest
 
@@ -69,6 +70,7 @@ class ModelService:
         self.feature_count: int = 464
         self.is_loaded: bool = False
         self.version_mismatches: list = []
+        self.drift = DriftMonitor(settings.DRIFT_WINDOW, settings.DRIFT_MIN_SAMPLES)
         self.calibration: Optional[Dict[str, Any]] = None
         self._cal_x: Optional[np.ndarray] = None
         self._cal_y: Optional[np.ndarray] = None
@@ -140,6 +142,9 @@ class ModelService:
 
         # 2b. Optional probability calibrator (plain JSON, integrity-checked against the manifest)
         self._load_calibration(model_path.parent / "calibration.json", manifest)
+
+        # 2c. Optional drift-monitoring reference (integrity-checked like the other artifacts)
+        self.drift.load(model_path.parent / "drift_reference.json", manifest)
 
         # 3. Load Metadata
         if metadata_path.exists():
@@ -229,6 +234,7 @@ class ModelService:
         risk_level = RiskService.calculate_risk_level(fraud_prob_rounded)
         is_fraud = RiskService.evaluate_fraud_decision(fraud_prob_rounded, self.threshold)
 
+        self.drift.observe(df_input)
         explanation = self.explain(df_input, top_k) if explain else {}
 
         return {
