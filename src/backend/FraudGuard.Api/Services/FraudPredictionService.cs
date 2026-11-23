@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using FraudGuard.Api.Data;
+using FraudGuard.Api.DTOs.FastApi;
 using FraudGuard.Api.DTOs.Fraud;
 using FraudGuard.Api.Models;
 
@@ -176,7 +178,9 @@ namespace FraudGuard.Api.Services
                 ModelName = fastApiResult.ModelName,
                 ModelVersion = fastApiResult.ModelVersion,
                 AnomalyReason = prediction.AnomalyReason,
-                PredictedAt = prediction.PredictedAt
+                PredictedAt = prediction.PredictedAt,
+                CalibratedProbability = fastApiResult.CalibratedProbability,
+                TopFactors = MapFactors(fastApiResult)
             };
         }
 
@@ -205,9 +209,16 @@ namespace FraudGuard.Api.Services
                 ModelName = fastApiResult.ModelName,
                 ModelVersion = fastApiResult.ModelVersion,
                 AnomalyReason = $"Direct inference completed: {fastApiResult.RiskLevel} Risk tier.",
-                PredictedAt = DateTimeOffset.UtcNow
+                PredictedAt = DateTimeOffset.UtcNow,
+                CalibratedProbability = fastApiResult.CalibratedProbability,
+                TopFactors = MapFactors(fastApiResult)
             };
         }
+
+        private static List<FactorContributionDto>? MapFactors(FastApiPredictionResponse response) =>
+            response.TopFactors?
+                .Select(f => new FactorContributionDto { Feature = f.Feature, Value = f.Value, Contribution = f.Contribution })
+                .ToList();
 
         private static string NormalizeRiskTier(string riskLevel)
         {

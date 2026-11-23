@@ -82,10 +82,40 @@ namespace FraudGuard.Api.Controllers
                 PrAuc = info.PrAuc,
                 Threshold = info.Threshold,
                 FeatureCount = info.FeatureCount,
-                TrainingDate = info.TrainingDate
+                TrainingDate = info.TrainingDate,
+                CalibrationMethod = info.CalibrationMethod,
+                HoldoutRocAuc = info.HoldoutRocAuc,
+                HoldoutPrAuc = info.HoldoutPrAuc
             };
 
             return Ok(ApiResponse<FraudModelInfoDto>.Ok(dto));
+        }
+
+        /// <summary>
+        /// Input drift (PSI) of recent scoring traffic against the reference distribution of the model.
+        /// </summary>
+        [HttpGet("model-drift")]
+        [Authorize(Roles = "ADMIN,COMPLIANCE")]
+        [ProducesResponseType(typeof(ApiResponse<FraudDriftDto>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 503)]
+        public async Task<IActionResult> GetModelDrift(CancellationToken cancellationToken)
+        {
+            var drift = await _fastApiClient.GetDriftAsync(cancellationToken);
+            if (drift == null)
+            {
+                return StatusCode(503, ApiResponse<object>.Fail("Unable to retrieve the drift report from the inference engine."));
+            }
+
+            var dto = new FraudDriftDto
+            {
+                Status = drift.Status,
+                SampleCount = drift.NSamples,
+                MinSamples = drift.MinSamples,
+                Window = drift.Window,
+                MaxPsi = drift.MaxPsi,
+                Features = drift.Features.Select(f => new FraudDriftFeatureDto { Feature = f.Feature, Psi = f.Psi, Status = f.Status }).ToList()
+            };
+            return Ok(ApiResponse<FraudDriftDto>.Ok(dto));
         }
 
         /// <summary>

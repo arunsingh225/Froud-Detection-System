@@ -79,6 +79,16 @@ export interface FraudPredictionResultDto {
   modelVersion: string;
   anomalyReason: string;
   predictedAt: string;
+  /** Calibrated estimate of the true fraud probability (0-1); fraudProbability is the uncalibrated model score. */
+  calibratedProbability?: number | null;
+  /** Top feature attributions for this score (log-odds; positive pushes towards fraud). */
+  topFactors?: FactorContribution[] | null;
+}
+
+export interface FactorContribution {
+  feature: string;
+  value?: number | null;
+  contribution: number;
 }
 
 export interface EngineHealthDto {
@@ -97,6 +107,9 @@ export interface FraudModelInfoDto {
   threshold: number;
   featureCount: number;
   trainingDate: string;
+  calibrationMethod?: string | null;
+  holdoutRocAuc?: number | null;
+  holdoutPrAuc?: number | null;
 }
 
 // Fraud Alert Backend DTO

@@ -27,5 +27,15 @@ namespace FraudGuard.Api.DTOs.FastApi
 
         [JsonPropertyName("training_date")]
         public string? TrainingDate { get; set; }
+
+        [JsonPropertyName("calibration_method")]
+        public string? CalibrationMethod { get; set; }
+
+        /// <summary>ROC-AUC on the held-out TEST half (models/holdout_evaluation.json).</summary>
+        [JsonPropertyName("holdout_roc_auc")]
+        public decimal? HoldoutRocAuc { get; set; }
+
+        [JsonPropertyName("holdout_pr_auc")]
+        public decimal? HoldoutPrAuc { get; set; }
     }
 }

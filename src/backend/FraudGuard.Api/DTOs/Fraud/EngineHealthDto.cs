@@ -26,5 +26,8 @@ namespace FraudGuard.Api.DTOs.Fraud
         public decimal Threshold { get; set; }
         public int FeatureCount { get; set; }
         public string? TrainingDate { get; set; }
+        public string? CalibrationMethod { get; set; }
+        public decimal? HoldoutRocAuc { get; set; }
+        public decimal? HoldoutPrAuc { get; set; }
     }
 }

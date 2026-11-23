@@ -405,7 +405,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
               </div>
               <div class="p-2.5 bg-[#141414] rounded border border-white/5">
                 <div class="text-[10px] text-[#737373]">DRIFT STATUS</div>
-                <div class="font-bold text-[#52b788] font-mono-data text-[15px]">{{ modelData?.driftStatus ?? 'STABLE' }}</div>
+                <div class="font-bold font-mono-data text-[15px]" [ngClass]="driftColor" [title]="modelData?.driftExplanation ?? ''">{{ driftLabel }}</div>
               </div>
             </div>
           </div>
@@ -602,6 +602,20 @@ export class RiskAnalyticsComponent implements OnInit {
 
   get modelData(): ModelMonitoringData | null {
     return this.analyticsService.modelMonitoring();
+  }
+
+  /** Drift label from the engine's PSI report; never defaults to "stable" when nothing was measured. */
+  get driftLabel(): string {
+    return (this.modelData?.driftStatus ?? 'UNAVAILABLE').replace('_', ' ');
+  }
+
+  get driftColor(): string {
+    switch (this.modelData?.driftStatus) {
+      case 'STABLE': return 'text-[#52b788]';
+      case 'MODERATE': return 'text-[#C5A059]';
+      case 'SIGNIFICANT': return 'text-[#e05353]';
+      default: return 'text-[#737373]';
+    }
   }
 
   get invData(): InvestigationAnalytics | null {

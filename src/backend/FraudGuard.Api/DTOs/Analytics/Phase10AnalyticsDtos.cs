@@ -177,8 +177,9 @@ namespace FraudGuard.Api.DTOs.Analytics
         public List<ProbabilityHistogramBucketDto> ProbabilityDistribution { get; set; } = new();
 
         // Model Drift Telemetry
-        public string DriftStatus { get; set; } = "STABLE";
-        public string DriftExplanation { get; set; } = "Observed transaction amount and feature distributions align within training baseline boundaries.";
+        // Real PSI from the inference engine (see AnalyticsService.DescribeDrift); never assumed stable.
+        public string DriftStatus { get; set; } = "UNAVAILABLE";
+        public string DriftExplanation { get; set; } = "No drift measurement available.";
     }
 
     public class LiveAlertDto

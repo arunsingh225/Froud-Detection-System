@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using FraudGuard.Api.Data;
 using FraudGuard.Api.DTOs.Analytics;
 using FraudGuard.Api.DTOs.Common;
+using FraudGuard.Api.DTOs.FastApi;
 using FraudGuard.Api.Models;
 
 namespace FraudGuard.Api.Services
@@ -531,6 +532,8 @@ namespace FraudGuard.Api.Services
         public async Task<ModelMonitoringDto> GetModelMonitoringAsync()
         {
             var modelInfo = await _fastApiClient.GetModelInfoAsync();
+            var drift = await _fastApiClient.GetDriftAsync();
+            var (driftStatus, driftExplanation) = DescribeDrift(drift);
             var preds = await _db.FraudPredictions.AsNoTracking().ToListAsync();
 
             var total = preds.Count;
@@ -538,7 +541,7 @@ namespace FraudGuard.Api.Services
             var avgProb = total > 0 ? Math.Round(preds.Average(p => p.FraudProbability), 2) : 0m;
             var highPct = total > 0 ? Math.Round((decimal)preds.Count(p => p.RiskTier == "High") / total * 100m, 1) : 0m;
             var critPct = total > 0 ? Math.Round((decimal)preds.Count(p => p.RiskTier == "Critical") / total * 100m, 1) : 0m;
-            var avgLat = total > 0 ? (int)preds.Average(p => p.InferenceLatencyMs) : 24;
+            var avgLat = total > 0 ? (int)preds.Average(p => p.InferenceLatencyMs) : 0;
 
             // Compute histogram buckets
             var buckets = new List<ProbabilityHistogramBucketDto>
@@ -565,9 +568,33 @@ namespace FraudGuard.Api.Services
                 CriticalPercentage = critPct,
                 AverageInferenceLatencyMs = avgLat,
                 ProbabilityDistribution = buckets,
-                DriftStatus = "STABLE",
-                DriftExplanation = "Distribution bounds match training set reference quantiles."
+                DriftStatus = driftStatus,
+                DriftExplanation = driftExplanation
             };
+        }
+
+        /// <summary>
+        /// Turns the engine's PSI report into a dashboard label. Never claims stability it has not measured:
+        /// an unreachable engine or too few scored requests is reported as such.
+        /// </summary>
+        internal static (string Status, string Explanation) DescribeDrift(FastApiDriftResponse? drift)
+        {
+            if (drift == null)
+                return ("UNAVAILABLE", "The inference engine could not be reached, so no drift measurement is available.");
+
+            switch (drift.Status)
+            {
+                case "unavailable":
+                    return ("UNAVAILABLE", "The inference engine has no drift reference loaded.");
+                case "insufficient_data":
+                    return ("INSUFFICIENT_DATA",
+                        $"At least {drift.MinSamples} scored requests are needed for a reliable estimate; {drift.NSamples} seen so far.");
+                default:
+                    var top = string.Join(", ", drift.Features.Take(3).Select(f => $"{f.Feature} {f.Psi:0.000}"));
+                    return (drift.Status.ToUpperInvariant(),
+                        $"Max PSI {drift.MaxPsi:0.000} over the last {drift.NSamples} scored requests versus the reference distribution" +
+                        (top.Length > 0 ? $" (highest: {top})" : "") + ". Stable below 0.1, moderate 0.1 to 0.25, significant above 0.25.");
+            }
         }
 
         public async Task<List<LiveAlertDto>> GetLiveAlertsAsync(int limit = 10)

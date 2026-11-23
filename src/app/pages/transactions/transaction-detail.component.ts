@@ -7,6 +7,8 @@ import { Transaction } from '../../models/transaction.model';
 import { RiskBadgeComponent } from '../../shared/components/risk-badge.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge.component';
 import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
+import { AuthService } from '../../services/auth.service';
+import { buildScoreExplanation, ScoreExplanation } from '../../shared/utils/score-explanation';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -174,6 +176,63 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
               </div>
             </div>
 
+            <!-- AI score explanation (live model: calibrated probability + top feature attributions) -->
+            <div class="mb-4 p-3 bg-[#141414] rounded-lg border border-white/5 space-y-2" data-testid="score-explanation">
+              <div class="flex items-center justify-between">
+                <div class="text-[11px] text-[#737373] uppercase tracking-wider">AI Score Explanation</div>
+                <button
+                  *ngIf="canRescore"
+                  (click)="rescoreAndExplain()"
+                  [disabled]="scoring"
+                  title="Re-scores this transaction with the live model and updates the stored prediction"
+                  class="text-[11px] text-[#C5A059] hover:underline uppercase tracking-wider disabled:opacity-50 cursor-pointer"
+                >
+                  {{ scoring ? 'Scoring…' : (explanation ? 'Re-score' : 'Re-score & explain') }}
+                </button>
+              </div>
+
+              <div *ngIf="explainError" class="text-[12px] text-[#ffb4ab]" data-testid="explain-error">{{ explainError }}</div>
+
+              <div *ngIf="!explanation && !explainError && !scoring" class="text-[12px] text-[#737373]">
+                {{ canRescore ? 'Re-score to see which signals drove this risk score.' : 'Explanations are available to investigators and administrators.' }}
+              </div>
+
+              <ng-container *ngIf="explanation as ex">
+                <div class="grid grid-cols-2 gap-2 text-[12px]">
+                  <div class="p-2 bg-black/30 rounded">
+                    <div class="text-[10px] text-[#737373] uppercase">Estimated true probability</div>
+                    <div class="font-bold text-white font-mono-data" data-testid="calibrated-pct">
+                      {{ ex.calibratedPct === null ? 'n/a' : (ex.calibratedPct.toFixed(1) + '%') }}
+                    </div>
+                  </div>
+                  <div class="p-2 bg-black/30 rounded">
+                    <div class="text-[10px] text-[#737373] uppercase">Model score</div>
+                    <div class="font-bold text-white font-mono-data" data-testid="model-score-pct">{{ ex.modelScorePct.toFixed(1) }}%</div>
+                  </div>
+                </div>
+
+                <div class="space-y-1.5" data-testid="factor-list">
+                  <div *ngFor="let f of ex.factors" class="text-[11px]">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-[#D4D4D4] truncate">{{ f.label }} <span class="text-[#737373]">= {{ f.valueText }}</span></span>
+                      <span class="font-mono-data" [ngClass]="f.direction === 'up' ? 'text-[#ffb4ab]' : 'text-[#52b788]'">
+                        {{ f.direction === 'up' ? '+' : '' }}{{ f.contribution.toFixed(2) }}
+                      </span>
+                    </div>
+                    <div class="h-1 bg-[#1A1A1A] rounded-full overflow-hidden">
+                      <div class="h-1 rounded-full" [style.width.%]="f.widthPct"
+                           [ngClass]="f.direction === 'up' ? 'bg-[#e05353]' : 'bg-[#52b788]'"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-[10px] text-[#737373] leading-snug">
+                  Contributions are in log-odds of the model score (red raises, green lowers fraud risk). The tier and flag
+                  decision use the model score; the estimated probability is calibrated on held-out data.
+                </div>
+              </ng-container>
+            </div>
+
             <div class="space-y-2">
               <div class="text-[11px] text-[#737373] uppercase tracking-wider">Investigator Actions</div>
               <div class="grid grid-cols-1 gap-2">
@@ -206,13 +265,42 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
 export class TransactionDetailComponent implements OnInit {
   txn!: Transaction;
   toastMsg = '';
+  scoring = false;
+  explanation: ScoreExplanation | null = null;
+  explainError = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private transactionService: TransactionService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private authService: AuthService
   ) {}
+
+  /** Mirrors the API's rule for POST /fraud/predict (ADMIN or INVESTIGATOR). */
+  get canRescore(): boolean {
+    return this.authService.hasAnyRole(['ADMIN', 'INVESTIGATOR']);
+  }
+
+  rescoreAndExplain(): void {
+    if (this.scoring || !this.txn?.transactionId) return;
+    this.scoring = true;
+    this.explainError = '';
+    this.transactionService.predictTransaction(this.txn.transactionId).subscribe({
+      next: res => {
+        this.scoring = false;
+        if (res.success && res.data) {
+          this.explanation = buildScoreExplanation(res.data);
+        } else {
+          this.explainError = res.message || 'The scoring service returned no result.';
+        }
+      },
+      error: (err: Error) => {
+        this.scoring = false;
+        this.explainError = err.message;
+      }
+    });
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');

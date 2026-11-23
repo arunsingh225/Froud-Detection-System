@@ -12,6 +12,7 @@ namespace FraudGuard.Api.Services
     {
         Task<FastApiHealthResponse?> GetHealthAsync(CancellationToken cancellationToken = default);
         Task<FastApiModelInfoResponse?> GetModelInfoAsync(CancellationToken cancellationToken = default);
+        Task<FastApiDriftResponse?> GetDriftAsync(CancellationToken cancellationToken = default);
         Task<FastApiPredictionResponse> PredictAsync(FastApiPredictionRequest request, CancellationToken cancellationToken = default);
         Task<InvestigationResultDto> InvestigateAsync(FastApiInvestigationRequest request, CancellationToken cancellationToken = default);
     }

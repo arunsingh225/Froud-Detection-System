@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace FraudGuard.Api.DTOs.Fraud
 {
@@ -22,5 +23,18 @@ namespace FraudGuard.Api.DTOs.Fraud
         public string ModelVersion { get; set; } = "1.0";
         public string AnomalyReason { get; set; } = string.Empty;
         public DateTimeOffset PredictedAt { get; set; }
+
+        /// <summary>Calibrated estimate of the true fraud probability (0-1); FraudProbability is the uncalibrated model score.</summary>
+        public decimal? CalibratedProbability { get; set; }
+
+        /// <summary>Top feature attributions for this score (log-odds; positive pushes towards fraud).</summary>
+        public List<FactorContributionDto>? TopFactors { get; set; }
+    }
+
+    public class FactorContributionDto
+    {
+        public string Feature { get; set; } = string.Empty;
+        public double? Value { get; set; }
+        public double Contribution { get; set; }
     }
 }

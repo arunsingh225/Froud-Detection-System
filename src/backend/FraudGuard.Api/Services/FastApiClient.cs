@@ -69,6 +69,29 @@ namespace FraudGuard.Api.Services
             }
         }
 
+        public async Task<FastApiDriftResponse?> GetDriftAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync("/model/drift", cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning("FastAPI drift endpoint returned HTTP {StatusCode}", response.StatusCode);
+                    return null;
+                }
+
+                return await response.Content.ReadFromJsonAsync<FastApiDriftResponse>(JsonOptions, cancellationToken);
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or OperationCanceledException)
+            {
+                _logger.LogWarning("Unable to retrieve FastAPI drift report: {Message}", ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>Scoring also asks the engine for the top feature attributions (about 10 ms extra per prediction).</summary>
+        internal const string PredictPath = "/predict?explain=true&top_k=5";
+
         public async Task<FastApiPredictionResponse> PredictAsync(FastApiPredictionRequest request, CancellationToken cancellationToken = default)
         {
             const int maxRetries = 2;
@@ -79,7 +102,7 @@ namespace FraudGuard.Api.Services
                 attempt++;
                 try
                 {
-                    var response = await _httpClient.PostAsJsonAsync("/predict", request, JsonOptions, cancellationToken);
+                    var response = await _httpClient.PostAsJsonAsync(PredictPath, request, JsonOptions, cancellationToken);
 
                     if (response.IsSuccessStatusCode)
                     {
