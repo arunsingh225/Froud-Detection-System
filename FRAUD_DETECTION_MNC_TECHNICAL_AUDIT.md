@@ -490,3 +490,9 @@ Also: the ML tests assert only structural properties (keys present, 200 OK), not
 | Real-database integration tests (`FG_TEST_SQL`, skipped by default) | 4/4 pass on SQL Server: every dashboard KPI query translates and the threat counts match stored categories; SQL backfill agrees with the C# classifier for every seeded alert; token revocation persists across a new service instance; COMPLIANCE accepted | ran |
 | Correction: no script hazard | An earlier note claimed `01_create_database_and_schema.sql` was unsafe about file paths. That was caused by my verification setup (a second LocalDB instance sharing the profile directory with the real instance's `.mdf`), not by the script: in normal use the database lives in the same instance, so `IF NOT EXISTS` skips creation. SQL Server refused to overwrite the file; nothing was harmed | observed |
 | Still open | CI job `backend-sql` (SQL Server container + scripts + integration tests) is written but has **not run yet**; the synthetic-data procedure produced no High/Critical alerts in the 40-row run, so its in-procedure backfill is compiled but not exercised | n/a |
+
+### Tenth pass: end-to-end compose smoke test (written, not yet run)
+
+| Item | Result | Verified by |
+|---|---|---|
+| "One command brings up the whole stack" was never exercised (db-init, API, engine, nginx together) | New CI job `compose-smoke`: `docker compose up --build` with the demo seed, then real HTTP checks through nginx: SPA served + security headers; anonymous call is 401; ADMIN login sets an HttpOnly cookie; authenticated call works; AI engine reachable via `/api/fraud/engine-health`; cookie POST without `X-Requested-With` is 403; after logout the old token is 401 (persistent revocation) | workflow YAML parses; routes and response field names checked against the controllers. **Not run**: Docker Desktop was not running locally and was deliberately not started; the first CI run will show it |
