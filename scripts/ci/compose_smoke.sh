@@ -22,24 +22,25 @@ fail() {
 # request <outfile-prefix> <curl args...>  -> sets STATUS, writes $TMP/<prefix>.body and $TMP/<prefix>.headers
 request() {
   local name="$1"; shift
+  FILE="$TMP/${name//[^A-Za-z0-9]/_}"   # check names contain spaces and slashes: never use them as paths
   # curl itself prints 000 as the status when the connection fails, so just ignore its exit code
-  STATUS=$(curl -s -o "$TMP/$name.body" -D "$TMP/$name.headers" -w '%{http_code}' "$@" || true)
+  STATUS=$(curl -s -o "$FILE.body" -D "$FILE.headers" -w '%{http_code}' "$@" || true)
 }
 
 # expect <name> <expected-status> <needle-or-empty> <curl args...>
 expect() {
   local name="$1" want="$2" needle="$3"; shift 3
   request "$name" "$@"
-  if [ "$STATUS" != "$want" ]; then fail "$name (expected HTTP $want)" "$STATUS" "$TMP/$name.body"; return 1; fi
-  if [ -n "$needle" ] && ! grep -qF -- "$needle" "$TMP/$name.body"; then
-    fail "$name (body missing: $needle)" "$STATUS" "$TMP/$name.body"; return 1
+  if [ "$STATUS" != "$want" ]; then fail "$name (expected HTTP $want)" "$STATUS" "$FILE.body"; return 1; fi
+  if [ -n "$needle" ] && ! grep -qF -- "$needle" "$FILE.body"; then
+    fail "$name (body missing: $needle)" "$STATUS" "$FILE.body"; return 1
   fi
   pass "$name"
 }
 
 # 1. SPA
 expect "SPA index served" 200 "<app-root" "$BASE/"
-grep -qi "x-content-type-options: nosniff" "$TMP/SPA index served.headers" 2>/dev/null \
+grep -qi "x-content-type-options: nosniff" "$FILE.headers" 2>/dev/null \
   && pass "SPA security headers" || fail "SPA security headers" "-" "/dev/null"
 
 # 2. anonymous API call is rejected
@@ -65,9 +66,9 @@ if [ -n "$TOKEN" ]; then
   # 5. AI engine reachable through the API
   expect "AI engine reachable via API (engine-health)" 200 'modelLoaded":true' -H "$COOKIE" "$BASE/api/fraud/engine-health"
   # 6. CSRF header required for cookie-authenticated unsafe requests
-  expect "CSRF: POST without X-Requested-With is blocked" 403 "" -X POST -H "$COOKIE" "$BASE/api/auth/logout"
+  expect "CSRF: POST without X-Requested-With is blocked" 403 "" -X POST -H "$COOKIE"     -H 'Content-Type: application/json' -d '{}' "$BASE/api/auth/logout"
   # 7. logout, then the old token must be rejected (persistent revocation)
-  expect "logout with CSRF header" 200 "" -X POST -H "$COOKIE" -H 'X-Requested-With: XMLHttpRequest' "$BASE/api/auth/logout"
+  expect "logout with CSRF header" 200 "" -X POST -H "$COOKIE" -H 'X-Requested-With: XMLHttpRequest'     -H 'Content-Type: application/json' -d '{}' "$BASE/api/auth/logout"
   expect "revoked token is rejected after logout" 401 "" -H "$COOKIE" "$BASE/api/auth/me"
 fi
 
