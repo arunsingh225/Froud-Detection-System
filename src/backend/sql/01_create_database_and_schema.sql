@@ -257,6 +257,7 @@ CREATE TABLE dbo.FraudAlerts (
     Severity            NVARCHAR(20)        NOT NULL,
     AlertType           NVARCHAR(100)       NOT NULL,
     Reason              NVARCHAR(MAX)       NOT NULL,
+    Category            NVARCHAR(30)        NOT NULL DEFAULT N'Other',  -- see AlertCategories.cs
     Status              NVARCHAR(30)        NOT NULL DEFAULT 'Open',
     AssignedToUserId    UNIQUEIDENTIFIER    NULL,
     ResolvedAt          DATETIMEOFFSET      NULL,
@@ -269,7 +270,8 @@ CREATE TABLE dbo.FraudAlerts (
     CONSTRAINT FK_FraudAlerts_Customers FOREIGN KEY (CustomerId) REFERENCES dbo.Customers(CustomerId),
     CONSTRAINT FK_FraudAlerts_Users FOREIGN KEY (AssignedToUserId) REFERENCES dbo.Users(UserId),
     CONSTRAINT CK_FraudAlerts_Severity CHECK (Severity IN ('Critical', 'High', 'Medium', 'Low')),
-    CONSTRAINT CK_FraudAlerts_Status CHECK (Status IN ('Open', 'Investigating', 'Escalated', 'Resolved'))
+    CONSTRAINT CK_FraudAlerts_Status CHECK (Status IN ('Open', 'Investigating', 'Escalated', 'Resolved')),
+    CONSTRAINT CK_FraudAlerts_Category CHECK (Category IN (N'AccountTakeover', N'VelocitySpike', N'SyntheticIdentity', N'CardTesting', N'Other'))
 );
 GO
 
@@ -427,6 +429,7 @@ CREATE NONCLUSTERED INDEX IX_FraudPredictions_RiskTier_Prob ON dbo.FraudPredicti
 INCLUDE (TransactionId, VelocityRatio);
 
 -- FraudAlerts
+CREATE NONCLUSTERED INDEX IX_FraudAlerts_Category ON dbo.FraudAlerts(Category);
 CREATE NONCLUSTERED INDEX IX_FraudAlerts_Status_Severity ON dbo.FraudAlerts(Status, Severity DESC)
 INCLUDE (AlertCode, TransactionId, CustomerId, CreatedAt);
 

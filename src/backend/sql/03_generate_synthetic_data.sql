@@ -198,6 +198,16 @@ BEGIN
         SET @i = @i + 1;
     END;
 
+    -- Categorise generated alerts
+    UPDATE dbo.FraudAlerts SET Category =
+        CASE
+            WHEN AlertType LIKE N'%Takeover%'  OR Reason LIKE N'%Device%' OR Reason LIKE N'%Root%'   THEN N'AccountTakeover'
+            WHEN AlertType LIKE N'%Velocity%'  OR Reason LIKE N'%Velocity%'                          THEN N'VelocitySpike'
+            WHEN AlertType LIKE N'%Synthetic%' OR Reason LIKE N'%Synthetic%' OR Reason LIKE N'%AML%' THEN N'SyntheticIdentity'
+            WHEN AlertType LIKE N'%Auth%'      OR Reason LIKE N'%Auth%' OR Reason LIKE N'%PIN%'      THEN N'CardTesting'
+            ELSE N'Other'
+        END;   -- mirrors AlertCategories.Classify()
+
     PRINT 'Successfully generated ' + CAST(@TransactionCount AS VARCHAR(10)) + ' synthetic transaction and risk records.';
 END;
 GO

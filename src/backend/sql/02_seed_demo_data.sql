@@ -295,5 +295,14 @@ VALUES
 (N'AUD-2026-007', @U_Priyanka, N'System Admin', N'ADMIN', N'Rule Modified', N'Velocity threshold updated: ₹5L → ₹3L', N'RULE-VEL-004', N'SUCCESS', N'Rule Modification', N'd4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3'),
 (N'AUD-2026-008', @U_Priyanka, N'Priyanka Iyer', N'ADMIN', N'Batch Data Export', N'Q4-2025 AML audit export — encrypted zip', N'BATCH-Q4-2025', N'SUCCESS', N'Data Export', N'e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4');
 
+-- Categorise seeded alerts
+UPDATE dbo.FraudAlerts SET Category =
+    CASE
+        WHEN AlertType LIKE N'%Takeover%'  OR Reason LIKE N'%Device%' OR Reason LIKE N'%Root%'   THEN N'AccountTakeover'
+        WHEN AlertType LIKE N'%Velocity%'  OR Reason LIKE N'%Velocity%'                          THEN N'VelocitySpike'
+        WHEN AlertType LIKE N'%Synthetic%' OR Reason LIKE N'%Synthetic%' OR Reason LIKE N'%AML%' THEN N'SyntheticIdentity'
+        WHEN AlertType LIKE N'%Auth%'      OR Reason LIKE N'%Auth%' OR Reason LIKE N'%PIN%'      THEN N'CardTesting'
+        ELSE N'Other'
+    END;   -- mirrors AlertCategories.Classify()
 GO
 PRINT 'Seed demo data inserted successfully into FraudGuardAI_DB.'

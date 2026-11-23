@@ -110,6 +110,7 @@ namespace FraudGuard.Api.Services
                         Severity = NormalizeRiskTier(fastApiResult.RiskLevel),
                         AlertType = "ML_FRAUD_DETECTION",
                         Reason = $"AI Fraud Detection Engine flagged transaction with {fastApiResult.FraudProbability:P1} probability ({fastApiResult.RiskLevel} Risk).",
+                        Category = AlertCategories.Other, // a model score alone does not identify a threat type
                         Status = "Open",
                         CreatedAt = DateTimeOffset.UtcNow,
                         UpdatedAt = DateTimeOffset.UtcNow

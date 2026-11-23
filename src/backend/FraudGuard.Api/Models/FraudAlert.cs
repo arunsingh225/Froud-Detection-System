@@ -22,7 +22,11 @@ namespace FraudGuard.Api.Models
         
         [MaxLength(2000)]
         public string Reason { get; set; } = string.Empty;
-        
+
+        /// <summary>Threat category (see <see cref="AlertCategories"/>); stored so analytics can use an index instead of substring scans.</summary>
+        [MaxLength(30)]
+        public string Category { get; set; } = AlertCategories.Other;
+
         [MaxLength(50)]
         public string Status { get; set; } = "Open"; // Open, Investigating, Escalated, Resolved
         

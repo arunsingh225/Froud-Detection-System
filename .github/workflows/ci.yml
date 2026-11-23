@@ -32,6 +32,39 @@ jobs:
       - uses: actions/upload-artifact@v4
         with: { name: dotnet-coverage, path: coverage }
 
+  # Runs the real SQL scripts (schema, seed, migrations) and the SQL Server integration tests that the
+  # EF InMemory provider cannot cover (query translation, constraints, persistent token revocation).
+  backend-sql:
+    runs-on: ubuntu-latest
+    env:
+      SA_PASSWORD: "Ci_Str0ng!Passw0rd"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "8.0.x" }
+      - name: Start SQL Server
+        run: |
+          docker run -d --name sql -e ACCEPT_EULA=Y -e "MSSQL_SA_PASSWORD=$SA_PASSWORD" -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+          for i in $(seq 1 40); do
+            docker exec sql /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "$SA_PASSWORD" -Q "SELECT 1" > /dev/null 2>&1 && exit 0
+            sleep 3
+          done
+          docker logs sql; exit 1
+      - name: Apply schema, demo seed and migrations
+        run: |
+          docker cp src/backend/sql sql:/sql
+          run_sql() { docker exec sql /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "$SA_PASSWORD" -b "$@"; }
+          run_sql -i /sql/01_create_database_and_schema.sql
+          run_sql -v ALLOW_DEMO_SEED=YES -i /sql/02_seed_demo_data.sql
+          run_sql -i /sql/05_security_hardening_migration.sql   # idempotent upgrade scripts must be no-ops on a fresh schema
+          run_sql -i /sql/06_alert_category.sql
+          # the seed must be refused without the explicit opt-in
+          if run_sql -i /sql/02_seed_demo_data.sql; then echo "seed ran without opt-in"; exit 1; fi
+      - name: SQL Server integration tests
+        env:
+          FG_TEST_SQL: "Server=localhost,1433;Database=FraudGuardAI_DB;User Id=sa;Password=Ci_Str0ng!Passw0rd;TrustServerCertificate=True"
+        run: dotnet test src/backend/FraudGuard.Api.Tests --filter "FullyQualifiedName~SqlServerIntegrationTests"
+
   frontend:
     runs-on: ubuntu-latest
     steps:
@@ -46,7 +79,7 @@ jobs:
 
   docker:
     runs-on: ubuntu-latest
-    needs: [ai-engine, backend, frontend]
+    needs: [ai-engine, backend, backend-sql, frontend]
     steps:
       - uses: actions/checkout@v4
       - run: docker build -f deploy/ai-engine.Dockerfile -t fraudguard-ai-engine .

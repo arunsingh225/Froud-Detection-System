@@ -102,11 +102,17 @@ npm start
 
 ## Testing & Verification
 
-### ASP.NET Core xUnit Test Suite (44 tests)
+### ASP.NET Core xUnit Test Suite (70 tests + 4 SQL Server integration tests)
 ```bash
 # Run backend security, JWT, and authorization unit tests
 dotnet test src/backend/FraudGuard.Api.Tests
+
+# Optional: real SQL Server integration tests (skipped unless set). Use a THROWAWAY database that already
+# has sql/01, 02 (seed, -v ALLOW_DEMO_SEED=YES), 05 and 06 applied; the tests modify data.
+FG_TEST_SQL="Server=(localdb)\X;Database=Y;Trusted_Connection=True;TrustServerCertificate=True" dotnet test src/backend/FraudGuard.Api.Tests
 ```
+
+> **Upgrading an existing database:** run `src/backend/sql/05_security_hardening_migration.sql` and `06_alert_category.sql` once (both idempotent).
 
 ### Full Backend API Test Suite (35 endpoints)
 ```bash
