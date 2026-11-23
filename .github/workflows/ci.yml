@@ -139,7 +139,13 @@ jobs:
           echo "ALL SMOKE CHECKS PASSED"
       - name: Logs on failure
         if: failure()
-        run: docker compose ps; docker compose logs --no-color | tail -200
+        run: |
+          docker compose ps -a || true
+          # Also surface the tail of each service log as an annotation (readable without admin rights to the raw logs).
+          for svc in db db-init ai-engine api web; do
+            body=$(docker compose logs --no-color --tail 30 "$svc" 2>&1 | sed -e 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g')
+            echo "::error title=compose logs: $svc::$body"
+          done
       - name: Tear down
         if: always()
         run: docker compose down -v
