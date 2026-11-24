@@ -119,6 +119,8 @@ namespace FraudGuard.Api.Services
 
             if (t == null) return null;
 
+            var (calibrated, factors) = PredictionExplanationStore.TryParse(t.FraudPrediction?.TopRiskDriversJson);
+
             return new TransactionDto
             {
                 TransactionId = t.TransactionId,
@@ -146,7 +148,9 @@ namespace FraudGuard.Api.Services
                 AnomalyReason = t.FraudPrediction != null ? t.FraudPrediction.AnomalyReason : "Routine transaction",
                 FormattedDate = t.TransactionTimestamp.ToString("MMM dd, yyyy"),
                 FormattedTime = t.TransactionTimestamp.ToString("HH:mm:ss IST"),
-                Timestamp = t.TransactionTimestamp
+                Timestamp = t.TransactionTimestamp,
+                CalibratedProbability = calibrated,
+                TopFactors = factors
             };
         }
 

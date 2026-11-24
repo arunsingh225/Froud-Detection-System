@@ -81,6 +81,8 @@ namespace FraudGuard.Api.Services
             prediction.InferenceLatencyMs = (int)sw.ElapsedMilliseconds;
             prediction.AnomalyReason = $"FastAPI AI Engine scored transaction with {fastApiResult.FraudProbability:P1} probability ({fastApiResult.RiskLevel} Risk).";
             prediction.PredictedAt = DateTimeOffset.UtcNow;
+            // Keep the explanation with the prediction (audit trail); null when the engine sent none.
+            prediction.TopRiskDriversJson = PredictionExplanationStore.Serialize(fastApiResult);
 
             // 5. Operational Fraud Alert Generation with Idempotency Protection
             bool alertCreated = false;

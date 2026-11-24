@@ -82,6 +82,7 @@ class SuspiciousFinding(BaseModel):
     severity: str = Field(..., description="CRITICAL, HIGH, MEDIUM, LOW.")
     explanation: str = Field(..., description="Evidence-backed reasoning explaining the risk.")
     evidence_ids: List[str] = Field(default_factory=list, description="IDs of supporting evidence items.")
+    policy_chunk_ids: List[str] = Field(default_factory=list, description="IDs of cited policy excerpts (only set by LLM providers; validated against the retrieved chunks).")
 
 
 class InvestigationResult(BaseModel):

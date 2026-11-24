@@ -31,6 +31,12 @@ namespace FraudGuard.Api.DTOs.Transactions
         public string FormattedDate { get; set; } = string.Empty;
         public string FormattedTime { get; set; } = string.Empty;
         public DateTimeOffset Timestamp { get; set; }
+
+        /// <summary>Calibrated probability stored with the prediction (detail endpoint only).</summary>
+        public decimal? CalibratedProbability { get; set; }
+
+        /// <summary>Top feature attributions stored with the prediction (detail endpoint only).</summary>
+        public System.Collections.Generic.List<FraudGuard.Api.DTOs.Fraud.FactorContributionDto>? TopFactors { get; set; }
     }
 
     public class CreateTransactionDto

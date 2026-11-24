@@ -563,3 +563,18 @@ Also: the ML tests assert only structural properties (keys present, 200 OK), not
 | 29 `any` usages and a warning-only lint gate | All removed (`asUnion` typed helper, proper unions, `unknown` in catch blocks, a `NavigationEnd` type guard). `no-explicit-any` is now an error and `lint:ci` uses `--max-warnings 0` | lint 0 errors / 0 warnings; mutation (adding an `any`) fails the gate |
 | **Angular 17 (EOL) with 8 production advisories (4 high)** | Upgraded 17 to 18 to 19 to 20.3 one major at a time, in an isolated copy first (build, lint and all tests green after each hop), then in the repo. TypeScript 5.8, zone.js 0.15. Auto-migrations: HTTP testing providers in 4 specs, removal of redundant `standalone: true` from 17 components. Fixed the new compiler warning (an unused import) | production `npm audit`: **0 vulnerabilities** (was 8); full tree 68 (4 critical) to 35 (31 moderate, 4 high, no critical, all build tooling); build OK (initial bundle 597 kB); Karma 53/53 |
 | Open | 35 advisories remain in the dev toolchain (not shipped). Angular 21 is the current major; 20 is the supported line used here. Unchecked: the production UI was not exercised in a real browser session in this pass | n/a |
+
+### Eighteenth pass: Angular 20 in a real browser, LLM narrative provider
+
+| Item | Result | Verified by |
+|---|---|---|
+| Production UI after the Angular 20 upgrade was only unit-tested | Built output served and loaded in headless Chrome: the app boots, the router redirects to `/login`, the login form renders, no runtime JS errors | ran (a smoke check, not a full UI test) |
+| The "LLM provider" was a stub (audit §6) | `AnthropicProvider`: **the LLM explains, the rules decide.** The rule engine's action and confidence are final (an action returned by the model is ignored); the model writes only the summary and finding explanations; every cited evidence ID and policy chunk must have been supplied (one fabricated ID rejects the whole answer; each finding needs at least one evidence ID); untrusted fields travel as JSON data under a system prompt that says so; no key, timeout, HTTP error, non-JSON or non-conforming output falls back to the rule engine with `is_fallback=true` and a reason; the API key is never logged | 18 new tests on an httpx mock transport; mutation (disabling the evidence-ID check) fails one; pytest 95/95, coverage 93% |
+| Caveat | **No live call was made** (no API key available): the request shape, headers and model id come from the documented Messages API and the mock tests, not from a real response. Output quality (prompt wording, token budget, latency) is untested. `httpx` became a runtime dependency | n/a |
+
+### Nineteenth pass: explanations kept with the prediction
+
+| Item | Result | Verified by |
+|---|---|---|
+| Explanations existed only for a live re-score; the stored prediction said nothing about why it was scored that way | Scoring now stores the calibrated probability and the top feature attributions in the existing `FraudPredictions.TopRiskDriversJson` column (no schema change), and `GET /api/transactions/{id}` returns them. Reading never throws: pre-existing free-form content in that column is ignored | 11 new xUnit tests (round trip, camelCase and null omission, malformed and foreign content, persistence and read-back through the service); dotnet 93 pass + 6 SQL-gated |
+| Not yet done | The Transaction Detail panel does not read the stored explanation yet (it still needs a click on "Re-score & explain"); the list endpoint does not include it by design | open |

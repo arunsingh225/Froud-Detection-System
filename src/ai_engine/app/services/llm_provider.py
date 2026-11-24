@@ -152,18 +152,29 @@ class DeterministicTemplateProvider(ILLMProvider):
         }
 
 
-SUPPORTED_PROVIDERS = {"deterministic"}
+SUPPORTED_PROVIDERS = {"deterministic", "anthropic"}
 
 
 def get_llm_provider() -> ILLMProvider:
     """
     Factory selecting the synthesis provider from LLM_PROVIDER.
 
-    Only the deterministic rule engine is implemented. Requesting any other provider
-    logs a warning (rather than silently pretending) and falls back to it; the response
-    metadata reports is_fallback=True.
+    "deterministic" (default) is the rule engine. "anthropic" adds an LLM-written narrative on top of it
+    (see anthropic_provider.py) and needs LLM_API_KEY; without a key it logs a warning and uses the rule engine.
+    Any other value is not implemented: it logs a warning and uses the rule engine (never silently pretends).
     """
     provider_type = os.environ.get("LLM_PROVIDER", "deterministic").strip().lower()
+    if provider_type == "anthropic":
+        api_key = os.environ.get("LLM_API_KEY", "").strip()
+        if not api_key:
+            logger.warning("LLM_PROVIDER=anthropic but LLM_API_KEY is not set; using deterministic rule engine.")
+            return DeterministicTemplateProvider()
+        from app.services.anthropic_provider import AnthropicProvider, DEFAULT_MODEL
+        return AnthropicProvider(
+            api_key=api_key,
+            model=os.environ.get("LLM_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL,
+            timeout_seconds=float(os.environ.get("LLM_TIMEOUT_SECONDS", "20")),
+        )
     if provider_type not in SUPPORTED_PROVIDERS:
         logger.warning(
             f"LLM_PROVIDER='{provider_type}' is not implemented; using deterministic rule engine."
