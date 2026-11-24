@@ -14,7 +14,7 @@ namespace FraudGuard.Api.Models
         public Guid TransactionId { get; set; }
         public Guid CustomerId { get; set; }
         
-        [MaxLength(50)]
+        [MaxLength(20)]
         public string Severity { get; set; } = "High"; // Critical, High, Medium, Low
         
         [MaxLength(100)]
@@ -27,7 +27,7 @@ namespace FraudGuard.Api.Models
         [MaxLength(30)]
         public string Category { get; set; } = AlertCategories.Other;
 
-        [MaxLength(50)]
+        [MaxLength(30)]
         public string Status { get; set; } = "Open"; // Open, Investigating, Escalated, Resolved
         
         public Guid? AssignedToUserId { get; set; }
@@ -52,15 +52,15 @@ namespace FraudGuard.Api.Models
         public Guid TransactionId { get; set; }
         public Guid CustomerId { get; set; }
         
-        [MaxLength(50)]
+        [MaxLength(20)]
         public string Priority { get; set; } = "Medium"; // Critical, High, Medium, Low
         
-        [MaxLength(50)]
+        [MaxLength(30)]
         public string Status { get; set; } = "New"; // New, Investigating, Pending Review, Escalated, Resolved, Approved, Rejected
         
         public Guid? AssignedInvestigatorId { get; set; }
         
-        [MaxLength(100)]
+        [MaxLength(50)]
         public string? ResolutionDecision { get; set; } // Approved, Auto-Flag for Review, Escalated, Rejected
         
         [MaxLength(4000)]

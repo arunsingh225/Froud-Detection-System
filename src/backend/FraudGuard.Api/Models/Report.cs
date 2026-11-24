@@ -17,16 +17,16 @@ namespace FraudGuard.Api.Models
         [MaxLength(200)]
         public string ReportTitle { get; set; } = string.Empty;
         
-        [MaxLength(100)]
+        [MaxLength(50)]
         public string Category { get; set; } = "SAR Report"; // SAR Report, AML Audit Summary, Account Takeover, Velocity Anomaly
         
-        [MaxLength(50)]
+        [MaxLength(20)]
         public string RiskLevel { get; set; } = "HIGH"; // CRITICAL, HIGH, MEDIUM, LOW
         
         public Guid? GeneratedByUserId { get; set; }
         public bool IsAiGenerated { get; set; } = false;
         
-        [MaxLength(50)]
+        [MaxLength(30)]
         public string Status { get; set; } = "Draft"; // Draft, Under Review, Published, Archived
         
         [MaxLength(2000)]
@@ -54,10 +54,10 @@ namespace FraudGuard.Api.Models
         
         public Guid? ActorId { get; set; }
         
-        [MaxLength(200)]
+        [MaxLength(100)]
         public string ActorName { get; set; } = string.Empty;
         
-        [MaxLength(50)]
+        [MaxLength(30)]
         public string ActorType { get; set; } = "INVESTIGATOR"; // AI AGENT, INVESTIGATOR, SERVICE, ADMIN, EXTERNAL
         
         [MaxLength(100)]
@@ -66,13 +66,13 @@ namespace FraudGuard.Api.Models
         [MaxLength(200)]
         public string? SubAction { get; set; }
         
-        [MaxLength(200)]
+        [MaxLength(100)]
         public string ResourceTarget { get; set; } = string.Empty;
         
-        [MaxLength(50)]
+        [MaxLength(20)]
         public string Result { get; set; } = "SUCCESS"; // SUCCESS, PENDING, FAILED
         
-        [MaxLength(100)]
+        [MaxLength(50)]
         public string Category { get; set; } = "Investigation"; // Authentication, Investigation, Policy Change, Data Export, Rule Modification
         
         [MaxLength(4000)]
@@ -81,7 +81,7 @@ namespace FraudGuard.Api.Models
         [MaxLength(45)]
         public string? IPAddress { get; set; }
         
-        [MaxLength(128)]
+        [MaxLength(64)]
         public string? MerkleHash { get; set; }
         
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;

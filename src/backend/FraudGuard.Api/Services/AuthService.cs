@@ -61,7 +61,7 @@ namespace FraudGuard.Api.Services
 
                 // Record failed login audit log without exposing if user exists
                 await _auditLogService.LogActivityAsync(
-                    actorName: request.Email.Length <= 200 ? request.Email : request.Email[..200],
+                    actorName: request.Email.Length <= 100 ? request.Email : request.Email[..100], // AuditLogs.ActorName is NVARCHAR(100)
                     actorType: "EXTERNAL",
                     action: "LOGIN_FAILURE",
                     resourceTarget: "Authentication",

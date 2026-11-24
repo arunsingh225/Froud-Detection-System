@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -88,6 +89,25 @@ namespace FraudGuard.Api.Tests
 
             await using var verify = NewDb();
             Assert.NotNull((await verify.Users.AsNoTracking().FirstAsync(u => u.UserId == userId)).TokensRevokedAt);
+        }
+
+        [SqlServerFact]
+        public async Task FailedLogin_WithAVeryLongEmail_IsAuditedWithoutASqlTruncationError()
+        {
+            // AuditLogs.ActorName is NVARCHAR(100) but the code used to keep up to 200 characters, so a login attempt with a
+            // long (still valid-looking) email crashed the audit insert with "String or binary data would be truncated".
+            await using var db = NewDb();
+            var config = new Microsoft.Extensions.Configuration.ConfigurationBuilder().AddInMemoryCollection(
+                new System.Collections.Generic.Dictionary<string, string?> { { "Jwt:SecretKey", "TestSecretKeyForJwtAuthenticationMustBeAtLeast256BitsLong12345678!" } }).Build();
+            var auth = new AuthService(db, new JwtTokenService(config),
+                new Microsoft.AspNetCore.Identity.PasswordHasher<User>(), new AuditLogService(db), TestRevocation.Create(db));
+            var longEmail = new string('a', 150) + "@example.test";
+
+            var result = await auth.LoginAsync(new FraudGuard.Api.DTOs.Auth.LoginRequestDto { Email = longEmail, Password = "wrong-password" });
+
+            Assert.Null(result);   // a plain failed login, not an exception
+            var logged = await db.AuditLogs.AsNoTracking().OrderByDescending(a => a.CreatedAt).FirstAsync();
+            Assert.Equal(100, logged.ActorName.Length);
         }
 
         [SqlServerFact]

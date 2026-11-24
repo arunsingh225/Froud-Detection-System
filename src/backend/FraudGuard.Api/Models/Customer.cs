@@ -11,19 +11,19 @@ namespace FraudGuard.Api.Models
         [MaxLength(50)]
         public string CustomerCode { get; set; } = string.Empty;
         
-        [MaxLength(50)]
+        [MaxLength(20)]
         public string CustomerType { get; set; } = "INDIVIDUAL"; // INDIVIDUAL, CORPORATE
         
-        [MaxLength(200)]
+        [MaxLength(150)]
         public string FullName { get; set; } = string.Empty;
         
-        [MaxLength(256)]
+        [MaxLength(255)]
         public string Email { get; set; } = string.Empty;
         
         [MaxLength(20)]
         public string? Phone { get; set; }
         
-        [MaxLength(500)]
+        [MaxLength(255)]
         public string? AddressLine { get; set; }
         
         [MaxLength(100)]
@@ -44,7 +44,7 @@ namespace FraudGuard.Api.Models
         [MaxLength(20)]
         public string? AadhaarMasked { get; set; }
         
-        [MaxLength(50)]
+        [MaxLength(20)]
         public string KYCStatus { get; set; } = "Pending"; // Verified, Pending, Failed, Expired
         
         public int CustomerSinceYear { get; set; } = DateTime.UtcNow.Year;
@@ -53,10 +53,10 @@ namespace FraudGuard.Api.Models
         public decimal Rolling30dVolume { get; set; }
         public decimal RiskScore { get; set; }
         
-        [MaxLength(50)]
+        [MaxLength(20)]
         public string RiskTier { get; set; } = "Low"; // Critical, High, Medium, Low
         
-        [MaxLength(50)]
+        [MaxLength(30)]
         public string Status { get; set; } = "Active"; // Active, Under Review, Suspended, Closed
         
         public int PriorFlagsCount { get; set; }

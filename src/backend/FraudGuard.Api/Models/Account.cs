@@ -16,16 +16,16 @@ namespace FraudGuard.Api.Models
         [MaxLength(50)]
         public string AccountNumber { get; set; } = string.Empty;
         
-        [MaxLength(50)]
+        [MaxLength(30)]
         public string AccountType { get; set; } = "SAVINGS"; // SAVINGS, CURRENT, CREDIT_CARD, VIRTUAL_WALLET, CORPORATE
         
-        [MaxLength(30)]
+        [MaxLength(3)]
         public string Currency { get; set; } = "INR";
         
         public decimal CurrentBalance { get; set; }
         public decimal DailyLimit { get; set; } = 1000000.00m;
         
-        [MaxLength(50)]
+        [MaxLength(30)]
         public string Status { get; set; } = "ACTIVE"; // ACTIVE, FLAGGED, RESTRICTED, FROZEN, CLOSED
         
         public DateOnly OpenedDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);

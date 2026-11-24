@@ -11,16 +11,16 @@ namespace FraudGuard.Api.Models
         [MaxLength(50)]
         public string UserCode { get; set; } = string.Empty;
         
-        [MaxLength(200)]
+        [MaxLength(100)]
         public string FullName { get; set; } = string.Empty;
         
-        [MaxLength(256)]
+        [MaxLength(255)]
         public string Email { get; set; } = string.Empty;
         
-        [MaxLength(500)]
+        [MaxLength(255)]
         public string PasswordHash { get; set; } = string.Empty;
         
-        [MaxLength(50)]
+        [MaxLength(30)]
         public string Role { get; set; } = "INVESTIGATOR"; // ADMIN, INVESTIGATOR, ANALYST, VIEWER
         
         [MaxLength(100)]

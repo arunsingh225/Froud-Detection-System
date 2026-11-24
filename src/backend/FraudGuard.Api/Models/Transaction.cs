@@ -40,7 +40,7 @@ namespace FraudGuard.Api.Models
         public bool TorExitNode { get; set; }
         public DateTimeOffset TransactionTimestamp { get; set; } = DateTimeOffset.UtcNow;
         
-        [MaxLength(50)]
+        [MaxLength(30)]
         public string Status { get; set; } = "Pending Review"; // Pending Review, Investigating, Escalated, Resolved, Approved, Rejected
         
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
@@ -69,7 +69,7 @@ namespace FraudGuard.Api.Models
         
         public decimal FraudProbability { get; set; }
         
-        [MaxLength(50)]
+        [MaxLength(20)]
         public string RiskTier { get; set; } = "Low"; // Critical, High, Medium, Low
         
         public int InferenceLatencyMs { get; set; } = 24;
