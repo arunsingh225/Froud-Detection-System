@@ -36,6 +36,8 @@ export function mapDtoToTransaction(dto: TransactionDto): Transaction {
     ip: dto.ipAddress || '127.0.0.1',
     vpnDetected: dto.vpnDetected,
     probability: dto.probability,
+    calibratedProbability: dto.calibratedProbability,
+    topFactors: dto.topFactors,
     riskTier: asUnion<Transaction['riskTier']>(dto.riskTier, 'Low'),
     status: asUnion<Transaction['status']>(dto.status, 'Pending Review'),
     anomalyReason: dto.anomalyReason || 'Transaction processed via risk assessment pipeline.',
@@ -157,6 +159,14 @@ export class TransactionService {
           this.selectedTransaction.set({ ...curr, status: newStatus });
         }
       })
+    );
+  }
+
+  /** Loads one transaction from the detail endpoint, which (unlike the list) includes the stored explanation. */
+  fetchTransactionDetail(transactionId: string): Observable<Transaction | null> {
+    return this.http.get<ApiResponse<TransactionDto>>(`${environment.apiUrl}/transactions/${transactionId}`).pipe(
+      map(res => (res.success && res.data ? mapDtoToTransaction(res.data) : null)),
+      catchError(() => of(null))
     );
   }
 

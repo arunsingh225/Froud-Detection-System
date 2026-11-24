@@ -36,5 +36,8 @@ namespace FraudGuard.Api.DTOs.Fraud
         public string Feature { get; set; } = string.Empty;
         public double? Value { get; set; }
         public double Contribution { get; set; }
+
+        /// <summary>transaction | approximated | placeholder | not_provided (see FeatureProvenance).</summary>
+        public string? Provenance { get; set; }
     }
 }

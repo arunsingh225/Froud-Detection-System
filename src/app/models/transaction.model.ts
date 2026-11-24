@@ -1,4 +1,5 @@
 import { RiskTier } from './types.model';
+import { FactorContribution } from './api-response.model';
 
 export interface Transaction {
   id: string;
@@ -23,6 +24,10 @@ export interface Transaction {
   ip: string;
   vpnDetected: boolean;
   probability: number;
+  /** Calibrated probability (0-1) stored with the prediction, when loaded from the detail endpoint. */
+  calibratedProbability?: number | null;
+  /** Top feature attributions stored with the prediction, when loaded from the detail endpoint. */
+  topFactors?: FactorContribution[] | null;
   riskTier: RiskTier;
   status: 'Pending Review' | 'Investigating' | 'Escalated' | 'Resolved' | 'Frozen' | 'Approved' | 'Rejected';
   anomalyReason: string;

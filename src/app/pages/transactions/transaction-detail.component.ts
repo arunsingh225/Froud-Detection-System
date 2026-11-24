@@ -8,7 +8,7 @@ import { RiskBadgeComponent } from '../../shared/components/risk-badge.component
 import { StatusBadgeComponent } from '../../shared/components/status-badge.component';
 import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
 import { AuthService } from '../../services/auth.service';
-import { buildScoreExplanation, ScoreExplanation } from '../../shared/utils/score-explanation';
+import { buildScoreExplanation, buildStoredExplanation, ScoreExplanation } from '../../shared/utils/score-explanation';
 
 @Component({
     selector: 'app-transaction-detail',
@@ -198,6 +198,11 @@ import { buildScoreExplanation, ScoreExplanation } from '../../shared/utils/scor
                 }
               </div>
     
+              <div class="text-[10px] text-[#C5A059] leading-snug" data-testid="demo-notice">
+                Demo model: trained on public card-fraud data (IEEE-CIS). Only some of its inputs exist for this
+                transaction; each factor below is tagged by where its value came from.
+              </div>
+
               @if (explainError) {
                 <div class="text-[12px] text-[#ffb4ab]" data-testid="explain-error">{{ explainError }}</div>
               }
@@ -209,6 +214,9 @@ import { buildScoreExplanation, ScoreExplanation } from '../../shared/utils/scor
               }
     
               @if (explanation; as ex) {
+                <div class="text-[10px] text-[#737373]" data-testid="explanation-source">
+                  {{ explanationSource === 'stored' ? 'Stored when this transaction was scored' : 'Re-scored just now' }}
+                </div>
                 <div class="grid grid-cols-2 gap-2 text-[12px]">
                   <div class="p-2 bg-black/30 rounded">
                     <div class="text-[10px] text-[#737373] uppercase">Estimated true probability</div>
@@ -225,7 +233,13 @@ import { buildScoreExplanation, ScoreExplanation } from '../../shared/utils/scor
                   @for (f of ex.factors; track f) {
                     <div class="text-[11px]">
                       <div class="flex items-center justify-between gap-2">
-                        <span class="text-[#D4D4D4] truncate">{{ f.label }} <span class="text-[#737373]">= {{ f.valueText }}</span></span>
+                        <span class="text-[#D4D4D4] truncate">{{ f.label }} <span class="text-[#737373]">= {{ f.valueText }}</span>
+                          @if (f.provenanceTag) {
+                            <span class="ml-1 px-1 rounded border border-white/10 text-[9px] uppercase"
+                                  [ngClass]="f.provenance === 'placeholder' ? 'text-[#C5A059]' : 'text-[#737373]'"
+                                  data-testid="provenance-tag">{{ f.provenanceTag }}</span>
+                          }
+                        </span>
                         <span class="font-mono-data" [ngClass]="f.direction === 'up' ? 'text-[#ffb4ab]' : 'text-[#52b788]'">
                           {{ f.direction === 'up' ? '+' : '' }}{{ f.contribution.toFixed(2) }}
                         </span>
@@ -278,6 +292,7 @@ export class TransactionDetailComponent implements OnInit {
   toastMsg = '';
   scoring = false;
   explanation: ScoreExplanation | null = null;
+  explanationSource: 'stored' | 'live' | null = null;
   explainError = '';
 
   constructor(
@@ -302,6 +317,7 @@ export class TransactionDetailComponent implements OnInit {
         this.scoring = false;
         if (res.success && res.data) {
           this.explanation = buildScoreExplanation(res.data);
+          this.explanationSource = 'live';
         } else {
           this.explainError = res.message || 'The scoring service returned no result.';
         }
@@ -315,14 +331,23 @@ export class TransactionDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      const match = this.transactionService.getTransactionById(id);
-      if (match) {
-        this.txn = match;
-        return;
+    const match = id ? this.transactionService.getTransactionById(id) : undefined;
+    this.txn = match ?? this.transactionService.selectedTransaction() ?? this.transactionService.transactions()[0];
+    this.loadStoredExplanation();
+  }
+
+  /** The list endpoint omits the explanation; the detail endpoint returns what was stored when it was scored. */
+  private loadStoredExplanation(): void {
+    const guid = this.txn?.transactionId;
+    if (!guid) return;
+    this.transactionService.fetchTransactionDetail(guid).subscribe(detail => {
+      if (!detail || this.explanationSource === 'live') return;   // never overwrite a fresh re-score
+      const stored = buildStoredExplanation(detail);
+      if (stored) {
+        this.explanation = stored;
+        this.explanationSource = 'stored';
       }
-    }
-    this.txn = this.transactionService.selectedTransaction() || this.transactionService.transactions()[0];
+    });
   }
 
   get customerInitials(): string {

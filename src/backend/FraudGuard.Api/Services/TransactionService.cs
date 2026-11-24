@@ -150,7 +150,7 @@ namespace FraudGuard.Api.Services
                 FormattedTime = t.TransactionTimestamp.ToString("HH:mm:ss IST"),
                 Timestamp = t.TransactionTimestamp,
                 CalibratedProbability = calibrated,
-                TopFactors = factors
+                TopFactors = FeatureProvenance.Annotate(factors)
             };
         }
 

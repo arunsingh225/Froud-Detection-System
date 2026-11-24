@@ -585,3 +585,12 @@ Also: the ML tests assert only structural properties (keys present, 200 OK), not
 |---|---|---|
 | Angular 20 is the previous major | Upgraded to Angular 21.2 (TypeScript 5.9) the same way as before: first in an isolated copy, then in the repo. Auto-migrations touched 22 component files; one new compiler diagnostic (an unnecessary `?.` on `evidenceIds`) was resolved by making `evidenceIds` optional in the model, which is what the data can be | repo: `ng build` with no warnings (initial bundle 597 kB), lint 0/0, Karma 53/53, `npm audit --omit=dev`: 0 vulnerabilities; full tree 35 (31 moderate, 4 high, no critical, build tooling); built output loaded in headless Chrome (boots, redirects to the login form, no runtime errors) |
 | Not covered | A full click-through of the UI | n/a |
+
+### Twenty-first pass: stored explanations in the UI, input provenance
+
+| Item | Result | Verified by |
+|---|---|---|
+| Stored explanation was not shown | Transaction Detail loads it from `GET /api/transactions/{id}` on open (read-only roles see it too; a fresh re-score replaces it and is labelled "Re-scored just now") | Karma specs |
+| "Real features" (audit item 3): the model scores a mapping of this app's transactions onto IEEE-CIS inputs, many of which are constants. **Retraining on the app's own features is not possible**: the data is synthetic, so any labels would be circular | Instead of hiding the limitation, each attribution now carries its provenance (transaction / approximated / placeholder / not_provided), computed from a feature classification and shown as badges, plus a permanent "demo model" notice in the panel. Unknown provenance is never shown as genuine | `FeatureProvenance` unit tests (17) including a test that maps three different transactions by reflection and fails if the placeholder list drifts from the mapper (mutation-checked: making `card3` transaction-dependent fails it); Karma mutation (badging genuine inputs) fails 2 specs |
+| Tests | dotnet 110 pass + 6 SQL-gated; Karma 60/60; lint 0/0; `ng build` no warnings | ran |
+| Still true | The scores themselves remain demo-quality; only an asset with real labelled data in this app's schema could change that | n/a |

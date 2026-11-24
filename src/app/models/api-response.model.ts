@@ -18,6 +18,9 @@ export interface PagedResult<T> {
 
 // Transaction Backend DTO
 export interface TransactionDto {
+  /** Stored with the prediction; present on the detail endpoint only. */
+  calibratedProbability?: number | null;
+  topFactors?: FactorContribution[] | null;
   transactionId: string;
   transactionCode: string;
   customerId: string;
@@ -89,6 +92,8 @@ export interface FactorContribution {
   feature: string;
   value?: number | null;
   contribution: number;
+  /** transaction | approximated | placeholder | not_provided: where the model input really came from. */
+  provenance?: string | null;
 }
 
 export interface EngineHealthDto {

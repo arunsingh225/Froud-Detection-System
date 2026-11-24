@@ -7,7 +7,7 @@ import { ModalService } from '../../services/modal.service';
 import { AuthService } from '../../services/auth.service';
 import { Transaction } from '../../models/transaction.model';
 import { FraudPredictionResultDto } from '../../models/api-response.model';
-import { buildScoreExplanation } from '../../shared/utils/score-explanation';
+import { buildScoreExplanation, buildStoredExplanation } from '../../shared/utils/score-explanation';
 
 const GUID = '11111111-1111-1111-1111-111111111111';
 
@@ -59,10 +59,46 @@ describe('buildScoreExplanation', () => {
   });
 });
 
+describe('score explanation provenance and stored explanations', () => {
+  it('tags placeholder, approximated and missing inputs but not genuine transaction inputs', () => {
+    const f = buildScoreExplanation(result({
+      topFactors: [
+        { feature: 'TransactionAmt', value: 4999, contribution: 1.2, provenance: 'transaction' },
+        { feature: 'card2', value: 111, contribution: 0.6, provenance: 'placeholder' },
+        { feature: 'card1', value: 12345, contribution: 0.4, provenance: 'approximated' },
+        { feature: 'C13', value: null, contribution: -0.2, provenance: 'not_provided' }
+      ]
+    })).factors;
+    expect(f.map(x => x.provenanceTag)).toEqual([null, 'placeholder', 'approximated', 'not provided']);
+  });
+
+  it('never presents an unknown or absent provenance as a genuine transaction input', () => {
+    const f = buildScoreExplanation(result({
+      topFactors: [
+        { feature: 'x', value: 1, contribution: 1 },
+        { feature: 'y', value: 1, contribution: 1, provenance: 'something-new' }
+      ]
+    })).factors;
+    expect(f.map(x => x.provenance)).toEqual(['approximated', 'approximated']);
+  });
+
+  it('builds the stored explanation from a transaction whose probability is already a percentage', () => {
+    const ex = buildStoredExplanation({ probability: 93, calibratedProbability: 0.41, topFactors: result().topFactors });
+    expect(ex!.modelScorePct).toBeCloseTo(93, 6);
+    expect(ex!.calibratedPct).toBeCloseTo(41, 6);
+    expect(ex!.factors.length).toBe(3);
+  });
+
+  it('returns null when nothing was stored', () => {
+    expect(buildStoredExplanation({ probability: 50, calibratedProbability: null, topFactors: null })).toBeNull();
+    expect(buildStoredExplanation({ probability: 50, calibratedProbability: undefined, topFactors: [] })).toBeNull();
+  });
+});
+
 describe('TransactionDetailComponent: AI score explanation', () => {
   let predict: jasmine.Spy;
 
-  function setup(role: string): ComponentFixture<TransactionDetailComponent> {
+  function setup(role: string, stored: Transaction | null = null): ComponentFixture<TransactionDetailComponent> {
     predict = jasmine.createSpy('predictTransaction');
     TestBed.configureTestingModule({
       imports: [TransactionDetailComponent],
@@ -73,7 +109,8 @@ describe('TransactionDetailComponent: AI score explanation', () => {
           provide: TransactionService,
           useValue: {
             getTransactionById: () => txn, selectedTransaction: () => txn, transactions: () => [txn],
-            predictTransaction: predict, selectTransaction: () => undefined, updateStatus: () => NEVER
+            predictTransaction: predict, selectTransaction: () => undefined, updateStatus: () => NEVER,
+            fetchTransactionDetail: () => of(stored)
           }
         },
         { provide: ModalService, useValue: { openSARModal: () => undefined } },
@@ -140,5 +177,38 @@ describe('TransactionDetailComponent: AI score explanation', () => {
     expect(rescoreButton(f)!.disabled).toBeTrue();
     f.componentInstance.rescoreAndExplain();
     expect(predict).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the explanation stored with the prediction as soon as the page opens, without a click', () => {
+    const stored = { ...txn, calibratedProbability: 0.41, topFactors: result().topFactors } as Transaction;
+    const f = setup('COMPLIANCE', stored);                       // even a role that cannot re-score can read it
+    const el = panel(f);
+    expect(predict).not.toHaveBeenCalled();
+    expect(el.querySelector('[data-testid="explanation-source"]')!.textContent).toContain('Stored when this transaction was scored');
+    expect(el.querySelector('[data-testid="calibrated-pct"]')!.textContent).toContain('41.0%');
+    expect(el.querySelectorAll('[data-testid="factor-list"] > div').length).toBe(3);
+  });
+
+  it('keeps the hint when nothing is stored, and marks a fresh re-score as live', () => {
+    const f = setup('INVESTIGATOR', txn);
+    expect(panel(f).querySelector('[data-testid="explanation-source"]')).toBeNull();
+    predict.and.returnValue(of({ success: true, message: 'ok', timestamp: 't', data: result() }));
+    rescoreButton(f)!.click();
+    f.detectChanges();
+    expect(panel(f).querySelector('[data-testid="explanation-source"]')!.textContent).toContain('Re-scored just now');
+  });
+
+  it('always shows the demo-model notice and tags non-genuine inputs on the factors', () => {
+    const tagged = {
+      ...txn, calibratedProbability: 0.2,
+      topFactors: [
+        { feature: 'TransactionAmt', value: 4999, contribution: 1.2, provenance: 'transaction' },
+        { feature: 'card2', value: 111, contribution: 0.6, provenance: 'placeholder' }
+      ]
+    } as Transaction;
+    const f = setup('ADMIN', tagged);
+    expect(panel(f).querySelector('[data-testid="demo-notice"]')!.textContent).toContain('Demo model');
+    const tags = Array.from(panel(f).querySelectorAll('[data-testid="provenance-tag"]')).map(e => e.textContent!.trim());
+    expect(tags).toEqual(['placeholder']);                        // the genuine input carries no badge
   });
 });

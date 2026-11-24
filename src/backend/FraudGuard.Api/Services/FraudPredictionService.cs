@@ -218,9 +218,9 @@ namespace FraudGuard.Api.Services
         }
 
         private static List<FactorContributionDto>? MapFactors(FastApiPredictionResponse response) =>
-            response.TopFactors?
+            FeatureProvenance.Annotate(response.TopFactors?
                 .Select(f => new FactorContributionDto { Feature = f.Feature, Value = f.Value, Contribution = f.Contribution })
-                .ToList();
+                .ToList());
 
         private static string NormalizeRiskTier(string riskLevel)
         {
