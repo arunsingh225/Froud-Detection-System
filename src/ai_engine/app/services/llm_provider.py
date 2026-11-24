@@ -152,15 +152,16 @@ class DeterministicTemplateProvider(ILLMProvider):
         }
 
 
-SUPPORTED_PROVIDERS = {"deterministic", "anthropic"}
+SUPPORTED_PROVIDERS = {"deterministic", "anthropic", "groq", "openai_compat"}
 
 
 def get_llm_provider() -> ILLMProvider:
     """
     Factory selecting the synthesis provider from LLM_PROVIDER.
 
-    "deterministic" (default) is the rule engine. "anthropic" adds an LLM-written narrative on top of it
-    (see anthropic_provider.py) and needs LLM_API_KEY; without a key it logs a warning and uses the rule engine.
+    "deterministic" (default) is the rule engine. "anthropic", "groq" and "openai_compat" (any OpenAI-compatible
+    endpoint; needs LLM_BASE_URL and LLM_MODEL) add an LLM-written narrative on top of it and need LLM_API_KEY;
+    without a key (or base URL/model for openai_compat) it logs a warning and uses the rule engine.
     Any other value is not implemented: it logs a warning and uses the rule engine (never silently pretends).
     """
     provider_type = os.environ.get("LLM_PROVIDER", "deterministic").strip().lower()
@@ -175,6 +176,25 @@ def get_llm_provider() -> ILLMProvider:
             model=os.environ.get("LLM_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL,
             timeout_seconds=float(os.environ.get("LLM_TIMEOUT_SECONDS", "20")),
         )
+    if provider_type in ("groq", "openai_compat"):
+        api_key = os.environ.get("LLM_API_KEY", "").strip()
+        if not api_key:
+            logger.warning(f"LLM_PROVIDER={provider_type} but LLM_API_KEY is not set; using deterministic rule engine.")
+            return DeterministicTemplateProvider()
+        from app.services.openai_compat_provider import (
+            GROQ_DEFAULT_MODEL, GroqProvider, OpenAICompatProvider)
+        timeout = float(os.environ.get("LLM_TIMEOUT_SECONDS", "20"))
+        model = os.environ.get("LLM_MODEL", "").strip()
+        base_url = os.environ.get("LLM_BASE_URL", "").strip()
+        if provider_type == "groq":
+            kw = {"base_url": base_url} if base_url else {}
+            return GroqProvider(api_key=api_key, model=model or GROQ_DEFAULT_MODEL, timeout_seconds=timeout, **kw)
+        if not base_url or not model:
+            logger.warning("LLM_PROVIDER=openai_compat needs LLM_BASE_URL and LLM_MODEL; using deterministic rule engine.")
+            return DeterministicTemplateProvider()
+        return OpenAICompatProvider(
+            api_key=api_key, base_url=base_url, model=model, timeout_seconds=timeout,
+            json_mode=os.environ.get("LLM_JSON_MODE", "").strip().lower() in ("1", "true", "yes"))
     if provider_type not in SUPPORTED_PROVIDERS:
         logger.warning(
             f"LLM_PROVIDER='{provider_type}' is not implemented; using deterministic rule engine."

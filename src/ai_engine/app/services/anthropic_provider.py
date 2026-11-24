@@ -78,6 +78,8 @@ def _extract_json(text: str) -> Dict[str, Any]:
 
 
 class AnthropicProvider(ILLMProvider):
+    PROVIDER_NAME = "anthropic"
+
     def __init__(
         self,
         api_key: str,
@@ -111,7 +113,7 @@ class AnthropicProvider(ILLMProvider):
             logger.warning(f"LLM synthesis unavailable, using deterministic fallback ({reason})")
             baseline["provider_metadata"] = {
                 **baseline["provider_metadata"],
-                "requested_provider": "anthropic",
+                "requested_provider": self.PROVIDER_NAME,
                 "is_fallback": True,
                 "fallback_reason": reason,
             }
@@ -135,7 +137,7 @@ class AnthropicProvider(ILLMProvider):
             "confidence": baseline["confidence"],
             "provider_metadata": {
                 **baseline["provider_metadata"],
-                "provider": "anthropic",
+                "provider": self.PROVIDER_NAME,
                 "model": self.model,
                 "is_fallback": False,
                 "decision_source": "deterministic_rule_engine",

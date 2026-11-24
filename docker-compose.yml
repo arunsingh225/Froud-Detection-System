@@ -34,6 +34,10 @@ services:
     build: { context: ., dockerfile: deploy/ai-engine.Dockerfile }
     environment:
       FASTAPI_INTERNAL_SECRET: ${FASTAPI_INTERNAL_SECRET:?set FASTAPI_INTERNAL_SECRET in .env}
+      LLM_PROVIDER: ${LLM_PROVIDER:-deterministic}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
 
   api:
     build: { context: ., dockerfile: deploy/api.Dockerfile }
