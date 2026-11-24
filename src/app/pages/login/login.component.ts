@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -8,7 +8,7 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
 
 @Component({
     selector: 'app-login',
-    imports: [CommonModule, FormsModule, ShaderBackgroundComponent],
+    imports: [FormsModule, ShaderBackgroundComponent],
     styles: [`
     :host {
       display: block;
@@ -180,14 +180,14 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
       <div class="absolute inset-0 z-0">
         <app-shader-background></app-shader-background>
       </div>
-
+    
       <!-- Top Floating Theme Toggle -->
       <div class="absolute top-6 right-6 z-20">
         <button
           (click)="themeService.toggleTheme()"
           class="login-theme-toggle p-2.5 rounded-full bg-[#0D0D0D]/80 backdrop-blur border border-white/10 text-[#C5A059] hover:border-[#C5A059] shadow-lg transition-all flex items-center gap-2 text-[12px] cursor-pointer"
           [title]="'Switch to ' + (themeService.isDark() ? 'Light' : 'Dark') + ' Mode'"
-        >
+          >
           <span class="material-symbols-outlined text-[18px]">
             {{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}
           </span>
@@ -196,7 +196,7 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
           </span>
         </button>
       </div>
-
+    
       <!-- Left Branding Overlay -->
       <div class="relative z-10 flex-1 flex flex-col justify-between p-8 lg:p-16 text-white max-w-2xl pointer-events-none lg:pointer-events-auto">
         <div class="flex items-center gap-3">
@@ -210,21 +210,21 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
             </span>
           </div>
         </div>
-
+    
         <div class="my-auto py-12 space-y-4">
           <div class="login-status-pill inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#141414] border border-[#C5A059]/30 text-[#C5A059] text-[11px] font-mono-data tracking-wider uppercase">
             <span class="w-2 h-2 rounded-full bg-[#52b788] pulse-dot"></span>
             Real-Time Neural Inference Active
           </div>
-
+    
           <h2 class="login-left-heading font-serif italic text-3xl lg:text-5xl tracking-tight text-white leading-tight">
             Autonomous threat detection for enterprise scale.
           </h2>
-
+    
           <p class="login-left-subtext text-[#A3A3A3] text-[15px] max-w-lg leading-relaxed font-sans">
             Protect multi-million dollar transaction volumes with sub-50ms behavioral scoring, impossible travel verification, and automated FinCEN compliance workflows.
           </p>
-
+    
           <div class="flex flex-wrap gap-3 pt-4 text-[11px] font-mono-data text-[#D4D4D4]">
             <div class="login-feature-pill flex items-center gap-1.5 bg-[#0D0D0D]/90 border border-white/5 px-3 py-1.5 rounded-lg">
               <span class="material-symbols-outlined text-[16px] text-[#52b788]">verified</span>
@@ -240,12 +240,12 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
             </div>
           </div>
         </div>
-
+    
         <div class="login-left-footer text-[11px] text-[#737373] font-mono-data">
           FraudGuard Core v4.8 • Build 2026.08.30
         </div>
       </div>
-
+    
       <!-- Right Login Card -->
       <div class="relative z-10 flex items-center justify-center p-6 lg:p-12 w-full lg:w-[480px] shrink-0">
         <div class="login-card w-full bg-[#0D0D0D]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 lg:p-8 space-y-6 shadow-2xl">
@@ -255,13 +255,15 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
               Sign in with your Tier 3 security credentials to access the investigative workspace.
             </p>
           </div>
-
+    
           <!-- Error Banner -->
-          <div *ngIf="errorMessage" class="login-error-banner p-3.5 rounded-xl bg-red-950/40 border border-red-500/40 flex items-start gap-2.5 text-red-200 text-[12px]">
-            <span class="material-symbols-outlined text-[18px] text-red-400 shrink-0">error</span>
-            <span>{{ errorMessage }}</span>
-          </div>
-
+          @if (errorMessage) {
+            <div class="login-error-banner p-3.5 rounded-xl bg-red-950/40 border border-red-500/40 flex items-start gap-2.5 text-red-200 text-[12px]">
+              <span class="material-symbols-outlined text-[18px] text-red-400 shrink-0">error</span>
+              <span>{{ errorMessage }}</span>
+            </div>
+          }
+    
           <form (ngSubmit)="onSubmit()" class="space-y-4">
             <div>
               <label class="login-label text-[11px] font-light uppercase tracking-wider text-[#A3A3A3] block mb-1.5">
@@ -276,101 +278,100 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
                   required
                   placeholder="name@fraudguard.enterprise.io"
                   class="login-input w-full bg-transparent text-white text-[13px] focus:outline-none placeholder-[#525252]"
-                />
+                  />
+                </div>
               </div>
-            </div>
-
-            <div>
-              <label class="login-label text-[11px] font-light uppercase tracking-wider text-[#A3A3A3] block mb-1.5">
-                Hardware Key Passcode / Password
-              </label>
-              <div class="login-input-container flex items-center bg-[#141414] rounded-xl px-3.5 py-2.5 border border-white/10 focus-within:border-[#C5A059] transition-all">
-                <span class="login-icon material-symbols-outlined text-[18px] text-[#737373] mr-2">key</span>
-                <input
-                  [type]="showPassword ? 'text' : 'password'"
-                  name="password"
-                  [(ngModel)]="password"
-                  required
-                  placeholder="••••••••••••"
-                  class="login-input w-full bg-transparent text-white text-[13px] focus:outline-none placeholder-[#525252]"
-                />
-                <button
-                  type="button"
-                  (click)="showPassword = !showPassword"
-                  class="login-toggle-pw text-[#737373] hover:text-white transition-colors cursor-pointer"
-                >
-                  <span class="material-symbols-outlined text-[18px]">
-                    {{ showPassword ? 'visibility_off' : 'visibility' }}
+    
+              <div>
+                <label class="login-label text-[11px] font-light uppercase tracking-wider text-[#A3A3A3] block mb-1.5">
+                  Hardware Key Passcode / Password
+                </label>
+                <div class="login-input-container flex items-center bg-[#141414] rounded-xl px-3.5 py-2.5 border border-white/10 focus-within:border-[#C5A059] transition-all">
+                  <span class="login-icon material-symbols-outlined text-[18px] text-[#737373] mr-2">key</span>
+                  <input
+                    [type]="showPassword ? 'text' : 'password'"
+                    name="password"
+                    [(ngModel)]="password"
+                    required
+                    placeholder="••••••••••••"
+                    class="login-input w-full bg-transparent text-white text-[13px] focus:outline-none placeholder-[#525252]"
+                    />
+                    <button
+                      type="button"
+                      (click)="showPassword = !showPassword"
+                      class="login-toggle-pw text-[#737373] hover:text-white transition-colors cursor-pointer"
+                      >
+                      <span class="material-symbols-outlined text-[18px]">
+                        {{ showPassword ? 'visibility_off' : 'visibility' }}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+    
+                <div class="flex items-center justify-between text-[12px]">
+                  <label class="login-checkbox-label flex items-center gap-2 cursor-pointer text-[#A3A3A3]">
+                    <input
+                      type="checkbox"
+                      name="rememberDevice"
+                      [(ngModel)]="rememberDevice"
+                      class="login-checkbox rounded border-white/10 text-[#C5A059] accent-[#C5A059] focus:ring-0 bg-[#141414]"
+                      />
+                      <span>Remember FIDO2 token</span>
+                    </label>
+                    <span class="login-verified-badge text-[11px] text-[#52b788] font-mono-data">Device Verified</span>
+                  </div>
+    
+                  <button
+                    type="submit"
+                    [disabled]="isLoading"
+                    class="w-full py-3 rounded-xl bg-[#C5A059] hover:bg-[#dfba73] disabled:opacity-50 text-[#0A0A0A] font-bold uppercase tracking-[0.15em] text-[12px] flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] active:scale-95 cursor-pointer"
+                    >
+                    @if (isLoading) {
+                      <div class="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+                      <span>Verifying Credentials...</span>
+                    } @else {
+                      <span class="material-symbols-outlined text-[20px]">login</span>
+                      <span>Enter Security Console</span>
+                    }
+                  </button>
+                </form>
+    
+                <!-- Quick Fill Test Accounts -->
+                <div class="login-profile-section pt-2 border-t border-white/5 space-y-2">
+                  <span class="login-profile-title text-[10px] font-mono-data text-[#737373] uppercase tracking-widest block">
+                    Quick-Fill Role Profiles (RBAC)
                   </span>
-                </button>
+                  <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                    <button
+                      type="button"
+                      (click)="handleQuickFill('riya.desai@fraudguard.enterprise.io')"
+                      class="login-profile-btn p-2 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#C5A059]/40 text-[#C5A059] text-center transition-colors truncate cursor-pointer"
+                      >
+                      <b class="login-profile-name block truncate">Riya Desai</b>
+                      <span class="login-profile-role text-[9px] text-[#A3A3A3]">INVESTIGATOR</span>
+                    </button>
+                    <button
+                      type="button"
+                      (click)="handleQuickFill('priyanka.iyer@fraudguard.enterprise.io')"
+                      class="login-profile-btn p-2 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#C5A059]/40 text-[#C5A059] text-center transition-colors truncate cursor-pointer"
+                      >
+                      <b class="login-profile-name block truncate">Priyanka Iyer</b>
+                      <span class="login-profile-role text-[9px] text-[#A3A3A3]">ADMIN</span>
+                    </button>
+                    <button
+                      type="button"
+                      (click)="handleQuickFill('amit.bose@fraudguard.enterprise.io')"
+                      class="login-profile-btn p-2 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#C5A059]/40 text-[#C5A059] text-center transition-colors truncate cursor-pointer"
+                      >
+                      <b class="login-profile-name block truncate">Amit Bose</b>
+                      <span class="login-profile-role text-[9px] text-[#A3A3A3]">COMPLIANCE</span>
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div class="flex items-center justify-between text-[12px]">
-              <label class="login-checkbox-label flex items-center gap-2 cursor-pointer text-[#A3A3A3]">
-                <input
-                  type="checkbox"
-                  name="rememberDevice"
-                  [(ngModel)]="rememberDevice"
-                  class="login-checkbox rounded border-white/10 text-[#C5A059] accent-[#C5A059] focus:ring-0 bg-[#141414]"
-                />
-                <span>Remember FIDO2 token</span>
-              </label>
-              <span class="login-verified-badge text-[11px] text-[#52b788] font-mono-data">Device Verified</span>
-            </div>
-
-            <button
-              type="submit"
-              [disabled]="isLoading"
-              class="w-full py-3 rounded-xl bg-[#C5A059] hover:bg-[#dfba73] disabled:opacity-50 text-[#0A0A0A] font-bold uppercase tracking-[0.15em] text-[12px] flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] active:scale-95 cursor-pointer"
-            >
-              <ng-container *ngIf="isLoading; else defaultBtn">
-                <div class="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
-                <span>Verifying Credentials...</span>
-              </ng-container>
-              <ng-template #defaultBtn>
-                <span class="material-symbols-outlined text-[20px]">login</span>
-                <span>Enter Security Console</span>
-              </ng-template>
-            </button>
-          </form>
-
-          <!-- Quick Fill Test Accounts -->
-          <div class="login-profile-section pt-2 border-t border-white/5 space-y-2">
-            <span class="login-profile-title text-[10px] font-mono-data text-[#737373] uppercase tracking-widest block">
-              Quick-Fill Role Profiles (RBAC)
-            </span>
-            <div class="grid grid-cols-3 gap-1.5 text-[11px]">
-              <button
-                type="button"
-                (click)="handleQuickFill('riya.desai@fraudguard.enterprise.io')"
-                class="login-profile-btn p-2 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#C5A059]/40 text-[#C5A059] text-center transition-colors truncate cursor-pointer"
-              >
-                <b class="login-profile-name block truncate">Riya Desai</b>
-                <span class="login-profile-role text-[9px] text-[#A3A3A3]">INVESTIGATOR</span>
-              </button>
-              <button
-                type="button"
-                (click)="handleQuickFill('priyanka.iyer@fraudguard.enterprise.io')"
-                class="login-profile-btn p-2 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#C5A059]/40 text-[#C5A059] text-center transition-colors truncate cursor-pointer"
-              >
-                <b class="login-profile-name block truncate">Priyanka Iyer</b>
-                <span class="login-profile-role text-[9px] text-[#A3A3A3]">ADMIN</span>
-              </button>
-              <button
-                type="button"
-                (click)="handleQuickFill('amit.bose@fraudguard.enterprise.io')"
-                class="login-profile-btn p-2 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#C5A059]/40 text-[#C5A059] text-center transition-colors truncate cursor-pointer"
-              >
-                <b class="login-profile-name block truncate">Amit Bose</b>
-                <span class="login-profile-role text-[9px] text-[#A3A3A3]">COMPLIANCE</span>
-              </button>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  `
+    `
 })
 export class LoginComponent {
   email = 'riya.desai@fraudguard.enterprise.io';

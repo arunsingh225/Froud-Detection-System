@@ -17,7 +17,7 @@ export interface SuspiciousFinding {
   title: string;
   severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   explanation: string;
-  evidenceIds: string[];
+  evidenceIds?: string[];
 }
 
 export interface PolicyCitation {

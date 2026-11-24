@@ -9,11 +9,13 @@ import { RiskTier } from '../../models/types.model';
     <span
       class="inline-flex items-center gap-1 font-bold font-mono-data uppercase tracking-wider rounded border"
       [ngClass]="[badgeConfig.bg, badgeConfig.text, badgeConfig.border, size === 'md' ? 'px-2.5 py-1 text-[11px]' : 'px-1.5 py-0.5 text-[9px]']"
-    >
-      <span *ngIf="showDot" class="w-1.5 h-1.5 rounded-full" [ngClass]="badgeConfig.dot"></span>
+      >
+      @if (showDot) {
+        <span class="w-1.5 h-1.5 rounded-full" [ngClass]="badgeConfig.dot"></span>
+      }
       {{ tier }}
     </span>
-  `
+    `
 })
 export class RiskBadgeComponent {
   @Input() tier: RiskTier = 'Low';

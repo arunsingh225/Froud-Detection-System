@@ -578,3 +578,10 @@ Also: the ML tests assert only structural properties (keys present, 200 OK), not
 |---|---|---|
 | Explanations existed only for a live re-score; the stored prediction said nothing about why it was scored that way | Scoring now stores the calibrated probability and the top feature attributions in the existing `FraudPredictions.TopRiskDriversJson` column (no schema change), and `GET /api/transactions/{id}` returns them. Reading never throws: pre-existing free-form content in that column is ignored | 11 new xUnit tests (round trip, camelCase and null omission, malformed and foreign content, persistence and read-back through the service); dotnet 93 pass + 6 SQL-gated |
 | Not yet done | The Transaction Detail panel does not read the stored explanation yet (it still needs a click on "Re-score & explain"); the list endpoint does not include it by design | open |
+
+### Twentieth pass: Angular 20 to 21
+
+| Item | Result | Verified by |
+|---|---|---|
+| Angular 20 is the previous major | Upgraded to Angular 21.2 (TypeScript 5.9) the same way as before: first in an isolated copy, then in the repo. Auto-migrations touched 22 component files; one new compiler diagnostic (an unnecessary `?.` on `evidenceIds`) was resolved by making `evidenceIds` optional in the model, which is what the data can be | repo: `ng build` with no warnings (initial bundle 597 kB), lint 0/0, Karma 53/53, `npm audit --omit=dev`: 0 vulnerabilities; full tree 35 (31 moderate, 4 high, no critical, build tooling); built output loaded in headless Chrome (boots, redirects to the login form, no runtime errors) |
+| Not covered | A full click-through of the UI | n/a |

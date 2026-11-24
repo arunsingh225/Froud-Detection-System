@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { ThemeService } from './services/theme.service';
@@ -13,46 +13,46 @@ import { NewTransactionModalComponent } from './shared/modals/new-transaction-mo
 @Component({
     selector: 'app-root',
     imports: [
-        CommonModule,
-        RouterModule,
-        SidebarComponent,
-        TopHeaderComponent,
-        NewInvestigationModalComponent,
-        SarReportModalComponent,
-        NewTransactionModalComponent
-    ],
+    RouterModule,
+    SidebarComponent,
+    TopHeaderComponent,
+    NewInvestigationModalComponent,
+    SarReportModalComponent,
+    NewTransactionModalComponent
+],
     template: `
     <!-- If on Login Screen or unauthenticated -->
-    <div *ngIf="showLoginLayout" class="w-full h-full min-h-screen overflow-y-auto overflow-x-hidden">
-      <router-outlet></router-outlet>
-    </div>
-
-    <!-- If in Authenticated Dashboard Shell -->
-    <div *ngIf="!showLoginLayout" class="h-screen flex overflow-hidden bg-[#0A0A0A] select-none">
-      <!-- Sidebar -->
-      <app-sidebar class="shrink-0" [collapsed]="sidebarCollapsed"></app-sidebar>
-
-      <!-- Main App Body -->
-      <div class="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden">
-        <!-- Top App Bar -->
-        <app-top-header
-          class="shrink-0"
-          [sidebarCollapsed]="sidebarCollapsed"
-          (toggleSidebar)="sidebarCollapsed = !sidebarCollapsed"
-        ></app-top-header>
-
-        <!-- Dynamic Router Outlet Page: ONLY THIS AREA SCROLLS -->
-        <main class="flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden relative">
-          <router-outlet></router-outlet>
-        </main>
+    @if (showLoginLayout) {
+      <div class="w-full h-full min-h-screen overflow-y-auto overflow-x-hidden">
+        <router-outlet></router-outlet>
       </div>
-
-      <!-- Global Modals -->
-      <app-new-investigation-modal></app-new-investigation-modal>
-      <app-sar-report-modal></app-sar-report-modal>
-      <app-new-transaction-modal></app-new-transaction-modal>
-    </div>
-  `
+    }
+    
+    <!-- If in Authenticated Dashboard Shell -->
+    @if (!showLoginLayout) {
+      <div class="h-screen flex overflow-hidden bg-[#0A0A0A] select-none">
+        <!-- Sidebar -->
+        <app-sidebar class="shrink-0" [collapsed]="sidebarCollapsed"></app-sidebar>
+        <!-- Main App Body -->
+        <div class="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden">
+          <!-- Top App Bar -->
+          <app-top-header
+            class="shrink-0"
+            [sidebarCollapsed]="sidebarCollapsed"
+            (toggleSidebar)="sidebarCollapsed = !sidebarCollapsed"
+          ></app-top-header>
+          <!-- Dynamic Router Outlet Page: ONLY THIS AREA SCROLLS -->
+          <main class="flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden relative">
+            <router-outlet></router-outlet>
+          </main>
+        </div>
+        <!-- Global Modals -->
+        <app-new-investigation-modal></app-new-investigation-modal>
+        <app-sar-report-modal></app-sar-report-modal>
+        <app-new-transaction-modal></app-new-transaction-modal>
+      </div>
+    }
+    `
 })
 export class AppComponent implements OnInit, OnDestroy {
   sidebarCollapsed = false;

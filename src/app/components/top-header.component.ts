@@ -22,7 +22,7 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
           (click)="toggleSidebar.emit()"
           class="p-1.5 rounded-lg hover:bg-[#1A1A1A] text-[#737373] hover:text-white transition-colors cursor-pointer"
           aria-label="Toggle sidebar"
-        >
+          >
           <span class="material-symbols-outlined text-[22px]">
             {{ sidebarCollapsed ? 'menu' : 'menu_open' }}
           </span>
@@ -34,229 +34,244 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
           <span class="text-[11px] text-[#737373] font-mono-data">SYNTHETIC DEMO DATA</span>
         </div>
       </div>
-
+    
       <!-- Right: Search, Theme, Notifications, User -->
       <div class="flex items-center gap-1.5">
         <!-- Search -->
         <div class="relative" #searchContainer>
-          <div *ngIf="searchOpen" class="flex items-center bg-[#141414] rounded-lg border border-[#C5A059] px-3 py-1.5 w-[220px] sm:w-[300px]">
-            <button
-              (click)="executeSearch()"
-              title="Search"
-              class="material-symbols-outlined text-[#C5A059] text-[18px] mr-2 hover:text-white cursor-pointer transition-colors"
-            >
-              search
-            </button>
-            <input
-              #searchInput
-              type="text"
-              [(ngModel)]="searchQuery"
-              (keydown.enter)="executeSearch()"
-              (keydown.escape)="closeSearch()"
-              placeholder="Search ID, customer, alert…"
-              class="bg-transparent border-none text-[13px] text-[#D4D4D4] placeholder-[#737373] w-full focus:outline-none"
-            />
-            <button *ngIf="searchQuery" (click)="clearSearch()" class="cursor-pointer text-[#737373] hover:text-white ml-1">
-              <span class="material-symbols-outlined text-[16px]">close</span>
-            </button>
-          </div>
-
-          <button
-            *ngIf="!searchOpen"
-            (click)="openSearch()"
-            class="p-1.5 rounded-lg hover:bg-[#1A1A1A] text-[#737373] hover:text-white transition-colors cursor-pointer"
-            aria-label="Open search"
-          >
-            <span class="material-symbols-outlined text-[22px]">search</span>
-          </button>
-
-          <!-- Search Results Dropdown -->
-          <div
-            *ngIf="searchOpen && (searchLoading || searchPerformed)"
-            class="absolute right-0 top-full mt-2 w-[320px] sm:w-[400px] bg-[#0D0D0D] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in"
-          >
-            <div class="flex items-center justify-between px-4 py-2.5 border-b border-white/5 bg-[#141414]">
-              <span class="text-[11px] font-mono-data text-[#A3A3A3] uppercase tracking-wider">Search Results</span>
-              <span *ngIf="!searchLoading" class="text-[10px] font-mono-data text-[#C5A059]">{{ searchResults.length }} matches</span>
-            </div>
-
-            <!-- Loading State -->
-            <div *ngIf="searchLoading" class="p-6 flex items-center justify-center gap-2 text-[#C5A059] text-xs">
-              <div class="w-4 h-4 border-2 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
-              <span>Searching enterprise records...</span>
-            </div>
-
-            <!-- Empty State -->
-            <div *ngIf="!searchLoading && searchPerformed && searchResults.length === 0" class="p-6 text-center text-xs text-[#737373]">
-              <span class="material-symbols-outlined text-[28px] block mb-1 text-[#737373]">search_off</span>
-              <span>No results found for "{{ searchQuery }}"</span>
-            </div>
-
-            <!-- Results List -->
-            <div *ngIf="!searchLoading && searchResults.length > 0" class="max-h-[320px] overflow-y-auto divide-y divide-white/5">
+          @if (searchOpen) {
+            <div class="flex items-center bg-[#141414] rounded-lg border border-[#C5A059] px-3 py-1.5 w-[220px] sm:w-[300px]">
               <button
-                *ngFor="let item of searchResults"
-                (click)="navigateToResult(item)"
-                class="w-full px-4 py-2.5 hover:bg-[#1A1A1A] transition-colors text-left flex items-center gap-3 cursor-pointer group"
-              >
-                <div
-                  class="w-7 h-7 rounded-lg border flex items-center justify-center shrink-0"
-                  [ngClass]="getTypeBadgeClass(item.type)"
+                (click)="executeSearch()"
+                title="Search"
+                class="material-symbols-outlined text-[#C5A059] text-[18px] mr-2 hover:text-white cursor-pointer transition-colors"
                 >
-                  <span class="material-symbols-outlined text-[14px]">
-                    {{ getTypeIcon(item.type) }}
-                  </span>
-                </div>
-
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between gap-1">
-                    <span class="text-[12px] font-semibold text-white group-hover:text-[#C5A059] transition-colors truncate">
-                      {{ item.title }}
-                    </span>
-                    <span class="text-[9px] font-mono-data uppercase px-1.5 py-0.5 rounded bg-white/5 text-[#A3A3A3] shrink-0">
-                      {{ item.type }}
-                    </span>
-                  </div>
-                  <div class="text-[11px] text-[#737373] truncate">
-                    {{ item.subtitle }}
-                  </div>
-                </div>
-
-                <span *ngIf="item.riskLevel" class="text-[10px] font-mono-data px-1.5 py-0.5 rounded shrink-0"
-                  [ngClass]="getRiskBadgeClass(item.riskLevel)"
-                >
-                  {{ item.riskLevel }}
-                </span>
+                search
               </button>
-            </div>
+              <input
+                #searchInput
+                type="text"
+                [(ngModel)]="searchQuery"
+                (keydown.enter)="executeSearch()"
+                (keydown.escape)="closeSearch()"
+                placeholder="Search ID, customer, alert…"
+                class="bg-transparent border-none text-[13px] text-[#D4D4D4] placeholder-[#737373] w-full focus:outline-none"
+                />
+                @if (searchQuery) {
+                  <button (click)="clearSearch()" class="cursor-pointer text-[#737373] hover:text-white ml-1">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
+                  </button>
+                }
+              </div>
+            }
+    
+            @if (!searchOpen) {
+              <button
+                (click)="openSearch()"
+                class="p-1.5 rounded-lg hover:bg-[#1A1A1A] text-[#737373] hover:text-white transition-colors cursor-pointer"
+                aria-label="Open search"
+                >
+                <span class="material-symbols-outlined text-[22px]">search</span>
+              </button>
+            }
+    
+            <!-- Search Results Dropdown -->
+            @if (searchOpen && (searchLoading || searchPerformed)) {
+              <div
+                class="absolute right-0 top-full mt-2 w-[320px] sm:w-[400px] bg-[#0D0D0D] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in"
+                >
+                <div class="flex items-center justify-between px-4 py-2.5 border-b border-white/5 bg-[#141414]">
+                  <span class="text-[11px] font-mono-data text-[#A3A3A3] uppercase tracking-wider">Search Results</span>
+                  @if (!searchLoading) {
+                    <span class="text-[10px] font-mono-data text-[#C5A059]">{{ searchResults.length }} matches</span>
+                  }
+                </div>
+                <!-- Loading State -->
+                @if (searchLoading) {
+                  <div class="p-6 flex items-center justify-center gap-2 text-[#C5A059] text-xs">
+                    <div class="w-4 h-4 border-2 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
+                    <span>Searching enterprise records...</span>
+                  </div>
+                }
+                <!-- Empty State -->
+                @if (!searchLoading && searchPerformed && searchResults.length === 0) {
+                  <div class="p-6 text-center text-xs text-[#737373]">
+                    <span class="material-symbols-outlined text-[28px] block mb-1 text-[#737373]">search_off</span>
+                    <span>No results found for "{{ searchQuery }}"</span>
+                  </div>
+                }
+                <!-- Results List -->
+                @if (!searchLoading && searchResults.length > 0) {
+                  <div class="max-h-[320px] overflow-y-auto divide-y divide-white/5">
+                    @for (item of searchResults; track item) {
+                      <button
+                        (click)="navigateToResult(item)"
+                        class="w-full px-4 py-2.5 hover:bg-[#1A1A1A] transition-colors text-left flex items-center gap-3 cursor-pointer group"
+                        >
+                        <div
+                          class="w-7 h-7 rounded-lg border flex items-center justify-center shrink-0"
+                          [ngClass]="getTypeBadgeClass(item.type)"
+                          >
+                          <span class="material-symbols-outlined text-[14px]">
+                            {{ getTypeIcon(item.type) }}
+                          </span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center justify-between gap-1">
+                            <span class="text-[12px] font-semibold text-white group-hover:text-[#C5A059] transition-colors truncate">
+                              {{ item.title }}
+                            </span>
+                            <span class="text-[9px] font-mono-data uppercase px-1.5 py-0.5 rounded bg-white/5 text-[#A3A3A3] shrink-0">
+                              {{ item.type }}
+                            </span>
+                          </div>
+                          <div class="text-[11px] text-[#737373] truncate">
+                            {{ item.subtitle }}
+                          </div>
+                        </div>
+                        @if (item.riskLevel) {
+                          <span class="text-[10px] font-mono-data px-1.5 py-0.5 rounded shrink-0"
+                            [ngClass]="getRiskBadgeClass(item.riskLevel)"
+                            >
+                            {{ item.riskLevel }}
+                          </span>
+                        }
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            }
           </div>
-        </div>
-
-        <!-- Theme Toggle -->
-        <button
-          (click)="themeService.toggleTheme()"
-          class="p-1.5 rounded-lg hover:bg-[#1A1A1A] text-[#737373] hover:text-white transition-colors cursor-pointer"
-          [title]="'Switch to ' + (themeService.isDark() ? 'Light' : 'Dark') + ' Mode'"
-        >
-          <span class="material-symbols-outlined text-[22px]">
-            {{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}
-          </span>
-        </button>
-
-        <!-- Notifications Popover -->
-        <div class="relative" #notifContainer>
+    
+          <!-- Theme Toggle -->
           <button
-            (click)="notifOpen = !notifOpen"
-            class="relative p-1.5 rounded-lg hover:bg-[#1A1A1A] text-[#737373] hover:text-white transition-colors cursor-pointer"
-            aria-label="Notifications"
-          >
-            <span class="material-symbols-outlined text-[22px]">notifications</span>
-            <span
-              *ngIf="unreadCount > 0"
-              class="absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 bg-[#e05353] text-white text-[9px] font-bold rounded-full flex items-center justify-center font-mono-data"
+            (click)="themeService.toggleTheme()"
+            class="p-1.5 rounded-lg hover:bg-[#1A1A1A] text-[#737373] hover:text-white transition-colors cursor-pointer"
+            [title]="'Switch to ' + (themeService.isDark() ? 'Light' : 'Dark') + ' Mode'"
             >
-              {{ unreadCount }}
+            <span class="material-symbols-outlined text-[22px]">
+              {{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}
             </span>
           </button>
-
-          <!-- Notifications Dropdown Panel -->
-          <div
-            *ngIf="notifOpen"
-            class="absolute right-0 top-full mt-2 w-[360px] bg-[#0D0D0D] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in"
-          >
-            <div class="flex items-center justify-between px-4 py-3 border-b border-white/5">
-              <div class="flex items-center gap-2">
-                <span class="text-[13px] font-semibold text-white">Notifications</span>
+    
+          <!-- Notifications Popover -->
+          <div class="relative" #notifContainer>
+            <button
+              (click)="notifOpen = !notifOpen"
+              class="relative p-1.5 rounded-lg hover:bg-[#1A1A1A] text-[#737373] hover:text-white transition-colors cursor-pointer"
+              aria-label="Notifications"
+              >
+              <span class="material-symbols-outlined text-[22px]">notifications</span>
+              @if (unreadCount > 0) {
                 <span
-                  *ngIf="unreadCount > 0"
-                  class="text-[10px] font-mono-data bg-[#e05353]/20 text-[#ffb4ab] border border-[#e05353]/30 px-1.5 py-0.5 rounded-full font-bold"
-                >
-                  {{ unreadCount }} new
+                  class="absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1 bg-[#e05353] text-white text-[9px] font-bold rounded-full flex items-center justify-center font-mono-data"
+                  >
+                  {{ unreadCount }}
                 </span>
-              </div>
-              <button
-                (click)="analyticsService.markAllNotificationsRead()"
-                class="text-[11px] text-[#C5A059] hover:text-white transition-colors cursor-pointer"
-              >
-                Mark all read
-              </button>
-            </div>
-
-            <div class="max-h-[360px] overflow-y-auto divide-y divide-white/5">
-              <div *ngIf="notifications.length === 0" class="py-10 text-center text-[13px] text-[#737373]">
-                <span class="material-symbols-outlined text-[32px] block mb-2">notifications_none</span>
-                No notifications
-              </div>
-
-              <button
-                *ngFor="let notif of notifications"
-                (click)="onNotificationClick(notif)"
-                class="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#141414] transition-colors text-left cursor-pointer"
-                [ngClass]="!notif.isRead ? 'bg-[#141414]/50' : ''"
-              >
-                <div
-                  class="w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 mt-0.5"
-                  [ngClass]="getSeverityClass(notif.severity)"
+              }
+            </button>
+    
+            <!-- Notifications Dropdown Panel -->
+            @if (notifOpen) {
+              <div
+                class="absolute right-0 top-full mt-2 w-[360px] bg-[#0D0D0D] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in"
                 >
-                  <span class="material-symbols-outlined text-[16px]">
-                    {{ getSeverityIcon(notif.type) }}
-                  </span>
-                </div>
-
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-start justify-between gap-2">
-                    <span
-                      class="text-[12px] font-semibold leading-tight"
-                      [ngClass]="notif.isRead ? 'text-[#A3A3A3]' : 'text-white'"
-                    >
-                      {{ notif.title }}
-                    </span>
-                    <span class="text-[10px] text-[#737373] whitespace-nowrap font-mono-data">
-                      {{ notif.timeAgo }}
-                    </span>
+                <div class="flex items-center justify-between px-4 py-3 border-b border-white/5">
+                  <div class="flex items-center gap-2">
+                    <span class="text-[13px] font-semibold text-white">Notifications</span>
+                    @if (unreadCount > 0) {
+                      <span
+                        class="text-[10px] font-mono-data bg-[#e05353]/20 text-[#ffb4ab] border border-[#e05353]/30 px-1.5 py-0.5 rounded-full font-bold"
+                        >
+                        {{ unreadCount }} new
+                      </span>
+                    }
                   </div>
-                  <p class="text-[11px] text-[#737373] leading-relaxed mt-0.5 line-clamp-2">
-                    {{ notif.description }}
-                  </p>
+                  <button
+                    (click)="analyticsService.markAllNotificationsRead()"
+                    class="text-[11px] text-[#C5A059] hover:text-white transition-colors cursor-pointer"
+                    >
+                    Mark all read
+                  </button>
                 </div>
-
-                <div *ngIf="!notif.isRead" class="w-2 h-2 rounded-full bg-[#C5A059] shrink-0 mt-2"></div>
-              </button>
-            </div>
-
-            <div class="px-4 py-2.5 border-t border-white/5 text-center">
-              <a
-                routerLink="/audit-logs"
-                (click)="notifOpen = false"
-                class="text-[11px] text-[#C5A059] hover:text-white transition-colors cursor-pointer"
+                <div class="max-h-[360px] overflow-y-auto divide-y divide-white/5">
+                  @if (notifications.length === 0) {
+                    <div class="py-10 text-center text-[13px] text-[#737373]">
+                      <span class="material-symbols-outlined text-[32px] block mb-2">notifications_none</span>
+                      No notifications
+                    </div>
+                  }
+                  @for (notif of notifications; track notif) {
+                    <button
+                      (click)="onNotificationClick(notif)"
+                      class="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#141414] transition-colors text-left cursor-pointer"
+                      [ngClass]="!notif.isRead ? 'bg-[#141414]/50' : ''"
+                      >
+                      <div
+                        class="w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 mt-0.5"
+                        [ngClass]="getSeverityClass(notif.severity)"
+                        >
+                        <span class="material-symbols-outlined text-[16px]">
+                          {{ getSeverityIcon(notif.type) }}
+                        </span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2">
+                          <span
+                            class="text-[12px] font-semibold leading-tight"
+                            [ngClass]="notif.isRead ? 'text-[#A3A3A3]' : 'text-white'"
+                            >
+                            {{ notif.title }}
+                          </span>
+                          <span class="text-[10px] text-[#737373] whitespace-nowrap font-mono-data">
+                            {{ notif.timeAgo }}
+                          </span>
+                        </div>
+                        <p class="text-[11px] text-[#737373] leading-relaxed mt-0.5 line-clamp-2">
+                          {{ notif.description }}
+                        </p>
+                      </div>
+                      @if (!notif.isRead) {
+                        <div class="w-2 h-2 rounded-full bg-[#C5A059] shrink-0 mt-2"></div>
+                      }
+                    </button>
+                  }
+                </div>
+                <div class="px-4 py-2.5 border-t border-white/5 text-center">
+                  <a
+                    routerLink="/audit-logs"
+                    (click)="notifOpen = false"
+                    class="text-[11px] text-[#C5A059] hover:text-white transition-colors cursor-pointer"
+                    >
+                    View full audit log →
+                  </a>
+                </div>
+              </div>
+            }
+          </div>
+    
+          <!-- User Profile & Logout -->
+          <div class="flex items-center gap-2 pl-1.5">
+            <div
+              (click)="authService.logout()"
+              title="Click to logout"
+              class="w-8 h-8 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-[11px] font-bold cursor-pointer hover:border-[#e05353] hover:text-[#ffb4ab] transition-colors"
               >
-                View full audit log →
-              </a>
+              {{ authService.currentUser()?.initials || 'FG' }}
+            </div>
+            <div class="hidden md:block text-right">
+              <div class="text-[12px] font-semibold text-white leading-none">
+                {{ authService.currentUser()?.name || 'User' }}
+              </div>
+              <div class="text-[9px] text-[#C5A059] font-mono-data uppercase mt-0.5">
+                {{ authService.userRole() || 'INVESTIGATOR' }}
+              </div>
             </div>
           </div>
         </div>
-
-        <!-- User Profile & Logout -->
-        <div class="flex items-center gap-2 pl-1.5">
-          <div
-            (click)="authService.logout()"
-            title="Click to logout"
-            class="w-8 h-8 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-[11px] font-bold cursor-pointer hover:border-[#e05353] hover:text-[#ffb4ab] transition-colors"
-          >
-            {{ authService.currentUser()?.initials || 'FG' }}
-          </div>
-          <div class="hidden md:block text-right">
-            <div class="text-[12px] font-semibold text-white leading-none">
-              {{ authService.currentUser()?.name || 'User' }}
-            </div>
-            <div class="text-[9px] text-[#C5A059] font-mono-data uppercase mt-0.5">
-              {{ authService.userRole() || 'INVESTIGATOR' }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-  `
+      </header>
+    `
 })
 export class TopHeaderComponent implements OnInit, OnDestroy {
   @Input() sidebarCollapsed: boolean = false;
