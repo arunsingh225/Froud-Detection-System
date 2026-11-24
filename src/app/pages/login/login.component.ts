@@ -401,8 +401,8 @@ export class LoginComponent {
       if (success) {
         this.router.navigate(['/dashboard']);
       }
-    } catch (err: any) {
-      this.errorMessage = err.message || 'Invalid email or password.';
+    } catch (err: unknown) {
+      this.errorMessage = (err instanceof Error && err.message) || 'Invalid email or password.';
     } finally {
       this.isLoading = false;
     }

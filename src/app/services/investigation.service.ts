@@ -162,7 +162,7 @@ export class InvestigationService {
 
   getInvestigationById(id: string): Investigation | undefined {
     const cached = this.investigations().find(
-      inv => inv.id.toLowerCase() === id.toLowerCase() || (inv as any).investigationId === id
+      inv => inv.id.toLowerCase() === id.toLowerCase() || (inv as Investigation & { investigationId?: string }).investigationId === id
     );
     if (cached) {
       this.selectedInvestigation.set(cached);

@@ -298,8 +298,8 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.updateTitle(this.router.url);
     this.routerSub = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe(event => {
         this.updateTitle(event.urlAfterRedirects || event.url);
       });
   }

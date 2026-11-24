@@ -190,14 +190,14 @@ export class AIInvestigatorService {
       if (res?.data) {
         // Investigation loaded and synced with prompt-specific results
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       // Fallback message if error
       this.messages.update(m => [
         ...m,
         {
           id: `ai-${Date.now()}`,
           sender: 'ai',
-          content: `Analysis failed: ${this.error() || e?.message || 'Service unreachable.'}`,
+          content: `Analysis failed: ${this.error() || (e instanceof Error ? e.message : '') || 'Service unreachable.'}`,
           timestamp: ts
         }
       ]);

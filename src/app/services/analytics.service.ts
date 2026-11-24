@@ -40,14 +40,14 @@ export function mapDtoToAuditLog(dto: AuditLogDto): AuditLogItem {
     time: dto.time || new Date(dto.timestamp).toLocaleTimeString(),
     actor: {
       name: dto.actorName || 'System',
-      type: (dto.actorType as any) || 'SERVICE',
+      type: asUnion<AuditLogItem['actor']['type']>(dto.actorType, 'SERVICE'),
       icon: dto.actorType === 'AI AGENT' ? 'smart_toy' : dto.actorType === 'INVESTIGATOR' ? 'person' : 'shield'
     },
     action: dto.action,
     subAction: dto.subAction,
     resource: dto.resourceTarget,
-    result: (dto.result as any) || 'SUCCESS',
-    category: (dto.category as any) || 'Investigation'
+    result: asUnion<AuditLogItem['result']>(dto.result, 'SUCCESS'),
+    category: asUnion<AuditLogItem['category']>(dto.category, 'Investigation')
   };
 }
 
@@ -57,19 +57,20 @@ export function mapDtoToReport(dto: ReportDto): InvestigationReport {
     entityId: dto.entityId || 'N/A',
     entityName: dto.entityName || 'Case Entity',
     title: dto.title,
-    riskLevel: (dto.riskLevel as any) || 'HIGH',
+    riskLevel: asUnion<InvestigationReport['riskLevel']>(dto.riskLevel, 'HIGH'),
     generatedBy: dto.generatedBy,
     isAiGenerated: dto.generatedBy.toLowerCase().includes('ai') || dto.generatedBy.toLowerCase().includes('copilot'),
     date: new Date(dto.createdAt).toLocaleDateString(),
     time: new Date(dto.createdAt).toLocaleTimeString(),
-    status: (dto.status as any) || 'Published',
-    category: (dto.category as any) || 'SAR Report',
+    status: asUnion<InvestigationReport['status']>(dto.status, 'Published'),
+    category: asUnion<InvestigationReport['category']>(dto.category, 'SAR Report'),
     summary: dto.summary,
     findingsCount: dto.findingsCount || 3
   };
 }
 
 import { AuthService } from './auth.service';
+import { asUnion } from '../shared/utils/cast';
 
 @Injectable({
   providedIn: 'root'
@@ -93,7 +94,7 @@ export class AnalyticsService {
   operationalHealth = signal<OperationalHealthStatus | null>(null);
 
   // Legacy Signals for existing components
-  dashboardKpis = signal<any | null>(null);
+  dashboardKpis = signal<AdvancedDashboardKpis | null>(null);
   engineHealth = signal<EngineHealthDto | null>(null);
   modelInfo = signal<FraudModelInfoDto | null>(null);
   auditLogs = signal<AuditLogItem[]>([]);

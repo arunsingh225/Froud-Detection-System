@@ -386,12 +386,11 @@ export class TransactionsListComponent implements OnInit {
     if (this.statusFilter !== 'All') data = data.filter(t => t.status === this.statusFilter);
 
     data.sort((a, b) => {
-      let av: any = a[this.sortKey];
-      let bv: any = b[this.sortKey];
-      if (this.sortKey === 'timestamp') {
-        av = new Date(av).getTime();
-        bv = new Date(bv).getTime();
-      }
+      const key = this.sortKey;
+      const sortValue = (t: typeof a): string | number =>
+        key === 'timestamp' ? new Date(t.timestamp).getTime() : (t[key] as string | number);
+      const av = sortValue(a);
+      const bv = sortValue(b);
       return this.sortDir === 'asc' ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
     });
 

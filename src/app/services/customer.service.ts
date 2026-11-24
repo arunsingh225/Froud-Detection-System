@@ -11,6 +11,7 @@ import {
   TransactionDto,
   FraudAlertDto
 } from '../models/api-response.model';
+import { asUnion } from '../shared/utils/cast';
 
 export function mapDtoToCustomer(dto: CustomerDto): Customer {
   return {
@@ -22,8 +23,8 @@ export function mapDtoToCustomer(dto: CustomerDto): Customer {
     customerSince: dto.createdAt ? new Date(dto.createdAt).getFullYear().toString() : '2024',
     accountAge: 'Active Member',
     riskScore: dto.riskScore,
-    riskTier: (dto.riskTier as any) || 'Low',
-    status: (dto.status as any) || 'Active',
+    riskTier: asUnion<Customer['riskTier']>(dto.riskTier, 'Low'),
+    status: asUnion<Customer['status']>(dto.status, 'Active'),
     vol30d: dto.vol30d || 0,
     lastActive: 'Recently Active',
     avgTxn: dto.avgTxn || 0,
@@ -31,7 +32,7 @@ export function mapDtoToCustomer(dto: CustomerDto): Customer {
     priorFlags: dto.priorFlags || 0,
     residence: dto.residence || `${dto.city || 'Mumbai'}, ${dto.country || 'India'}`,
     city: dto.city || 'Mumbai',
-    kycStatus: (dto.kycStatus as any) || 'Verified'
+    kycStatus: asUnion<Customer['kycStatus']>(dto.kycStatus, 'Verified')
   };
 }
 
@@ -97,7 +98,7 @@ export class CustomerService {
 
   getCustomerById(id: string): Customer | undefined {
     const cached = this.customers().find(
-      c => c.id.toLowerCase() === id.toLowerCase() || (c as any).customerId === id
+      c => c.id.toLowerCase() === id.toLowerCase() || (c as Customer & { customerId?: string }).customerId === id
     );
     if (cached) {
       this.selectedCustomer.set(cached);

@@ -74,8 +74,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.checkLoginScreen(this.router.url);
     this.routerSub = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe(event => {
         this.checkLoginScreen(event.urlAfterRedirects || event.url);
       });
   }

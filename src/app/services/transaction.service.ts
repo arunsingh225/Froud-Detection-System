@@ -10,12 +10,13 @@ import {
   CreateTransactionDto,
   FraudPredictionResultDto
 } from '../models/api-response.model';
+import { asUnion } from '../shared/utils/cast';
 
 export function mapDtoToTransaction(dto: TransactionDto): Transaction {
   return {
     id: dto.transactionCode || dto.transactionId || '',
-    transactionId: dto.transactionId || (dto as any).id || '',
-    transactionCode: dto.transactionCode || dto.transactionId || (dto as any).id || '',
+    transactionId: dto.transactionId || (dto as TransactionDto & { id?: string }).id || '',
+    transactionCode: dto.transactionCode || dto.transactionId || (dto as TransactionDto & { id?: string }).id || '',
     customerName: dto.customerName || 'Unknown Customer',
     customerId: dto.customerCode || dto.customerId,
     amountInr: dto.amountInr,
@@ -35,10 +36,10 @@ export function mapDtoToTransaction(dto: TransactionDto): Transaction {
     ip: dto.ipAddress || '127.0.0.1',
     vpnDetected: dto.vpnDetected,
     probability: dto.probability,
-    riskTier: (dto.riskTier as any) || 'Low',
-    status: (dto.status as any) || 'Pending Review',
+    riskTier: asUnion<Transaction['riskTier']>(dto.riskTier, 'Low'),
+    status: asUnion<Transaction['status']>(dto.status, 'Pending Review'),
     anomalyReason: dto.anomalyReason || 'Transaction processed via risk assessment pipeline.',
-    merchantCategory: (dto.merchantCategory as any) || 'Digital Goods'
+    merchantCategory: asUnion<Transaction['merchantCategory']>(dto.merchantCategory, 'Digital Goods')
   };
 }
 

@@ -314,9 +314,9 @@ export class NewTransactionModalComponent implements OnInit {
 
   ngOnInit(): void {
     // Pick existing account and customer from store if available
-    const cust = this.customerService.customers()[0];
-    if (cust && (cust as any).customerId) {
-      this.form.customerId = (cust as any).customerId;
+    const cust = this.customerService.customers()[0] as { customerId?: string } | undefined;
+    if (cust?.customerId) {
+      this.form.customerId = cust.customerId;
     }
   }
 

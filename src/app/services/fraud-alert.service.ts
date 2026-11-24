@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { FraudAlert } from '../models/alert.model';
 import { ApiResponse, PagedResult, FraudAlertDto } from '../models/api-response.model';
 import { AlertStatus } from '../models/types.model';
+import { asUnion } from '../shared/utils/cast';
 
 export function mapDtoToAlert(dto: FraudAlertDto): FraudAlert {
   return {
@@ -14,9 +15,9 @@ export function mapDtoToAlert(dto: FraudAlertDto): FraudAlert {
     customerName: dto.customerName || 'Unknown Customer',
     amountInr: dto.amountInr,
     fraudProbability: dto.fraudProbability,
-    riskTier: (dto.riskTier as any) || (dto.severity as any) || 'Medium',
+    riskTier: asUnion<FraudAlert['riskTier']>(dto.riskTier || dto.severity, 'Medium'),
     reason: dto.reason,
-    status: (dto.status as any) || 'Open',
+    status: asUnion<FraudAlert['status']>(dto.status, 'Open'),
     assignedTo: dto.assignedTo,
     createdAt: dto.createdDateFormatted || new Date(dto.createdAt).toLocaleDateString(),
     createdTime: dto.createdTimeFormatted || new Date(dto.createdAt).toLocaleTimeString(),
@@ -78,7 +79,7 @@ export class FraudAlertService {
   }
 
   getAlertById(id: string): FraudAlert | undefined {
-    return this.alerts().find(a => a.id.toLowerCase() === id.toLowerCase() || (a as any).alertId === id);
+    return this.alerts().find(a => a.id.toLowerCase() === id.toLowerCase() || (a as FraudAlert & { alertId?: string }).alertId === id);
   }
 
   resolveAlert(id: string, notes: string = 'Resolved by investigator review'): Observable<ApiResponse<FraudAlertDto>> {
