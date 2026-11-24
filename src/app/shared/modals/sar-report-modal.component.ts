@@ -9,10 +9,9 @@ import { InrCurrencyPipe } from '../pipes/inr-currency.pipe';
 type Step = 'review' | 'edit' | 'approved' | 'export';
 
 @Component({
-  selector: 'app-sar-report-modal',
-  standalone: true,
-  imports: [CommonModule, FormsModule, InrCurrencyPipe],
-  template: `
+    selector: 'app-sar-report-modal',
+    imports: [CommonModule, FormsModule, InrCurrencyPipe],
+    template: `
     <div
       *ngIf="modalService.sarModalOpen()"
       class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"

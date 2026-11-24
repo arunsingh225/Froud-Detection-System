@@ -12,17 +12,16 @@ import { StatusBadgeComponent } from '../../shared/components/status-badge.compo
 import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
 
 @Component({
-  selector: 'app-customer-detail',
-  standalone: true,
-  imports: [CommonModule, RouterModule, RiskBadgeComponent, StatusBadgeComponent, InrCurrencyPipe],
-  styles: [`
+    selector: 'app-customer-detail',
+    imports: [CommonModule, RouterModule, RiskBadgeComponent, StatusBadgeComponent, InrCurrencyPipe],
+    styles: [`
     :host {
       display: block;
       width: 100%;
       min-height: 100%;
     }
   `],
-  template: `
+    template: `
     <div class="w-full min-h-full bg-[#0A0A0A] text-[#D4D4D4] p-4 lg:p-8 pb-12 space-y-6">
       <!-- Back Header -->
       <div class="flex items-center gap-3">

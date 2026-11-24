@@ -2,10 +2,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-empty-state',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-empty-state',
+    imports: [CommonModule],
+    template: `
     <div class="flex flex-col items-center justify-center py-16 px-4 text-center">
       <div class="w-14 h-14 rounded-2xl bg-[#141414] border border-white/5 flex items-center justify-center mb-4">
         <span class="material-symbols-outlined text-[28px] text-[#737373]">{{ icon }}</span>

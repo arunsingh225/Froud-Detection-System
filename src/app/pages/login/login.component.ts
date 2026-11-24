@@ -7,10 +7,9 @@ import { ThemeService } from '../../services/theme.service';
 import { ShaderBackgroundComponent } from '../../shared/components/shader-background.component';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ShaderBackgroundComponent],
-  styles: [`
+    selector: 'app-login',
+    imports: [CommonModule, FormsModule, ShaderBackgroundComponent],
+    styles: [`
     :host {
       display: block;
       width: 100%;
@@ -175,7 +174,7 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
       color: #71717A !important;
     }
   `],
-  template: `
+    template: `
     <div class="relative w-full h-full min-h-screen bg-[#0A0A0A] flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden select-none">
       <!-- Interactive WebGL Neural Shader Background -->
       <div class="absolute inset-0 z-0">

@@ -2,10 +2,9 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-status-badge',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-status-badge',
+    imports: [CommonModule],
+    template: `
     <span
       class="inline-block font-medium rounded border whitespace-nowrap"
       [ngClass]="[styleConfig.bg, styleConfig.text, styleConfig.border, size === 'md' ? 'px-2.5 py-1 text-[11px]' : 'px-2 py-0.5 text-[11px]']"

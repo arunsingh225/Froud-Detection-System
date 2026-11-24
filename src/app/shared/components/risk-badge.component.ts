@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RiskTier } from '../../models/types.model';
 
 @Component({
-  selector: 'app-risk-badge',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-risk-badge',
+    imports: [CommonModule],
+    template: `
     <span
       class="inline-flex items-center gap-1 font-bold font-mono-data uppercase tracking-wider rounded border"
       [ngClass]="[badgeConfig.bg, badgeConfig.text, badgeConfig.border, size === 'md' ? 'px-2.5 py-1 text-[11px]' : 'px-1.5 py-0.5 text-[9px]']"

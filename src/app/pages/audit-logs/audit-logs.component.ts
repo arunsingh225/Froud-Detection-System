@@ -7,17 +7,16 @@ import { StatusBadgeComponent } from '../../shared/components/status-badge.compo
 import { EmptyStateComponent } from '../../shared/components/empty-state.component';
 
 @Component({
-  selector: 'app-audit-logs',
-  standalone: true,
-  imports: [CommonModule, FormsModule, StatusBadgeComponent, EmptyStateComponent],
-  styles: [`
+    selector: 'app-audit-logs',
+    imports: [CommonModule, FormsModule, StatusBadgeComponent, EmptyStateComponent],
+    styles: [`
     :host {
       display: block;
       width: 100%;
       min-height: 100%;
     }
   `],
-  template: `
+    template: `
     <div class="w-full min-h-full bg-[#0A0A0A] text-[#D4D4D4] p-4 lg:p-8 pb-12 space-y-6">
       <!-- Loading State -->
       <div *ngIf="analyticsService.loading()" class="flex flex-col items-center justify-center py-20 space-y-4">

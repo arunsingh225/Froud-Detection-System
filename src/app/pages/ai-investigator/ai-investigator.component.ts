@@ -8,17 +8,16 @@ import { ModalService } from '../../services/modal.service';
 import { Transaction } from '../../models/transaction.model';
 
 @Component({
-  selector: 'app-ai-investigator',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  styles: [`
+    selector: 'app-ai-investigator',
+    imports: [CommonModule, FormsModule],
+    styles: [`
     :host {
       display: block;
       width: 100%;
       min-height: 100%;
     }
   `],
-  template: `
+    template: `
     <div class="w-full min-h-full bg-[#0A0A0A] text-[#D4D4D4] p-4 lg:p-8 pb-12 space-y-6">
       <!-- Page Header & Action Bar -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

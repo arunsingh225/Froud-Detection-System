@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { AnalyticsService } from './analytics.service';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { EngineHealthDto, FraudModelInfoDto } from '../models/api-response.model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AnalyticsService', () => {
   let httpMock: HttpTestingController;
@@ -20,12 +21,14 @@ describe('AnalyticsService', () => {
 
   function setup(auth: { loggedIn: boolean; privileged?: boolean }): AnalyticsService {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         AnalyticsService,
-        { provide: AuthService, useValue: { isLoggedIn: () => auth.loggedIn, hasAnyRole: () => !!auth.privileged } }
-      ]
-    });
+        { provide: AuthService, useValue: { isLoggedIn: () => auth.loggedIn, hasAnyRole: () => !!auth.privileged } },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     httpMock = TestBed.inject(HttpTestingController);
     return TestBed.inject(AnalyticsService);
   }

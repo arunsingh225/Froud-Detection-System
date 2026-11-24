@@ -11,18 +11,17 @@ import { SarReportModalComponent } from './shared/modals/sar-report-modal.compon
 import { NewTransactionModalComponent } from './shared/modals/new-transaction-modal.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    SidebarComponent,
-    TopHeaderComponent,
-    NewInvestigationModalComponent,
-    SarReportModalComponent,
-    NewTransactionModalComponent
-  ],
-  template: `
+    selector: 'app-root',
+    imports: [
+        CommonModule,
+        RouterModule,
+        SidebarComponent,
+        TopHeaderComponent,
+        NewInvestigationModalComponent,
+        SarReportModalComponent,
+        NewTransactionModalComponent
+    ],
+    template: `
     <!-- If on Login Screen or unauthenticated -->
     <div *ngIf="showLoginLayout" class="w-full h-full min-h-screen overflow-y-auto overflow-x-hidden">
       <router-outlet></router-outlet>

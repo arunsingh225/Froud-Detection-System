@@ -15,17 +15,16 @@ import {
 type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigations';
 
 @Component({
-  selector: 'app-risk-analytics',
-  standalone: true,
-  imports: [CommonModule, InrCurrencyPipe],
-  styles: [`
+    selector: 'app-risk-analytics',
+    imports: [CommonModule, InrCurrencyPipe],
+    styles: [`
     :host {
       display: block;
       width: 100%;
       min-height: 100%;
     }
   `],
-  template: `
+    template: `
     <div class="w-full min-h-full bg-[#0A0A0A] text-[#D4D4D4] p-4 lg:p-8 pb-12 space-y-6">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

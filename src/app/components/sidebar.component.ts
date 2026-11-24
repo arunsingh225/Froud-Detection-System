@@ -15,10 +15,9 @@ interface NavItem {
 }
 
 @Component({
-  selector: 'app-sidebar',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
+    selector: 'app-sidebar',
+    imports: [CommonModule, RouterModule],
+    template: `
     <aside
       class="flex flex-col bg-[#0D0D0D] border-r border-white/5 shrink-0 overflow-hidden h-full transition-all duration-200"
       [style.width.px]="collapsed ? 64 : 240"

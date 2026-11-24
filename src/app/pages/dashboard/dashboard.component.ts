@@ -9,17 +9,16 @@ import { LiveAlertItem, FraudTrendPoint } from '../../models/advanced-analytics.
 import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [CommonModule, RouterModule, InrCurrencyPipe],
-  styles: [`
+    selector: 'app-dashboard',
+    imports: [CommonModule, RouterModule, InrCurrencyPipe],
+    styles: [`
     :host {
       display: block;
       width: 100%;
       min-height: 100%;
     }
   `],
-  template: `
+    template: `
     <div class="w-full min-h-full bg-[#0A0A0A] text-[#D4D4D4] p-4 lg:p-8 pb-12 space-y-6">
       <!-- Loading Overlay -->
       <div *ngIf="analyticsService.loading()" class="flex items-center justify-center py-16">

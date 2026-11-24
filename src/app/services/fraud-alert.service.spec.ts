@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { FraudAlertService } from './fraud-alert.service';
 import { environment } from '../../environments/environment';
 import { ApiResponse, PagedResult, FraudAlertDto } from '../models/api-response.model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('FraudAlertService', () => {
   let service: FraudAlertService;
@@ -46,9 +47,9 @@ describe('FraudAlertService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [FraudAlertService]
-    });
+    imports: [],
+    providers: [FraudAlertService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
 
     service = TestBed.inject(FraudAlertService);
     httpMock = TestBed.inject(HttpTestingController);

@@ -11,25 +11,24 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
 import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
 
 @Component({
-  selector: 'app-investigations-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    RiskBadgeComponent,
-    StatusBadgeComponent,
-    EmptyStateComponent,
-    InrCurrencyPipe
-  ],
-  styles: [`
+    selector: 'app-investigations-list',
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule,
+        RiskBadgeComponent,
+        StatusBadgeComponent,
+        EmptyStateComponent,
+        InrCurrencyPipe
+    ],
+    styles: [`
     :host {
       display: block;
       width: 100%;
       min-height: 100%;
     }
   `],
-  template: `
+    template: `
     <div class="w-full min-h-full bg-[#0A0A0A] text-[#D4D4D4] p-4 lg:p-8 pb-12 space-y-6">
       <!-- Loading State -->
       <div *ngIf="investigationService.loading()" class="flex items-center justify-center py-16">

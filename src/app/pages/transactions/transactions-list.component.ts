@@ -18,26 +18,25 @@ type SortKey = 'id' | 'amountInr' | 'probability' | 'timestamp';
 type SortDir = 'asc' | 'desc';
 
 @Component({
-  selector: 'app-transactions-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    RiskBadgeComponent,
-    StatusBadgeComponent,
-    ProbabilityBarComponent,
-    EmptyStateComponent,
-    InrCurrencyPipe
-  ],
-  styles: [`
+    selector: 'app-transactions-list',
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule,
+        RiskBadgeComponent,
+        StatusBadgeComponent,
+        ProbabilityBarComponent,
+        EmptyStateComponent,
+        InrCurrencyPipe
+    ],
+    styles: [`
     :host {
       display: block;
       width: 100%;
       min-height: 100%;
     }
   `],
-  template: `
+    template: `
     <div class="w-full min-h-full bg-[#0A0A0A] text-[#D4D4D4] p-4 lg:p-8 pb-12 space-y-6">
       <!-- Loading State -->
       <div *ngIf="transactionService.loading()" class="flex items-center justify-center py-16">

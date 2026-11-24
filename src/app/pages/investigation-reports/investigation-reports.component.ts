@@ -4,22 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { AnalyticsService } from '../../services/analytics.service';
 import { ModalService } from '../../services/modal.service';
 import { InvestigationReport } from '../../models/report.model';
-import { RiskBadgeComponent } from '../../shared/components/risk-badge.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state.component';
 
 @Component({
-  selector: 'app-investigation-reports',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RiskBadgeComponent, StatusBadgeComponent, EmptyStateComponent],
-  styles: [`
+    selector: 'app-investigation-reports',
+    imports: [CommonModule, FormsModule, StatusBadgeComponent, EmptyStateComponent],
+    styles: [`
     :host {
       display: block;
       width: 100%;
       min-height: 100%;
     }
   `],
-  template: `
+    template: `
     <div class="w-full min-h-full bg-[#0A0A0A] text-[#D4D4D4] p-4 lg:p-8 pb-12 space-y-6">
       <!-- Loading State -->
       <div

@@ -2,10 +2,9 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-probability-bar',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-probability-bar',
+    imports: [CommonModule],
+    template: `
     <div class="flex items-center gap-2">
       <span class="font-mono-data font-bold text-[13px] min-w-[38px]" [ngClass]="textColor">
         {{ hasValue ? safeValue.toFixed(1) + '%' : '—' }}

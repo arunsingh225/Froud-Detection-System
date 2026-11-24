@@ -12,10 +12,9 @@ import { AppNotification } from '../models/notification.model';
 import { SearchResultDto, ApiResponse } from '../models/api-response.model';
 
 @Component({
-  selector: 'app-top-header',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
-  template: `
+    selector: 'app-top-header',
+    imports: [CommonModule, FormsModule, RouterModule],
+    template: `
     <header class="bg-[#0D0D0D] border-b border-white/5 flex items-center justify-between px-4 py-3 shrink-0 relative z-30">
       <!-- Left: Toggle & Title -->
       <div class="flex items-center gap-3">
