@@ -76,49 +76,6 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
       color: #121212 !important;
     }
 
-    /* 4. Checkbox & Verification */
-    :host-context(html.light) .login-checkbox-label {
-      color: #3F3F46 !important;
-    }
-
-    :host-context(html.light) .login-checkbox {
-      background-color: #FFFFFF !important;
-      border-color: rgba(0, 0, 0, 0.25) !important;
-    }
-
-    :host-context(html.light) .login-verified-badge {
-      color: #065F46 !important;
-    }
-
-    /* 5. Quick-Fill RBAC Buttons */
-    :host-context(html.light) .login-profile-section {
-      border-color: rgba(0, 0, 0, 0.08) !important;
-    }
-
-    :host-context(html.light) .login-profile-title {
-      color: #52525B !important;
-    }
-
-    :host-context(html.light) .login-profile-btn {
-      background-color: #F7F6F2 !important;
-      border-color: rgba(0, 0, 0, 0.08) !important;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
-    }
-
-    :host-context(html.light) .login-profile-btn:hover {
-      background-color: #EDEAE1 !important;
-      border-color: rgba(156, 120, 43, 0.45) !important;
-    }
-
-    :host-context(html.light) .login-profile-name {
-      color: #121212 !important;
-    }
-
-    :host-context(html.light) .login-profile-role {
-      color: #826320 !important;
-      font-weight: 600 !important;
-    }
-
     /* 6. Error Banner */
     :host-context(html.light) .login-error-banner {
       background-color: rgba(220, 38, 38, 0.08) !important;
@@ -214,35 +171,35 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
         <div class="my-auto py-12 space-y-4">
           <div class="login-status-pill inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#141414] border border-[#C5A059]/30 text-[#C5A059] text-[11px] font-mono-data tracking-wider uppercase">
             <span class="w-2 h-2 rounded-full bg-[#52b788] pulse-dot"></span>
-            Real-Time Neural Inference Active
+            Secure sign-in
           </div>
     
           <h2 class="login-left-heading font-serif italic text-3xl lg:text-5xl tracking-tight text-white leading-tight">
-            Autonomous threat detection for enterprise scale.
+            Fraud monitoring and investigation in one workspace.
           </h2>
     
           <p class="login-left-subtext text-[#A3A3A3] text-[15px] max-w-lg leading-relaxed font-sans">
-            Protect multi-million dollar transaction volumes with sub-50ms behavioral scoring, impossible travel verification, and automated FinCEN compliance workflows.
+            Score transactions, review alerts and investigate cases with explainable model output and a full audit trail.
           </p>
     
           <div class="flex flex-wrap gap-3 pt-4 text-[11px] font-mono-data text-[#D4D4D4]">
             <div class="login-feature-pill flex items-center gap-1.5 bg-[#0D0D0D]/90 border border-white/5 px-3 py-1.5 rounded-lg">
-              <span class="material-symbols-outlined text-[16px] text-[#52b788]">verified</span>
-              <span>SOC2 Type II</span>
+              <span class="material-symbols-outlined text-[16px] text-[#52b788]">psychology</span>
+              <span>Explainable scores</span>
             </div>
             <div class="login-feature-pill flex items-center gap-1.5 bg-[#0D0D0D]/90 border border-white/5 px-3 py-1.5 rounded-lg">
               <span class="material-symbols-outlined text-[16px] text-[#C5A059]">lock</span>
-              <span>Zero-Trust FIDO2</span>
+              <span>Role-based access</span>
             </div>
             <div class="login-feature-pill flex items-center gap-1.5 bg-[#0D0D0D]/90 border border-white/5 px-3 py-1.5 rounded-lg">
-              <span class="material-symbols-outlined text-[16px] text-[#C5A059]">memory</span>
-              <span>18ms TPU Latency</span>
+              <span class="material-symbols-outlined text-[16px] text-[#C5A059]">history</span>
+              <span>Audit trail</span>
             </div>
           </div>
         </div>
     
         <div class="login-left-footer text-[11px] text-[#737373] font-mono-data">
-          FraudGuard Core v4.8 • Build 2026.08.30
+          FraudGuard AI
         </div>
       </div>
     
@@ -250,9 +207,9 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
       <div class="relative z-10 flex items-center justify-center p-6 lg:p-12 w-full lg:w-[480px] shrink-0">
         <div class="login-card w-full bg-[#0D0D0D]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 lg:p-8 space-y-6 shadow-2xl">
           <div>
-            <h3 class="login-heading font-serif italic text-2xl text-white tracking-tight">Console Authentication</h3>
+            <h3 class="login-heading font-serif italic text-2xl text-white tracking-tight">Sign in</h3>
             <p class="login-subtext text-[13px] text-[#A3A3A3] mt-1">
-              Sign in with your Tier 3 security credentials to access the investigative workspace.
+              Use your FraudGuard account to continue.
             </p>
           </div>
     
@@ -267,7 +224,7 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
           <form (ngSubmit)="onSubmit()" class="space-y-4">
             <div>
               <label class="login-label text-[11px] font-light uppercase tracking-wider text-[#A3A3A3] block mb-1.5">
-                Corporate Email / SSO Handle
+                Email
               </label>
               <div class="login-input-container flex items-center bg-[#141414] rounded-xl px-3.5 py-2.5 border border-white/10 focus-within:border-[#C5A059] transition-all">
                 <span class="login-icon material-symbols-outlined text-[18px] text-[#737373] mr-2">mail</span>
@@ -276,7 +233,8 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
                   name="email"
                   [(ngModel)]="email"
                   required
-                  placeholder="name@fraudguard.enterprise.io"
+                  placeholder="name@company.com"
+                  autocomplete="username"
                   class="login-input w-full bg-transparent text-white text-[13px] focus:outline-none placeholder-[#525252]"
                   />
                 </div>
@@ -284,7 +242,7 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
     
               <div>
                 <label class="login-label text-[11px] font-light uppercase tracking-wider text-[#A3A3A3] block mb-1.5">
-                  Hardware Key Passcode / Password
+                  Password
                 </label>
                 <div class="login-input-container flex items-center bg-[#141414] rounded-xl px-3.5 py-2.5 border border-white/10 focus-within:border-[#C5A059] transition-all">
                   <span class="login-icon material-symbols-outlined text-[18px] text-[#737373] mr-2">key</span>
@@ -293,7 +251,8 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
                     name="password"
                     [(ngModel)]="password"
                     required
-                    placeholder="••••••••••••"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
                     class="login-input w-full bg-transparent text-white text-[13px] focus:outline-none placeholder-[#525252]"
                     />
                     <button
@@ -308,19 +267,6 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
                   </div>
                 </div>
     
-                <div class="flex items-center justify-between text-[12px]">
-                  <label class="login-checkbox-label flex items-center gap-2 cursor-pointer text-[#A3A3A3]">
-                    <input
-                      type="checkbox"
-                      name="rememberDevice"
-                      [(ngModel)]="rememberDevice"
-                      class="login-checkbox rounded border-white/10 text-[#C5A059] accent-[#C5A059] focus:ring-0 bg-[#141414]"
-                      />
-                      <span>Remember FIDO2 token</span>
-                    </label>
-                    <span class="login-verified-badge text-[11px] text-[#52b788] font-mono-data">Device Verified</span>
-                  </div>
-    
                   <button
                     type="submit"
                     [disabled]="isLoading"
@@ -328,56 +274,23 @@ import { ShaderBackgroundComponent } from '../../shared/components/shader-backgr
                     >
                     @if (isLoading) {
                       <div class="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
-                      <span>Verifying Credentials...</span>
+                      <span>Signing in...</span>
                     } @else {
                       <span class="material-symbols-outlined text-[20px]">login</span>
-                      <span>Enter Security Console</span>
+                      <span>Sign in</span>
                     }
                   </button>
                 </form>
     
-                <!-- Quick Fill Test Accounts -->
-                <div class="login-profile-section pt-2 border-t border-white/5 space-y-2">
-                  <span class="login-profile-title text-[10px] font-mono-data text-[#737373] uppercase tracking-widest block">
-                    Quick-Fill Role Profiles (RBAC)
-                  </span>
-                  <div class="grid grid-cols-3 gap-1.5 text-[11px]">
-                    <button
-                      type="button"
-                      (click)="handleQuickFill('riya.desai@fraudguard.enterprise.io')"
-                      class="login-profile-btn p-2 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#C5A059]/40 text-[#C5A059] text-center transition-colors truncate cursor-pointer"
-                      >
-                      <b class="login-profile-name block truncate">Riya Desai</b>
-                      <span class="login-profile-role text-[9px] text-[#A3A3A3]">INVESTIGATOR</span>
-                    </button>
-                    <button
-                      type="button"
-                      (click)="handleQuickFill('priyanka.iyer@fraudguard.enterprise.io')"
-                      class="login-profile-btn p-2 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#C5A059]/40 text-[#C5A059] text-center transition-colors truncate cursor-pointer"
-                      >
-                      <b class="login-profile-name block truncate">Priyanka Iyer</b>
-                      <span class="login-profile-role text-[9px] text-[#A3A3A3]">ADMIN</span>
-                    </button>
-                    <button
-                      type="button"
-                      (click)="handleQuickFill('amit.bose@fraudguard.enterprise.io')"
-                      class="login-profile-btn p-2 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#C5A059]/40 text-[#C5A059] text-center transition-colors truncate cursor-pointer"
-                      >
-                      <b class="login-profile-name block truncate">Amit Bose</b>
-                      <span class="login-profile-role text-[9px] text-[#A3A3A3]">COMPLIANCE</span>
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
     `
 })
 export class LoginComponent {
-  email = 'riya.desai@fraudguard.enterprise.io';
-  password = 'password123';
+  email = '';
+  password = '';
   showPassword = false;
-  rememberDevice = true;
   isLoading = false;
   errorMessage: string | null = null;
 
@@ -386,12 +299,6 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router
   ) {}
-
-  handleQuickFill(email: string): void {
-    this.email = email;
-    this.password = 'password123';
-    this.errorMessage = null;
-  }
 
   async onSubmit(): Promise<void> {
     this.isLoading = true;
