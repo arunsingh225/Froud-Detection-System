@@ -14,6 +14,10 @@ GO
 USE [FraudGuardAI_DB];
 GO
 
+-- Required for DML on tables that have filtered indexes (sqlcmd defaults to OFF; SqlClient/EF use ON)
+SET QUOTED_IDENTIFIER ON;
+GO
+
 SET NOCOUNT ON;
 GO
 

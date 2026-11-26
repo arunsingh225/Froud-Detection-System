@@ -13,7 +13,7 @@ services:
       timeout: 5s
       retries: 20
 
-  # Creates the schema ONLY when the database has none yet (script 01 drops every table, so running it on each
+  # Creates the schema ONLY when the database has none yet (an existing one only gets the idempotent upgrade scripts) (script 01 drops every table, so running it on each
   # start would wipe all data), and the demo seed only on that first creation and only if SEED_DEMO_DATA=true
   # (known demo passwords!). To reset everything on purpose: docker compose down -v
   db-init:
@@ -30,7 +30,10 @@ services:
         S=/opt/mssql-tools18/bin/sqlcmd
         HAS=$$($$S -C -S db -U sa -P "$$SA" -h -1 -W -Q "SET NOCOUNT ON; SELECT CASE WHEN DB_ID('FraudGuardAI_DB') IS NOT NULL AND OBJECT_ID('FraudGuardAI_DB.dbo.Users') IS NOT NULL THEN 1 ELSE 0 END" | tr -d '[:space:]')
         if [ "$$HAS" = "1" ]; then
-          echo "Schema already present: keeping existing data."
+          echo "Schema already present: keeping existing data, applying idempotent upgrades."
+          for f in 05_security_hardening_migration 06_alert_category 07_phone_otp_login 08_alert_feedback; do
+            $$S -C -S db -U sa -P "$$SA" -b -i /sql/$$f.sql
+          done
         else
           $$S -C -S db -U sa -P "$$SA" -b -i /sql/01_create_database_and_schema.sql
           if [ "$$SEED_DEMO_DATA" = "true" ]; then $$S -C -S db -U sa -P "$$SA" -b -v ALLOW_DEMO_SEED=YES -i /sql/02_seed_demo_data.sql; fi
@@ -59,6 +62,12 @@ services:
       CorsOrigins__0: http://localhost:3000
       AllowedHosts: "*"
       RequireHttps: "false" # local compose is plain HTTP; keep true behind real TLS
+      # Optional sign-in methods (both are OFF while these are empty)
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      Sms__Provider: ${SMS_PROVIDER:-}
+      Sms__Twilio__AccountSid: ${TWILIO_ACCOUNT_SID:-}
+      Sms__Twilio__AuthToken: ${TWILIO_AUTH_TOKEN:-}
+      Sms__Twilio__From: ${TWILIO_FROM:-}
     ports: ["5000:5000"]
 
   web:

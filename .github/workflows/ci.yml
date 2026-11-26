@@ -60,6 +60,8 @@ jobs:
           run_sql -v ALLOW_DEMO_SEED=YES -i /sql/02_seed_demo_data.sql
           run_sql -i /sql/05_security_hardening_migration.sql   # idempotent upgrade scripts must be no-ops on a fresh schema
           run_sql -i /sql/06_alert_category.sql
+          run_sql -i /sql/07_phone_otp_login.sql
+          run_sql -i /sql/08_alert_feedback.sql
           # the seed must be refused without the explicit opt-in
           if run_sql -i /sql/02_seed_demo_data.sql; then echo "seed ran without opt-in"; exit 1; fi
       - name: SQL Server integration tests

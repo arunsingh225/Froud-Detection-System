@@ -23,6 +23,7 @@ GO
 -- ============================================================================
 -- Drop Existing Tables (Reverse Order of Dependencies for clean re-run)
 -- ============================================================================
+IF OBJECT_ID(N'dbo.LoginOtps', N'U') IS NOT NULL DROP TABLE dbo.LoginOtps;
 IF OBJECT_ID(N'dbo.AuditLogs', N'U') IS NOT NULL DROP TABLE dbo.AuditLogs;
 IF OBJECT_ID(N'dbo.Reports', N'U') IS NOT NULL DROP TABLE dbo.Reports;
 IF OBJECT_ID(N'dbo.InvestigationTimeline', N'U') IS NOT NULL DROP TABLE dbo.InvestigationTimeline;
@@ -50,6 +51,7 @@ CREATE TABLE dbo.Users (
     PasswordHash        NVARCHAR(255)       NOT NULL,
     Role                NVARCHAR(30)        NOT NULL,
     Department          NVARCHAR(100)       NULL,
+    PhoneNumber         NVARCHAR(20)        NULL,   -- E.164, used for one-time-code (OTP) sign-in
     IsActive            BIT                 NOT NULL DEFAULT 1,
     AccessFailedCount   INT                 NOT NULL DEFAULT 0,
     LockoutEnd          DATETIMEOFFSET      NULL,
@@ -63,6 +65,27 @@ CREATE TABLE dbo.Users (
     CONSTRAINT UQ_Users_Email UNIQUE (Email),
     CONSTRAINT CK_Users_Role CHECK (Role IN ('ADMIN', 'INVESTIGATOR', 'COMPLIANCE', 'ANALYST', 'VIEWER'))
 );
+GO
+
+-- One account per phone number (users without a phone are not constrained)
+CREATE UNIQUE INDEX UX_Users_PhoneNumber ON dbo.Users (PhoneNumber) WHERE PhoneNumber IS NOT NULL;
+GO
+
+-- One-time sign-in codes: only a keyed hash of the code is stored, never the code itself
+CREATE TABLE dbo.LoginOtps (
+    OtpId       UNIQUEIDENTIFIER    NOT NULL DEFAULT NEWID(),
+    UserId      UNIQUEIDENTIFIER    NOT NULL,
+    CodeHash    NVARCHAR(64)        NOT NULL,
+    ExpiresAt   DATETIMEOFFSET      NOT NULL,
+    Attempts    INT                 NOT NULL DEFAULT 0,
+    ConsumedAt  DATETIMEOFFSET      NULL,
+    CreatedAt   DATETIMEOFFSET      NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+
+    CONSTRAINT PK_LoginOtps PRIMARY KEY CLUSTERED (OtpId),
+    CONSTRAINT FK_LoginOtps_Users FOREIGN KEY (UserId) REFERENCES dbo.Users(UserId) ON DELETE CASCADE
+);
+GO
+CREATE INDEX IX_LoginOtps_User_Created ON dbo.LoginOtps (UserId, CreatedAt DESC);
 GO
 
 -- ============================================================================
@@ -261,6 +284,9 @@ CREATE TABLE dbo.FraudAlerts (
     Status              NVARCHAR(30)        NOT NULL DEFAULT 'Open',
     AssignedToUserId    UNIQUEIDENTIFIER    NULL,
     ResolvedAt          DATETIMEOFFSET      NULL,
+    ResolutionOutcome   NVARCHAR(20)        NULL,   -- analyst label: CONFIRMED_FRAUD or FALSE_POSITIVE (ground truth)
+    ResolutionNotes     NVARCHAR(1000)      NULL,
+    ResolvedByUserId    UNIQUEIDENTIFIER    NULL,
     CreatedAt           DATETIMEOFFSET      NOT NULL DEFAULT SYSDATETIMEOFFSET(),
     UpdatedAt           DATETIMEOFFSET      NOT NULL DEFAULT SYSDATETIMEOFFSET(),
 
@@ -269,8 +295,10 @@ CREATE TABLE dbo.FraudAlerts (
     CONSTRAINT FK_FraudAlerts_Transactions FOREIGN KEY (TransactionId) REFERENCES dbo.Transactions(TransactionId),
     CONSTRAINT FK_FraudAlerts_Customers FOREIGN KEY (CustomerId) REFERENCES dbo.Customers(CustomerId),
     CONSTRAINT FK_FraudAlerts_Users FOREIGN KEY (AssignedToUserId) REFERENCES dbo.Users(UserId),
+    CONSTRAINT FK_FraudAlerts_ResolvedBy FOREIGN KEY (ResolvedByUserId) REFERENCES dbo.Users(UserId),
     CONSTRAINT CK_FraudAlerts_Severity CHECK (Severity IN ('Critical', 'High', 'Medium', 'Low')),
     CONSTRAINT CK_FraudAlerts_Status CHECK (Status IN ('Open', 'Investigating', 'Escalated', 'Resolved')),
+    CONSTRAINT CK_FraudAlerts_Outcome CHECK (ResolutionOutcome IS NULL OR ResolutionOutcome IN (N'CONFIRMED_FRAUD', N'FALSE_POSITIVE')),
     CONSTRAINT CK_FraudAlerts_Category CHECK (Category IN (N'AccountTakeover', N'VelocitySpike', N'SyntheticIdentity', N'CardTesting', N'Other'))
 );
 GO

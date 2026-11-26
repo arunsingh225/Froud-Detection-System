@@ -7,6 +7,10 @@
 USE [FraudGuardAI_DB];
 GO
 
+-- Required for DML on tables that have filtered indexes (sqlcmd defaults to OFF; SqlClient/EF use ON)
+SET QUOTED_IDENTIFIER ON;
+GO
+
 IF OBJECT_ID(N'dbo.sp_GenerateSyntheticFraudData', N'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_GenerateSyntheticFraudData;
 GO

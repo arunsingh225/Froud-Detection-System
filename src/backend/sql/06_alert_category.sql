@@ -4,6 +4,10 @@
 USE [FraudGuardAI_DB];
 GO
 
+-- Required for DML on tables that have filtered indexes (sqlcmd defaults to OFF; SqlClient/EF use ON)
+SET QUOTED_IDENTIFIER ON;
+GO
+
 IF COL_LENGTH('dbo.FraudAlerts', 'Category') IS NULL
     ALTER TABLE dbo.FraudAlerts ADD Category NVARCHAR(30) NOT NULL
         CONSTRAINT DF_FraudAlerts_Category DEFAULT N'Other';
