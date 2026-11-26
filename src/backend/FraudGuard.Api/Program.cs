@@ -136,6 +136,10 @@ builder.Services.AddRateLimiter(options =>
     options.AddPolicy("login_policy", ctx => RateLimitPartition.GetFixedWindowLimiter(
         ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+    // one-time codes: few requests per IP (the per-account limits live in ExternalLoginService)
+    options.AddPolicy("otp_policy", ctx => RateLimitPartition.GetFixedWindowLimiter(
+        ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 8, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
     options.AddPolicy("ai_policy", ctx => RateLimitPartition.GetFixedWindowLimiter(
         ClientKey(ctx),
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
@@ -169,6 +173,22 @@ builder.Services.AddSingleton<FraudPredictionMapper>();
 builder.Services.AddScoped<IFraudPredictionService, FraudPredictionService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Sign-in without a password: SMS one-time code and Google. Phone sign-in is OFF unless Sms:Provider is set
+// ("console" = demo, writes the code to the log; "twilio" = real SMS). Google is off unless GOOGLE_CLIENT_ID is set.
+var smsOptions = builder.Configuration.GetSection("Sms").Get<FraudGuard.Api.Services.ExternalLogin.SmsOptions>() ?? new();
+builder.Services.AddSingleton(smsOptions);
+builder.Services.AddSingleton<FraudGuard.Api.Services.ExternalLogin.ConsoleSmsSender>();
+builder.Services.AddHttpClient<FraudGuard.Api.Services.ExternalLogin.TwilioSmsSender>().AddTypedClient((http, _) =>
+    new FraudGuard.Api.Services.ExternalLogin.TwilioSmsSender(http, smsOptions.Twilio));
+builder.Services.AddScoped<FraudGuard.Api.Services.ExternalLogin.ISmsSender>(sp => smsOptions.Provider?.Trim().ToLowerInvariant() switch
+{
+    "console" => sp.GetRequiredService<FraudGuard.Api.Services.ExternalLogin.ConsoleSmsSender>(),
+    "twilio" when smsOptions.Twilio.IsComplete => sp.GetRequiredService<FraudGuard.Api.Services.ExternalLogin.TwilioSmsSender>(),
+    _ => new FraudGuard.Api.Services.ExternalLogin.NullSmsSender()
+});
+builder.Services.AddSingleton<FraudGuard.Api.Services.ExternalLogin.IGoogleTokenVerifier, FraudGuard.Api.Services.ExternalLogin.GoogleTokenVerifier>();
+builder.Services.AddScoped<FraudGuard.Api.Services.ExternalLogin.IExternalLoginService, FraudGuard.Api.Services.ExternalLogin.ExternalLoginService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();

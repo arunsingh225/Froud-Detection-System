@@ -19,6 +19,11 @@ namespace FraudGuard.Api.Services
         Task<UserDto> CreateUserAsync(CreateUserRequestDto request, Guid adminUserId, string? ipAddress = null);
         Task<(bool Success, string Message, UserDto? User)> UpdateUserRoleAsync(Guid userId, string newRole, Guid adminUserId, string? ipAddress = null);
         Task<(bool Success, string Message, UserDto? User)> UpdateUserStatusAsync(Guid userId, bool isActive, Guid adminUserId, string? ipAddress = null);
+        /// <summary>A signed-in user changes their own password. On success every existing session of that user is revoked.</summary>
+        Task<(bool Success, string Message)> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword, string? ipAddress = null);
+        /// <summary>An admin sets a new password for another user (for example after a lost password). Revokes that user's sessions.</summary>
+        Task<(bool Success, string Message)> ResetPasswordAsync(Guid userId, string newPassword, Guid adminUserId, string? ipAddress = null);
+        Task<(bool Success, string Message, UserDto? User)> UpdateUserPhoneAsync(Guid userId, string? phone, Guid adminUserId, string? ipAddress = null);
     }
 
     public class AuthService : IAuthService
@@ -218,6 +223,7 @@ namespace FraudGuard.Api.Services
                     Email = u.Email,
                     Role = u.Role.ToUpperInvariant(),
                     Department = u.Department,
+                    PhoneNumber = u.PhoneNumber,
                     IsActive = u.IsActive,
                     LastLoginAt = u.LastLoginAt,
                     CreatedAt = u.CreatedAt
@@ -234,6 +240,18 @@ namespace FraudGuard.Api.Services
                 throw new InvalidOperationException($"User with email '{request.Email}' already exists.");
             }
 
+            var weakness = PasswordPolicy.Validate(request.Password);
+            if (weakness != null) throw new InvalidOperationException(weakness);
+
+            string? phone = null;
+            if (!string.IsNullOrWhiteSpace(request.Phone))
+            {
+                phone = ExternalLogin.PhoneNumberNormalizer.Normalize(request.Phone);
+                if (phone == null) throw new InvalidOperationException("Phone number is not valid.");
+                if (await _db.Users.AnyAsync(u => u.PhoneNumber == phone))
+                    throw new InvalidOperationException("That phone number is already used by another account.");
+            }
+
             var nextNum = await _db.Users.CountAsync() + 1;
             var userCode = $"USR-{request.Role.Substring(0, 3)}-{nextNum:D3}";
 
@@ -245,6 +263,7 @@ namespace FraudGuard.Api.Services
                 Email = emailClean,
                 Role = request.Role.ToUpperInvariant(),
                 Department = request.Department?.Trim(),
+                PhoneNumber = phone,
                 IsActive = true,
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
@@ -275,10 +294,109 @@ namespace FraudGuard.Api.Services
                 Email = user.Email,
                 Role = user.Role,
                 Department = user.Department,
+                PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive,
                 LastLoginAt = user.LastLoginAt,
                 CreatedAt = user.CreatedAt
             };
+        }
+
+        public async Task<(bool Success, string Message)> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword, string? ipAddress = null)
+        {
+            var user = await _db.Users.FindAsync(userId);
+            if (user == null || !user.IsActive) return (false, "Account not found or inactive.");
+
+            if (user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.UtcNow)
+            {
+                await _auditLogService.LogActivityAsync(user.FullName, user.Role, "PASSWORD_CHANGE", "Authentication", "LOCKED",
+                    "Authentication", "Password change refused: account locked", user.UserId, ipAddress);
+                return (false, "Too many failed attempts. Try again later.");
+            }
+
+            var verified = false;
+            try
+            {
+                var check = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, currentPassword);
+                verified = check == PasswordVerificationResult.Success || check == PasswordVerificationResult.SuccessRehashNeeded;
+            }
+            catch (FormatException) { verified = false; }
+
+            if (!verified)
+            {
+                // A stolen session must not be able to guess the current password without limit
+                user.AccessFailedCount++;
+                if (user.AccessFailedCount >= 5) user.LockoutEnd = DateTimeOffset.UtcNow.AddMinutes(15);
+                await _db.SaveChangesAsync();
+                await _auditLogService.LogActivityAsync(user.FullName, user.Role, "PASSWORD_CHANGE", "Authentication", "FAILED",
+                    "Authentication", $"Wrong current password ({user.AccessFailedCount}/5)", user.UserId, ipAddress);
+                return (false, "The current password is not correct.");
+            }
+
+            var weakness = PasswordPolicy.Validate(newPassword, currentPassword);
+            if (weakness != null) return (false, weakness);
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, newPassword);
+            user.AccessFailedCount = 0;
+            user.LockoutEnd = null;
+            user.UpdatedAt = DateTimeOffset.UtcNow;
+            await _db.SaveChangesAsync();
+            await _revocationService.RevokeUserAsync(user.UserId);   // signs the user out everywhere, including this session
+
+            await _auditLogService.LogActivityAsync(user.FullName, user.Role, "PASSWORD_CHANGED", "Authentication", "SUCCESS",
+                "Authentication", "User changed their own password; all sessions revoked", user.UserId, ipAddress);
+            return (true, "Password changed. Please sign in again with the new password.");
+        }
+
+        public async Task<(bool Success, string Message)> ResetPasswordAsync(Guid userId, string newPassword, Guid adminUserId, string? ipAddress = null)
+        {
+            var user = await _db.Users.FindAsync(userId);
+            if (user == null) return (false, "User not found.");
+
+            var weakness = PasswordPolicy.Validate(newPassword);
+            if (weakness != null) return (false, weakness);
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, newPassword);
+            user.AccessFailedCount = 0;
+            user.LockoutEnd = null;
+            user.UpdatedAt = DateTimeOffset.UtcNow;
+            await _db.SaveChangesAsync();
+            await _revocationService.RevokeUserAsync(user.UserId);
+
+            await _auditLogService.LogActivityAsync("ADMIN", "ADMIN", "PASSWORD_RESET", $"User:{user.UserId}", "SUCCESS",
+                "Policy Change", $"Admin set a new password for {user.FullName}; all of that user's sessions revoked", adminUserId, ipAddress);
+            return (true, "Password reset. The user's sessions were signed out.");
+        }
+
+        public async Task<(bool Success, string Message, UserDto? User)> UpdateUserPhoneAsync(Guid userId, string? phone, Guid adminUserId, string? ipAddress = null)
+        {
+            var user = await _db.Users.FindAsync(userId);
+            if (user == null) return (false, "User not found.", null);
+
+            string? normalized = null;
+            if (!string.IsNullOrWhiteSpace(phone))
+            {
+                normalized = ExternalLogin.PhoneNumberNormalizer.Normalize(phone);
+                if (normalized == null) return (false, "Phone number is not valid.", null);
+                if (await _db.Users.AnyAsync(u => u.PhoneNumber == normalized && u.UserId != userId))
+                    return (false, "That phone number is already used by another account.", null);
+            }
+
+            user.PhoneNumber = normalized;
+            user.UpdatedAt = DateTimeOffset.UtcNow;
+            await _db.SaveChangesAsync();
+
+            await _auditLogService.LogActivityAsync(
+                actorName: "ADMIN", actorType: "ADMIN", action: "USER_PHONE_UPDATED", resourceTarget: $"User:{user.UserId}",
+                result: "SUCCESS", category: "Policy Change",
+                subAction: normalized == null ? $"Removed phone number of {user.FullName}" : $"Set phone number of {user.FullName} ({ExternalLogin.PhoneNumberNormalizer.Mask(normalized)})",
+                actorId: adminUserId, ipAddress: ipAddress);
+
+            return (true, normalized == null ? "Phone number removed." : "Phone number updated.", new UserDto
+            {
+                UserId = user.UserId, UserCode = user.UserCode, FullName = user.FullName, Email = user.Email, Role = user.Role,
+                Department = user.Department, PhoneNumber = user.PhoneNumber, IsActive = user.IsActive,
+                LastLoginAt = user.LastLoginAt, CreatedAt = user.CreatedAt
+            });
         }
 
         public async Task<(bool Success, string Message, UserDto? User)> UpdateUserRoleAsync(Guid userId, string newRole, Guid adminUserId, string? ipAddress = null)
@@ -393,7 +511,7 @@ namespace FraudGuard.Api.Services
             return (true, "User status updated successfully.", dto);
         }
 
-        private static string ComputeInitials(string fullName)
+        internal static string ComputeInitials(string fullName)
         {
             if (string.IsNullOrWhiteSpace(fullName)) return "FG";
             var parts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);

@@ -13,7 +13,8 @@ namespace FraudGuard.Api.Services
     {
         Task<PagedResult<FraudAlertDto>> GetAlertsAsync(string? status, string? severity, int page, int pageSize);
         Task<FraudAlertDto?> GetAlertByIdAsync(Guid id);
-        Task<bool> ResolveAlertAsync(Guid id, string? notes);
+        /// <summary>Resolves an alert with the analyst's verdict (a valid <see cref="FraudGuard.Api.Models.AlertOutcomes"/> value). False when the alert does not exist.</summary>
+        Task<bool> ResolveAlertAsync(Guid id, string outcome, string? notes, Guid? resolvedByUserId);
         Task<bool> AssignAlertAsync(Guid id, Guid userId);
     }
 
@@ -68,6 +69,7 @@ namespace FraudGuard.Api.Services
                     Severity = fa.Severity,
                     Reason = fa.Reason,
                     Status = fa.Status,
+                    Outcome = fa.ResolutionOutcome,
                     AssignedTo = fa.AssignedToUser != null ? fa.AssignedToUser.FullName : null,
                     Location = fa.Transaction != null ? fa.Transaction.City + ", " + fa.Transaction.Country : "",
                     AlertType = fa.AlertType,
@@ -112,6 +114,7 @@ namespace FraudGuard.Api.Services
                 Severity = fa.Severity,
                 Reason = fa.Reason,
                 Status = fa.Status,
+                Outcome = fa.ResolutionOutcome,
                 AssignedTo = fa.AssignedToUser != null ? fa.AssignedToUser.FullName : null,
                 Location = fa.Transaction != null ? fa.Transaction.City + ", " + fa.Transaction.Country : "",
                 AlertType = fa.AlertType,
@@ -121,12 +124,18 @@ namespace FraudGuard.Api.Services
             };
         }
 
-        public async Task<bool> ResolveAlertAsync(Guid id, string? notes)
+        public async Task<bool> ResolveAlertAsync(Guid id, string outcome, string? notes, Guid? resolvedByUserId)
         {
+            if (!FraudGuard.Api.Models.AlertOutcomes.IsValid(outcome))
+                throw new ArgumentException("Outcome must be CONFIRMED_FRAUD or FALSE_POSITIVE.", nameof(outcome));
+
             var alert = await _db.FraudAlerts.FindAsync(id);
             if (alert == null) return false;
 
             alert.Status = "Resolved";
+            alert.ResolutionOutcome = outcome;
+            alert.ResolutionNotes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
+            alert.ResolvedByUserId = resolvedByUserId;
             alert.ResolvedAt = DateTimeOffset.UtcNow;
             alert.UpdatedAt = DateTimeOffset.UtcNow;
             await _db.SaveChangesAsync();

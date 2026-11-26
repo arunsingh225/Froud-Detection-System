@@ -17,6 +17,8 @@ namespace FraudGuard.Api.DTOs.FraudAlerts
         public string Severity { get; set; } = string.Empty;
         public string Reason { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
+        /// <summary>CONFIRMED_FRAUD or FALSE_POSITIVE once the alert is resolved.</summary>
+        public string? Outcome { get; set; }
         public string? AssignedTo { get; set; }
         public string Location { get; set; } = string.Empty;
         public string AlertType { get; set; } = string.Empty;
@@ -27,6 +29,11 @@ namespace FraudGuard.Api.DTOs.FraudAlerts
 
     public class ResolveAlertDto
     {
+        /// <summary>The analyst's verdict: CONFIRMED_FRAUD or FALSE_POSITIVE. Required: it is the ground truth for the model.</summary>
+        [Required, RegularExpression(FraudGuard.Api.Models.AlertOutcomes.Pattern, ErrorMessage = "Outcome must be CONFIRMED_FRAUD or FALSE_POSITIVE.")]
+        public string Outcome { get; set; } = string.Empty;
+
+        [MaxLength(1000)]
         public string? Notes { get; set; }
     }
 

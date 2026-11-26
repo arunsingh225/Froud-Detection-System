@@ -25,6 +25,10 @@ namespace FraudGuard.Api.Models
         
         [MaxLength(100)]
         public string? Department { get; set; }
+
+        /// <summary>Phone number in E.164 form (for example +919876543210); used for one-time-code sign-in.</summary>
+        [MaxLength(20)]
+        public string? PhoneNumber { get; set; }
         
         public bool IsActive { get; set; } = true;
         public int AccessFailedCount { get; set; } = 0;

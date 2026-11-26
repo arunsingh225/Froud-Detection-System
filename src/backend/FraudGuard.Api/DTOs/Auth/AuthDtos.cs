@@ -40,6 +40,7 @@ namespace FraudGuard.Api.DTOs.Auth
         public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string? Department { get; set; }
+        public string? PhoneNumber { get; set; }
         public bool IsActive { get; set; }
         public DateTimeOffset? LastLoginAt { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
@@ -62,6 +63,10 @@ namespace FraudGuard.Api.DTOs.Auth
 
         [MaxLength(100)]
         public string? Department { get; set; }
+
+        /// <summary>Optional phone number for one-time-code sign-in (for example 98765 43210 or +91 98765 43210).</summary>
+        [MaxLength(32)]
+        public string? Phone { get; set; }
     }
 
     public class UpdateUserRoleRequestDto

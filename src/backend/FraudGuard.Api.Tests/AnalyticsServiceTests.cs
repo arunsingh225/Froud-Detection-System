@@ -137,7 +137,7 @@ namespace FraudGuard.Api.Tests
                 Severity = "Critical",
                 AlertType = "Velocity Anomaly",
                 Reason = "High value transfer",
-                Status = "New",
+                Status = "Open",
                 CreatedAt = DateTimeOffset.UtcNow.AddHours(-10)
             };
             db.FraudAlerts.Add(alert1);
@@ -167,6 +167,40 @@ namespace FraudGuard.Api.Tests
             Assert.Equal(1, kpis.TotalAlertsCount);
             Assert.Equal(1, kpis.OpenAlertsCount);
             Assert.Equal(500000m, kpis.PreventedFraudLossInr);
+        }
+
+        [Fact]
+        public async Task OpenAlertsAndActiveInvestigations_UseTheStatusNamesTheDatabaseActuallyAllows()
+        {
+            // Alert statuses are Open / Investigating / Escalated / Resolved; only Resolved counts as closed.
+            var db = CreateInMemoryContext();
+            var txn = db.Transactions.First();
+            var cust = db.Customers.First();
+            foreach (var (status, n) in new[] { ("Investigating", 1), ("Escalated", 2), ("Resolved", 3) })
+            {
+                db.FraudAlerts.Add(new FraudAlert
+                {
+                    AlertId = Guid.NewGuid(), AlertCode = $"ALT-S-{n}", TransactionId = txn.TransactionId, CustomerId = cust.CustomerId,
+                    Severity = "High", AlertType = "Test", Reason = "status test", Status = status
+                });
+            }
+            foreach (var (status, n) in new[] { ("New", 1), ("Escalated", 2), ("Approved", 3), ("Resolved", 4) })
+            {
+                db.Investigations.Add(new Investigation
+                {
+                    InvestigationId = Guid.NewGuid(), InvestigationCode = $"INV-S-{n}", TransactionId = txn.TransactionId,
+                    CustomerId = cust.CustomerId, Status = status
+                });
+            }
+            db.SaveChanges();
+            var service = new AnalyticsService(db, _fastApiMock.Object, _cache, _loggerMock.Object);
+
+            var kpis = await service.GetDashboardKpisAsync();
+
+            Assert.Equal(4, kpis.TotalAlertsCount);        // Open (seeded) + Investigating + Escalated + Resolved
+            Assert.Equal(3, kpis.OpenAlertsCount);         // everything except Resolved
+            Assert.Equal(2, kpis.ActiveInvestigationsCount); // New + Escalated
+            Assert.Equal(2, kpis.CompletedInvestigationsCount);
         }
 
         [Fact]

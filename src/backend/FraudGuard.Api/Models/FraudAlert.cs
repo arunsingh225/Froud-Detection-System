@@ -32,6 +32,15 @@ namespace FraudGuard.Api.Models
         
         public Guid? AssignedToUserId { get; set; }
         public DateTimeOffset? ResolvedAt { get; set; }
+
+        /// <summary>The analyst's label (<see cref="AlertOutcomes"/>), set when the alert is resolved.</summary>
+        [MaxLength(20)]
+        public string? ResolutionOutcome { get; set; }
+
+        [MaxLength(1000)]
+        public string? ResolutionNotes { get; set; }
+
+        public Guid? ResolvedByUserId { get; set; }
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 

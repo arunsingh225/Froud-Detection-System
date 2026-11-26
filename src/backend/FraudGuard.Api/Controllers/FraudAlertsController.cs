@@ -46,9 +46,14 @@ namespace FraudGuard.Api.Controllers
         [Authorize(Roles = "ADMIN,INVESTIGATOR,COMPLIANCE")]
         [ProducesResponseType(typeof(ApiResponse<bool>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 404)]
-        public async Task<IActionResult> ResolveAlert(Guid id, [FromBody] ResolveAlertDto? dto)
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        public async Task<IActionResult> ResolveAlert(Guid id, [FromBody] ResolveAlertDto dto)
         {
-            var success = await _alertService.ResolveAlertAsync(id, dto?.Notes);
+            if (!ModelState.IsValid)
+                return BadRequest(ApiResponse<object>.Fail("Say whether the alert was confirmed fraud or a false positive (outcome CONFIRMED_FRAUD or FALSE_POSITIVE)."));
+
+            Guid? userId = Guid.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value, out var uid) ? uid : null;
+            var success = await _alertService.ResolveAlertAsync(id, dto.Outcome, dto.Notes, userId);
             if (!success)
             {
                 return NotFound(ApiResponse<object>.Fail($"Fraud alert with ID '{id}' was not found."));

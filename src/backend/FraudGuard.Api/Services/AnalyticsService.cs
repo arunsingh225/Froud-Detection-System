@@ -31,6 +31,8 @@ namespace FraudGuard.Api.Services
         Task<List<LiveAlertDto>> GetLiveAlertsAsync(int limit = 10);
         Task<OperationalHealthDto> GetOperationalHealthAsync(CancellationToken cancellationToken = default);
         Task<byte[]> ExportDataCsvAsync(string type);
+        Task<FeedbackMetricsDto> GetFeedbackMetricsAsync();
+        Task<byte[]> ExportFeedbackCsvAsync();
 
         // Backward compatibility
         Task<List<RiskTrendPointDto>> GetRiskTrendsAsync();
@@ -82,11 +84,12 @@ namespace FraudGuard.Api.Services
             var criticalRisk = await _db.FraudPredictions.CountAsync(fp => fp.RiskTier == "Critical");
 
             var totalAlerts = await _db.FraudAlerts.CountAsync();
-            var openAlerts = await _db.FraudAlerts.CountAsync(fa => fa.Status == "New" || fa.Status == "Under Review");
+            // Alert statuses (see the SQL CHECK constraint): Open, Investigating, Escalated, Resolved. "Open" here means not yet resolved.
+            var openAlerts = await _db.FraudAlerts.CountAsync(fa => fa.Status != "Resolved");
             var resolvedAlerts = await _db.FraudAlerts.CountAsync(fa => fa.Status == "Resolved");
             var criticalAlerts = await _db.FraudAlerts.CountAsync(fa => fa.Severity == "Critical");
 
-            var activeInv = await _db.Investigations.CountAsync(i => i.Status == "New" || i.Status == "Investigating" || i.Status == "Pending Review");
+            var activeInv = await _db.Investigations.CountAsync(i => i.Status == "New" || i.Status == "Investigating" || i.Status == "Pending Review" || i.Status == "Escalated");
             var completedInv = await _db.Investigations.CountAsync(i => i.Status == "Resolved" || i.Status == "Approved" || i.Status == "Rejected");
 
             // Calculate average investigation duration in hours (SQL-side)
@@ -467,8 +470,8 @@ namespace FraudGuard.Api.Services
         public async Task<AlertAnalyticsDto> GetAlertAnalyticsAsync()
         {
             var total = await _db.FraudAlerts.CountAsync();
-            var open = await _db.FraudAlerts.CountAsync(a => a.Status == "New" || a.Status == "Under Review");
-            var investigating = await _db.FraudAlerts.CountAsync(a => a.Status == "Under Review");
+            var open = await _db.FraudAlerts.CountAsync(a => a.Status != "Resolved");
+            var investigating = await _db.FraudAlerts.CountAsync(a => a.Status == "Investigating" || a.Status == "Escalated");
             var resolved = await _db.FraudAlerts.CountAsync(a => a.Status == "Resolved");
             var crit = await _db.FraudAlerts.CountAsync(a => a.Severity == "Critical");
             var high = await _db.FraudAlerts.CountAsync(a => a.Severity == "High");
@@ -715,6 +718,92 @@ namespace FraudGuard.Api.Services
                 val = "'" + val;
             }
             return val.Replace("\"", "\"\"");
+        }
+
+        // ------------------------------------------------------------------ analyst feedback (ground truth)
+        private const int MinLabelsForReliableMetric = 30;
+
+        private static string ProbabilityBand(decimal? percent) => percent switch
+        {
+            null => "No score",
+            < 50m => "Below 50%",
+            < 80m => "50% to 80%",
+            < 90m => "80% to 90%",
+            _ => "90% and above"
+        };
+
+        private static decimal? PrecisionPercent(int confirmed, int labelled)
+            => labelled == 0 ? null : Math.Round(confirmed * 100m / labelled, 1);
+
+        public async Task<FeedbackMetricsDto> GetFeedbackMetricsAsync()
+        {
+            var resolved = await _db.FraudAlerts.CountAsync(a => a.Status == "Resolved");
+            var rows = await _db.FraudAlerts.AsNoTracking()
+                .Where(a => a.ResolutionOutcome != null)
+                .Select(a => new
+                {
+                    a.Severity,
+                    Outcome = a.ResolutionOutcome!,
+                    Probability = a.Transaction != null && a.Transaction.FraudPrediction != null
+                        ? (decimal?)a.Transaction.FraudPrediction.FraudProbability : null
+                })
+                .ToListAsync();
+
+            var confirmed = rows.Count(r => r.Outcome == AlertOutcomes.ConfirmedFraud);
+            var severityOrder = new[] { "Critical", "High", "Medium", "Low" };
+            var bandOrder = new[] { "90% and above", "80% to 90%", "50% to 80%", "Below 50%", "No score" };
+
+            List<FeedbackBreakdownDto> Breakdown(IEnumerable<string> order, System.Func<(string Severity, string Outcome, decimal? Probability), string> key)
+                => order
+                    .Select(g =>
+                    {
+                        var inGroup = rows.Where(r => key((r.Severity, r.Outcome, r.Probability)) == g).ToList();
+                        var c = inGroup.Count(r => r.Outcome == AlertOutcomes.ConfirmedFraud);
+                        return new FeedbackBreakdownDto { Group = g, Labelled = inGroup.Count, ConfirmedFraud = c, PrecisionPercent = PrecisionPercent(c, inGroup.Count) };
+                    })
+                    .Where(b => b.Labelled > 0)
+                    .ToList();
+
+            return new FeedbackMetricsDto
+            {
+                ResolvedAlerts = resolved,
+                Labelled = rows.Count,
+                ConfirmedFraud = confirmed,
+                FalsePositives = rows.Count - confirmed,
+                PrecisionPercent = PrecisionPercent(confirmed, rows.Count),
+                MinLabelsForReliableMetric = MinLabelsForReliableMetric,
+                Reliable = rows.Count >= MinLabelsForReliableMetric,
+                BySeverity = Breakdown(severityOrder, r => r.Severity),
+                ByProbabilityBand = Breakdown(bandOrder, r => ProbabilityBand(r.Probability))
+            };
+        }
+
+        /// <summary>The labelled alerts as CSV (alert, model score, verdict), the ground truth for re-checking calibration or retraining. Free-text notes are not exported.</summary>
+        public async Task<byte[]> ExportFeedbackCsvAsync()
+        {
+            var rows = await _db.FraudAlerts.AsNoTracking()
+                .Where(a => a.ResolutionOutcome != null)
+                .OrderBy(a => a.ResolvedAt)
+                .Select(a => new
+                {
+                    a.AlertCode,
+                    TransactionCode = a.Transaction != null ? a.Transaction.TransactionCode : "",
+                    a.ResolvedAt,
+                    a.Severity,
+                    RiskTier = a.Transaction != null && a.Transaction.FraudPrediction != null ? a.Transaction.FraudPrediction.RiskTier : "",
+                    Probability = a.Transaction != null && a.Transaction.FraudPrediction != null ? (decimal?)a.Transaction.FraudPrediction.FraudProbability : null,
+                    Outcome = a.ResolutionOutcome!
+                })
+                .ToListAsync();
+
+            var sb = new StringBuilder();
+            sb.AppendLine("AlertCode,TransactionCode,ResolvedAtUtc,Severity,RiskTier,ModelProbabilityPercent,Outcome,Label");
+            foreach (var r in rows)
+            {
+                var probability = r.Probability.HasValue ? r.Probability.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "";
+                sb.AppendLine($"\"{SanitizeCsvCell(r.AlertCode)}\",\"{SanitizeCsvCell(r.TransactionCode)}\",{r.ResolvedAt?.UtcDateTime:yyyy-MM-ddTHH:mm:ssZ},{SanitizeCsvCell(r.Severity)},{SanitizeCsvCell(r.RiskTier)},{probability},{r.Outcome},{(r.Outcome == AlertOutcomes.ConfirmedFraud ? 1 : 0)}");
+            }
+            return Encoding.UTF8.GetBytes(sb.ToString());
         }
 
         public async Task<byte[]> ExportDataCsvAsync(string type)

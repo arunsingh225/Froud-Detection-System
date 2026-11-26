@@ -20,6 +20,19 @@ namespace FraudGuard.Api.Controllers
             _analyticsService = analyticsService;
         }
 
+        /// <summary>How the alerts held up once analysts labelled them (precision overall, by severity and by model score).</summary>
+        [HttpGet("feedback")]
+        [ProducesResponseType(typeof(ApiResponse<FeedbackMetricsDto>), 200)]
+        public async Task<IActionResult> GetFeedbackMetrics()
+            => Ok(ApiResponse<FeedbackMetricsDto>.Ok(await _analyticsService.GetFeedbackMetricsAsync()));
+
+        /// <summary>The labelled alerts as CSV: ground truth for re-checking calibration or retraining.</summary>
+        [HttpGet("feedback/export")]
+        [Authorize(Roles = "ADMIN,COMPLIANCE")]
+        [Produces("text/csv")]
+        public async Task<IActionResult> ExportFeedback()
+            => File(await _analyticsService.ExportFeedbackCsvAsync(), "text/csv", "alert-feedback.csv");
+
         [HttpGet("dashboard")]
         [ProducesResponseType(typeof(ApiResponse<AdvancedDashboardKpisDto>), 200)]
         public async Task<IActionResult> GetDashboardKpis()

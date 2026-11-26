@@ -58,6 +58,29 @@ namespace FraudGuard.Api.Controllers
             }
         }
 
+        /// <summary>Sets a new password for another user (for example after they lost theirs) and signs that user out everywhere.</summary>
+        [HttpPatch("{id}/password")]
+        [ProducesResponseType(typeof(ApiResponse<object>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        public async Task<IActionResult> ResetPassword(Guid id, [FromBody] ResetPasswordRequestDto request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ApiResponse<object>.Fail("Enter the new password."));
+            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var (success, message) = await _authService.ResetPasswordAsync(id, request.NewPassword, GetAdminUserId(), clientIp);
+            return success ? Ok(ApiResponse<object>.Ok(new { }, message)) : BadRequest(ApiResponse<object>.Fail(message));
+        }
+
+        [HttpPatch("{id}/phone")]
+        [ProducesResponseType(typeof(ApiResponse<UserDto>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<object>), 400)]
+        public async Task<IActionResult> UpdatePhone(Guid id, [FromBody] UpdateUserPhoneRequestDto request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ApiResponse<object>.Fail("Invalid phone number payload."));
+            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var (success, message, user) = await _authService.UpdateUserPhoneAsync(id, request.Phone, GetAdminUserId(), clientIp);
+            return success ? Ok(ApiResponse<UserDto>.Ok(user!, message)) : BadRequest(ApiResponse<object>.Fail(message));
+        }
+
         [HttpPatch("{id}/role")]
         [ProducesResponseType(typeof(ApiResponse<UserDto>), 200)]
         [ProducesResponseType(typeof(ApiResponse<object>), 400)]

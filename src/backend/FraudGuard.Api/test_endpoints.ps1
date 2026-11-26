@@ -117,7 +117,7 @@ $rAlertDetail = Test-Endpoint -Name "Get Fraud Alert By ID" -Url ($baseUrl + "/a
 $rAssignAlert = Test-Endpoint -Name "Assign Fraud Alert" -Method "PATCH" -Url ($baseUrl + "/api/fraud-alerts/" + $firstAlertId + "/assign") -Body @{ userId = $userId }
 
 # 18. Resolve Fraud Alert
-$rResolveAlert = Test-Endpoint -Name "Resolve Fraud Alert" -Method "PATCH" -Url ($baseUrl + "/api/fraud-alerts/" + $firstAlertId + "/resolve") -Body @{ notes = "Verified legitimate transaction via customer callback." }
+$rResolveAlert = Test-Endpoint -Name "Resolve Fraud Alert" -Method "PATCH" -Url ($baseUrl + "/api/fraud-alerts/" + $firstAlertId + "/resolve") -Body @{ outcome = "FALSE_POSITIVE"; notes = "Verified legitimate transaction via customer callback." }
 
 # 19. Investigations List
 $rInvs = Test-Endpoint -Name "Get Investigations" -Url ($baseUrl + "/api/investigations?page=1" + [char]38 + "pageSize=5")

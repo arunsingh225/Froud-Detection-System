@@ -10,6 +10,7 @@ namespace FraudGuard.Api.Data
         }
 
         public DbSet<User> Users => Set<User>();
+        public DbSet<LoginOtp> LoginOtps => Set<LoginOtp>();
         public DbSet<Customer> Customers => Set<Customer>();
         public DbSet<Account> Accounts => Set<Account>();
         public DbSet<Merchant> Merchants => Set<Merchant>();
@@ -43,6 +44,7 @@ namespace FraudGuard.Api.Data
             modelBuilder.Entity<InvestigationTimeline>().HasKey(e => e.TimelineId);
             modelBuilder.Entity<Report>().HasKey(e => e.ReportId);
             modelBuilder.Entity<AuditLog>().HasKey(e => e.AuditLogId);
+            modelBuilder.Entity<LoginOtp>().HasKey(e => e.OtpId);
 
             // Table Mappings
             modelBuilder.Entity<User>().ToTable("Users");
@@ -59,6 +61,10 @@ namespace FraudGuard.Api.Data
             modelBuilder.Entity<InvestigationTimeline>().ToTable("InvestigationTimeline");
             modelBuilder.Entity<Report>().ToTable("Reports");
             modelBuilder.Entity<AuditLog>().ToTable("AuditLogs");
+            modelBuilder.Entity<LoginOtp>().ToTable("LoginOtps");
+            modelBuilder.Entity<FraudAlert>().HasOne<User>().WithMany().HasForeignKey(a => a.ResolvedByUserId).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<LoginOtp>().HasOne(o => o.User).WithMany().HasForeignKey(o => o.UserId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<User>().HasIndex(u => u.PhoneNumber).IsUnique().HasFilter("[PhoneNumber] IS NOT NULL").HasDatabaseName("UX_Users_PhoneNumber");
 
             // Precision for decimals
             modelBuilder.Entity<Customer>(entity =>
