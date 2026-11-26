@@ -29,12 +29,12 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#C5A059] tracking-[0.2em] uppercase">
+          <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#4A6FA5] tracking-[0.2em] uppercase">
             <span class="w-2 h-2 rounded-full bg-[#52b788] pulse-dot"></span>
-            Advanced Risk Intelligence & Model Telemetry
+            Risk analytics & model monitoring
           </div>
           <h2 class="font-serif italic text-2xl lg:text-3xl text-white tracking-tight mt-1">
-            Risk Analytics & Telemetry Center
+            Risk Analytics & Monitoring
           </h2>
           <p class="text-[13px] text-[#A3A3A3] mt-0.5">
             Statistical distribution, time-series anomaly trends, geographic concentration, and runtime model metrics.
@@ -47,7 +47,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
             <button
               (click)="activeTab = tab.id"
               class="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-colors whitespace-nowrap cursor-pointer"
-              [ngClass]="activeTab === tab.id ? 'bg-[#C5A059] text-[#0A0A0A]' : 'text-[#737373] hover:text-white'"
+              [ngClass]="activeTab === tab.id ? 'bg-[#4A6FA5] text-[#0A0A0A]' : 'text-[#737373] hover:text-white'"
               >
               {{ tab.label }}
             </button>
@@ -76,7 +76,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
           <div class="text-2xl font-bold font-mono-data text-white">
             {{ kpis ? (kpis.estimatedFraudExposureInr | inrCurrency:true) : '--' }}
           </div>
-          <div class="text-[11px] text-[#C5A059]">
+          <div class="text-[11px] text-[#4A6FA5]">
             Critical & high tier transactions
           </div>
         </div>
@@ -179,7 +179,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                 <div class="p-3 bg-[#141414] rounded-lg border border-white/5">
                   <div class="text-[11px] text-[#A3A3A3]">Synthetic Identity</div>
                   <div class="text-xl font-bold font-mono-data text-white mt-1">{{ kpis?.threatBreakdown?.syntheticIdentityCount ?? 0 }}</div>
-                  <div class="text-[10px] text-[#C5A059] mt-1">AML threshold flags</div>
+                  <div class="text-[10px] text-[#4A6FA5] mt-1">AML threshold flags</div>
                 </div>
                 <div class="p-3 bg-[#141414] rounded-lg border border-white/5">
                   <div class="text-[11px] text-[#A3A3A3]">Card Testing</div>
@@ -209,7 +209,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                 <button
                   (click)="changePeriod(p)"
                   class="px-3 py-1 text-[11px] font-semibold rounded transition-colors cursor-pointer"
-                  [ngClass]="activePeriod === p ? 'bg-[#C5A059] text-[#0A0A0A]' : 'text-[#737373] hover:text-white'"
+                  [ngClass]="activePeriod === p ? 'bg-[#4A6FA5] text-[#0A0A0A]' : 'text-[#737373] hover:text-white'"
                   >
                   {{ p }}
                 </button>
@@ -286,7 +286,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                   @for (g of geoList; track g) {
                     <tr class="hover:bg-[#141414] transition-colors">
                       <td class="py-2.5 font-semibold text-white flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[15px] text-[#C5A059]">pin_drop</span>
+                        <span class="material-symbols-outlined text-[15px] text-[#4A6FA5]">pin_drop</span>
                         <span>{{ g.city }}</span>
                       </td>
                       <td class="py-2.5 text-[#A3A3A3]">{{ g.country }}</td>
@@ -356,7 +356,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-3">
               <div class="flex items-center gap-2 text-white font-serif italic text-[18px]">
-                <span class="material-symbols-outlined text-[#C5A059]">psychology</span>
+                <span class="material-symbols-outlined text-[#4A6FA5]">psychology</span>
                 Training Baseline Specifications
               </div>
               <p class="text-[12px] text-[#A3A3A3]">
@@ -373,7 +373,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                 </div>
                 <div class="p-2.5 bg-[#141414] rounded border border-white/5">
                   <div class="text-[10px] text-[#737373]">THRESHOLD</div>
-                  <div class="font-bold text-[#C5A059] font-mono-data text-[15px]">0.80</div>
+                  <div class="font-bold text-[#4A6FA5] font-mono-data text-[15px]">0.80</div>
                 </div>
                 <div class="p-2.5 bg-[#141414] rounded border border-white/5">
                   <div class="text-[10px] text-[#737373]">FEATURES</div>
@@ -384,7 +384,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
             <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-3">
               <div class="flex items-center gap-2 text-white font-serif italic text-[18px]">
                 <span class="material-symbols-outlined text-[#818cf8]">monitor_heart</span>
-                Runtime Operational Telemetry
+                Runtime metrics
               </div>
               <p class="text-[12px] text-[#A3A3A3]">
                 Live operational metrics evaluated across real inferences in database.
@@ -396,7 +396,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                 </div>
                 <div class="p-2.5 bg-[#141414] rounded border border-white/5">
                   <div class="text-[10px] text-[#737373]">AVG PROB</div>
-                  <div class="font-bold text-[#C5A059] font-mono-data text-[15px]">{{ modelData?.averageFraudProbability ?? 0 }}%</div>
+                  <div class="font-bold text-[#4A6FA5] font-mono-data text-[15px]">{{ modelData?.averageFraudProbability ?? 0 }}%</div>
                 </div>
                 <div class="p-2.5 bg-[#141414] rounded border border-white/5">
                   <div class="text-[10px] text-[#737373]">HIGH/CRIT %</div>
@@ -420,7 +420,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                   Distribution of calculated fraud probabilities across 5 bins. Decision threshold is set at 0.80.
                 </p>
               </div>
-              <span class="text-[11px] font-mono-data text-[#C5A059] bg-[#C5A059]/10 px-2.5 py-1 rounded border border-[#C5A059]/30">
+              <span class="text-[11px] font-mono-data text-[#4A6FA5] bg-[#4A6FA5]/10 px-2.5 py-1 rounded border border-[#4A6FA5]/30">
                 Threshold: 0.80
               </span>
             </div>
@@ -455,7 +455,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                 Case Operations & Resolution Metrics
               </h3>
               <p class="text-[12px] text-[#A3A3A3]">
-                Turnaround times, case lifecycle stages, and AI copilot assisted ratio.
+                Turnaround times, case lifecycle stages, and AI-assisted ratio.
               </p>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 <div class="p-3 bg-[#141414] rounded-lg border border-white/5">
@@ -472,7 +472,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                 </div>
                 <div class="p-3 bg-[#141414] rounded-lg border border-white/5">
                   <div class="text-[11px] text-[#737373]">AI Assisted</div>
-                  <div class="text-2xl font-bold font-mono-data text-[#C5A059] mt-1">{{ invData?.aiAssistedPercentage ?? 100 }}%</div>
+                  <div class="text-2xl font-bold font-mono-data text-[#4A6FA5] mt-1">{{ invData?.aiAssistedPercentage ?? 100 }}%</div>
                 </div>
               </div>
               <!-- Decisions Breakdown -->
@@ -482,7 +482,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                   @for (entry of decisionEntries; track entry) {
                     <div class="flex justify-between text-[12px] p-2 bg-[#141414] rounded">
                       <span class="text-white">{{ entry.key }}</span>
-                      <span class="font-mono-data font-bold text-[#C5A059]">{{ entry.value }} cases</span>
+                      <span class="font-mono-data font-bold text-[#4A6FA5]">{{ entry.value }} cases</span>
                     </div>
                   }
                 </div>
@@ -492,7 +492,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
             <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 flex flex-col justify-between">
               <div class="space-y-4">
                 <h3 class="font-serif italic text-[18px] text-white tracking-tight flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[#C5A059]">file_download</span>
+                  <span class="material-symbols-outlined text-[#4A6FA5]">file_download</span>
                   Data Export Center
                 </h3>
                 <p class="text-[12px] text-[#A3A3A3]">
@@ -501,33 +501,33 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                 <div class="space-y-2 pt-2">
                   <button
                     (click)="downloadCsv('fraud-alerts')"
-                    class="w-full bg-[#141414] hover:bg-[#1C1C1C] border border-white/10 hover:border-[#C5A059]/40 text-white p-2.5 rounded-lg text-[12px] font-medium flex items-center justify-between transition-colors cursor-pointer"
+                    class="w-full bg-[#141414] hover:bg-[#1C1C1C] border border-white/10 hover:border-[#4A6FA5]/40 text-white p-2.5 rounded-lg text-[12px] font-medium flex items-center justify-between transition-colors cursor-pointer"
                     >
                     <span class="flex items-center gap-2">
                       <span class="material-symbols-outlined text-[16px] text-[#fbbf24]">notifications</span>
                       Fraud Alerts Log
                     </span>
-                    <span class="text-[11px] text-[#C5A059] font-mono-data">CSV ↓</span>
+                    <span class="text-[11px] text-[#4A6FA5] font-mono-data">CSV ↓</span>
                   </button>
                   <button
                     (click)="downloadCsv('transactions')"
-                    class="w-full bg-[#141414] hover:bg-[#1C1C1C] border border-white/10 hover:border-[#C5A059]/40 text-white p-2.5 rounded-lg text-[12px] font-medium flex items-center justify-between transition-colors cursor-pointer"
+                    class="w-full bg-[#141414] hover:bg-[#1C1C1C] border border-white/10 hover:border-[#4A6FA5]/40 text-white p-2.5 rounded-lg text-[12px] font-medium flex items-center justify-between transition-colors cursor-pointer"
                     >
                     <span class="flex items-center gap-2">
                       <span class="material-symbols-outlined text-[16px] text-[#818cf8]">receipt_long</span>
                       Transactions Ledger
                     </span>
-                    <span class="text-[11px] text-[#C5A059] font-mono-data">CSV ↓</span>
+                    <span class="text-[11px] text-[#4A6FA5] font-mono-data">CSV ↓</span>
                   </button>
                   <button
                     (click)="downloadCsv('investigations')"
-                    class="w-full bg-[#141414] hover:bg-[#1C1C1C] border border-white/10 hover:border-[#C5A059]/40 text-white p-2.5 rounded-lg text-[12px] font-medium flex items-center justify-between transition-colors cursor-pointer"
+                    class="w-full bg-[#141414] hover:bg-[#1C1C1C] border border-white/10 hover:border-[#4A6FA5]/40 text-white p-2.5 rounded-lg text-[12px] font-medium flex items-center justify-between transition-colors cursor-pointer"
                     >
                     <span class="flex items-center gap-2">
                       <span class="material-symbols-outlined text-[16px] text-[#52b788]">policy</span>
                       Investigations Case Log
                     </span>
-                    <span class="text-[11px] text-[#C5A059] font-mono-data">CSV ↓</span>
+                    <span class="text-[11px] text-[#4A6FA5] font-mono-data">CSV ↓</span>
                   </button>
                 </div>
               </div>
@@ -609,7 +609,7 @@ export class RiskAnalyticsComponent implements OnInit {
   get driftColor(): string {
     switch (this.modelData?.driftStatus) {
       case 'STABLE': return 'text-[#52b788]';
-      case 'MODERATE': return 'text-[#C5A059]';
+      case 'MODERATE': return 'text-[#4A6FA5]';
       case 'SIGNIFICANT': return 'text-[#e05353]';
       default: return 'text-[#737373]';
     }

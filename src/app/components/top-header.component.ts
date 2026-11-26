@@ -40,11 +40,11 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
         <!-- Search -->
         <div class="relative" #searchContainer>
           @if (searchOpen) {
-            <div class="flex items-center bg-[#141414] rounded-lg border border-[#C5A059] px-3 py-1.5 w-[220px] sm:w-[300px]">
+            <div class="flex items-center bg-[#141414] rounded-lg border border-[#4A6FA5] px-3 py-1.5 w-[220px] sm:w-[300px]">
               <button
                 (click)="executeSearch()"
                 title="Search"
-                class="material-symbols-outlined text-[#C5A059] text-[18px] mr-2 hover:text-white cursor-pointer transition-colors"
+                class="material-symbols-outlined text-[#4A6FA5] text-[18px] mr-2 hover:text-white cursor-pointer transition-colors"
                 >
                 search
               </button>
@@ -83,13 +83,13 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
                 <div class="flex items-center justify-between px-4 py-2.5 border-b border-white/5 bg-[#141414]">
                   <span class="text-[11px] font-mono-data text-[#A3A3A3] uppercase tracking-wider">Search Results</span>
                   @if (!searchLoading) {
-                    <span class="text-[10px] font-mono-data text-[#C5A059]">{{ searchResults.length }} matches</span>
+                    <span class="text-[10px] font-mono-data text-[#4A6FA5]">{{ searchResults.length }} matches</span>
                   }
                 </div>
                 <!-- Loading State -->
                 @if (searchLoading) {
-                  <div class="p-6 flex items-center justify-center gap-2 text-[#C5A059] text-xs">
-                    <div class="w-4 h-4 border-2 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
+                  <div class="p-6 flex items-center justify-center gap-2 text-[#4A6FA5] text-xs">
+                    <div class="w-4 h-4 border-2 border-[#4A6FA5]/30 border-t-[#4A6FA5] rounded-full animate-spin"></div>
                     <span>Searching enterprise records...</span>
                   </div>
                 }
@@ -118,7 +118,7 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
                         </div>
                         <div class="flex-1 min-w-0">
                           <div class="flex items-center justify-between gap-1">
-                            <span class="text-[12px] font-semibold text-white group-hover:text-[#C5A059] transition-colors truncate">
+                            <span class="text-[12px] font-semibold text-white group-hover:text-[#4A6FA5] transition-colors truncate">
                               {{ item.title }}
                             </span>
                             <span class="text-[9px] font-mono-data uppercase px-1.5 py-0.5 rounded bg-white/5 text-[#A3A3A3] shrink-0">
@@ -190,7 +190,7 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
                   </div>
                   <button
                     (click)="analyticsService.markAllNotificationsRead()"
-                    class="text-[11px] text-[#C5A059] hover:text-white transition-colors cursor-pointer"
+                    class="text-[11px] text-[#4A6FA5] hover:text-white transition-colors cursor-pointer"
                     >
                     Mark all read
                   </button>
@@ -233,7 +233,7 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
                         </p>
                       </div>
                       @if (!notif.isRead) {
-                        <div class="w-2 h-2 rounded-full bg-[#C5A059] shrink-0 mt-2"></div>
+                        <div class="w-2 h-2 rounded-full bg-[#4A6FA5] shrink-0 mt-2"></div>
                       }
                     </button>
                   }
@@ -242,7 +242,7 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
                   <a
                     routerLink="/audit-logs"
                     (click)="notifOpen = false"
-                    class="text-[11px] text-[#C5A059] hover:text-white transition-colors cursor-pointer"
+                    class="text-[11px] text-[#4A6FA5] hover:text-white transition-colors cursor-pointer"
                     >
                     View full audit log →
                   </a>
@@ -256,7 +256,7 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
             <div
               (click)="authService.logout()"
               title="Click to logout"
-              class="w-8 h-8 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-[11px] font-bold cursor-pointer hover:border-[#e05353] hover:text-[#ffb4ab] transition-colors"
+              class="w-8 h-8 rounded-full bg-[#4A6FA5]/10 border border-[#4A6FA5]/30 flex items-center justify-center text-[#4A6FA5] text-[11px] font-bold cursor-pointer hover:border-[#e05353] hover:text-[#ffb4ab] transition-colors"
               >
               {{ authService.currentUser()?.initials || 'FG' }}
             </div>
@@ -264,7 +264,7 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
               <div class="text-[12px] font-semibold text-white leading-none">
                 {{ authService.currentUser()?.name || 'User' }}
               </div>
-              <div class="text-[9px] text-[#C5A059] font-mono-data uppercase mt-0.5">
+              <div class="text-[9px] text-[#4A6FA5] font-mono-data uppercase mt-0.5">
                 {{ authService.userRole() || 'INVESTIGATOR' }}
               </div>
             </div>
@@ -293,7 +293,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
     '/fraud-alerts': 'Fraud Alerts',
     '/investigations': 'Investigation Center',
     '/ai-investigator': 'AI Investigator',
-    '/customers': 'Customer Intelligence',
+    '/customers': 'Customers',
     '/risk-analytics': 'Risk Analytics',
     '/investigation-reports': 'Reports',
     '/audit-logs': 'Audit Log',
@@ -395,7 +395,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
       case 'Transaction': return 'bg-blue-500/10 border-blue-500/30 text-blue-400';
       case 'Customer': return 'bg-purple-500/10 border-purple-500/30 text-purple-400';
       case 'Alert': return 'bg-[#e05353]/10 border-[#e05353]/30 text-[#ffb4ab]';
-      case 'Investigation': return 'bg-[#C5A059]/10 border-[#C5A059]/30 text-[#C5A059]';
+      case 'Investigation': return 'bg-[#4A6FA5]/10 border-[#4A6FA5]/30 text-[#4A6FA5]';
       default: return 'bg-white/5 border-white/10 text-white';
     }
   }
@@ -422,7 +422,7 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
       case 'critical':
         return 'text-[#ffb4ab] bg-[#e05353]/10 border-[#e05353]/25';
       case 'high':
-        return 'text-[#C5A059] bg-[#C5A059]/10 border-[#C5A059]/25';
+        return 'text-[#4A6FA5] bg-[#4A6FA5]/10 border-[#4A6FA5]/25';
       case 'medium':
         return 'text-blue-400 bg-blue-500/10 border-blue-500/25';
       default:

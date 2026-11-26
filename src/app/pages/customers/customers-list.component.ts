@@ -33,8 +33,8 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       <!-- Loading State -->
       @if (customerService.loading()) {
         <div class="flex items-center justify-center py-16">
-          <div class="flex items-center gap-3 text-[#C5A059]">
-            <div class="w-5 h-5 border-2 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
+          <div class="flex items-center gap-3 text-[#4A6FA5]">
+            <div class="w-5 h-5 border-2 border-[#4A6FA5]/30 border-t-[#4A6FA5] rounded-full animate-spin"></div>
             <span class="text-[13px]">Loading customers...</span>
           </div>
         </div>
@@ -59,14 +59,14 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 class="font-serif italic text-2xl lg:text-3xl text-white tracking-tight">Customer Intelligence</h2>
+          <h2 class="font-serif italic text-2xl lg:text-3xl text-white tracking-tight">Customers</h2>
           <p class="text-[13px] text-[#A3A3A3] mt-0.5">
             Behavioral profiling, identity verification, and multi-account threat correlation.
           </p>
         </div>
         <button
           (click)="refreshData()"
-          class="flex items-center gap-1.5 px-3 py-1.5 bg-[#141414] hover:bg-[#C5A059] text-[#A3A3A3] hover:text-[#0A0A0A] border border-white/5 rounded-lg text-[11px] font-semibold transition-all cursor-pointer"
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-[#141414] hover:bg-[#4A6FA5] text-[#A3A3A3] hover:text-[#0A0A0A] border border-white/5 rounded-lg text-[11px] font-semibold transition-all cursor-pointer"
           >
           <span class="material-symbols-outlined text-[14px]">refresh</span>
           Refresh
@@ -76,7 +76,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       @if (!customerService.loading()) {
         <!-- Filters -->
         <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 flex flex-wrap gap-3 items-center">
-          <div class="flex items-center bg-[#141414] rounded-lg px-3 py-1.5 border border-white/10 focus-within:border-[#C5A059] transition-all flex-1 min-w-[200px]">
+          <div class="flex items-center bg-[#141414] rounded-lg px-3 py-1.5 border border-white/10 focus-within:border-[#4A6FA5] transition-all flex-1 min-w-[200px]">
             <span class="material-symbols-outlined text-[#737373] text-[16px] mr-2">search</span>
             <input
               type="text"
@@ -87,7 +87,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
             </div>
             <select
               [(ngModel)]="riskFilter"
-              class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#C5A059] cursor-pointer"
+              class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#4A6FA5] cursor-pointer"
               >
               <option value="All">All Risk Tiers</option>
               <option value="Critical">Critical</option>
@@ -131,11 +131,11 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                         >
                         <td class="pl-4 py-3">
                           <div class="flex items-center gap-2.5">
-                            <div class="w-7 h-7 rounded-full bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-[10px] font-bold shrink-0">
+                            <div class="w-7 h-7 rounded-full bg-[#4A6FA5]/15 border border-[#4A6FA5]/30 flex items-center justify-center text-[#4A6FA5] text-[10px] font-bold shrink-0">
                               {{ cust.initials || cust.name.slice(0, 2).toUpperCase() }}
                             </div>
                             <div>
-                              <div class="font-medium text-white group-hover:text-[#C5A059] transition-colors text-[12px]">
+                              <div class="font-medium text-white group-hover:text-[#4A6FA5] transition-colors text-[12px]">
                                 {{ cust.name }}
                               </div>
                               <div class="text-[10px] text-[#737373] font-mono-data">{{ cust.id }}</div>
@@ -144,7 +144,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                         </td>
                         <td class="py-3 pr-3">
                           <div class="flex items-center gap-2">
-                            <span class="font-mono-data font-bold" [ngClass]="cust.riskScore > 75 ? 'text-[#ffb4ab]' : (cust.riskScore > 50 ? 'text-[#C5A059]' : 'text-[#52b788]')">
+                            <span class="font-mono-data font-bold" [ngClass]="cust.riskScore > 75 ? 'text-[#ffb4ab]' : (cust.riskScore > 50 ? 'text-[#4A6FA5]' : 'text-[#52b788]')">
                               {{ cust.riskScore }}/100
                             </span>
                             <app-risk-badge [tier]="cust.riskTier"></app-risk-badge>
@@ -162,7 +162,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                         <td class="py-3 pr-3">
                           <span
                             class="text-[10px] font-bold px-1.5 py-0.5 rounded font-mono-data"
-                            [ngClass]="cust.kycStatus === 'Verified' ? 'bg-[#52b788]/15 text-[#52b788] border border-[#52b788]/30' : 'bg-[#C5A059]/15 text-[#C5A059] border border-[#C5A059]/30'"
+                            [ngClass]="cust.kycStatus === 'Verified' ? 'bg-[#52b788]/15 text-[#52b788] border border-[#52b788]/30' : 'bg-[#4A6FA5]/15 text-[#4A6FA5] border border-[#4A6FA5]/30'"
                             >
                             {{ cust.kycStatus }}
                           </span>
@@ -176,7 +176,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                         <td class="py-3 pr-4 text-right" (click)="$event.stopPropagation()">
                           <button
                             (click)="onSelect(cust)"
-                            class="px-2.5 py-1 bg-[#141414] hover:bg-[#C5A059] text-[#A3A3A3] hover:text-[#0A0A0A] border border-white/5 rounded text-[11px] font-semibold transition-all cursor-pointer"
+                            class="px-2.5 py-1 bg-[#141414] hover:bg-[#4A6FA5] text-[#A3A3A3] hover:text-[#0A0A0A] border border-white/5 rounded text-[11px] font-semibold transition-all cursor-pointer"
                             >
                             360 Profile →
                           </button>

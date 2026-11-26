@@ -16,7 +16,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
       @if (actionLabel) {
         <button
           (click)="actionClick.emit()"
-          class="mt-4 px-4 py-2 bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] text-[12px] font-semibold rounded-lg uppercase tracking-wider transition-colors cursor-pointer"
+          class="mt-4 px-4 py-2 bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] text-[12px] font-semibold rounded-lg uppercase tracking-wider transition-colors cursor-pointer"
           >
           {{ actionLabel }}
         </button>

@@ -23,16 +23,16 @@ import { Transaction } from '../../models/transaction.model';
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-xs font-mono-data uppercase text-[#C5A059] tracking-wider">
+            <span class="text-xs font-mono-data uppercase text-[#4A6FA5] tracking-wider">
               AI-Assisted Investigation + Policy Retrieval
             </span>
             <span class="px-2 py-0.5 text-[10px] font-mono-data rounded bg-[#52b788]/15 text-[#52b788] border border-[#52b788]/30">
               Live Connected
             </span>
           </div>
-          <h1 class="text-2xl font-serif font-bold text-white mt-1">Autonomous Fraud Investigation Workspace</h1>
+          <h1 class="text-2xl font-serif font-bold text-white mt-1">AI Investigator</h1>
           <p class="text-sm text-[#A3A3A3] mt-0.5">
-            Multi-vector evidence synthesis, LightGBM neural inference, and local regulatory RAG policy grounding.
+            Evidence, model score and policy references for one transaction.
           </p>
         </div>
     
@@ -41,7 +41,7 @@ import { Transaction } from '../../models/transaction.model';
           <select
             [ngModel]="selectedTxnId"
             (ngModelChange)="onSelectTransaction($event)"
-            class="bg-[#141414] border border-white/10 rounded-lg px-3 py-2 text-[12px] text-white focus:border-[#C5A059] focus:outline-none"
+            class="bg-[#141414] border border-white/10 rounded-lg px-3 py-2 text-[12px] text-white focus:border-[#4A6FA5] focus:outline-none"
             >
             @for (t of transactions; track t) {
               <option [value]="t.transactionId">
@@ -53,7 +53,7 @@ import { Transaction } from '../../models/transaction.model';
           <button
             (click)="triggerInvestigation()"
             [disabled]="isGenerating || loading"
-            class="px-4 py-2 bg-[#C5A059] hover:bg-[#dfba73] disabled:opacity-40 text-[#0A0A0A] font-bold rounded-lg text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-[#C5A059]/10"
+            class="px-4 py-2 bg-[#4A6FA5] hover:bg-[#6F8FC0] disabled:opacity-40 text-[#0A0A0A] font-bold rounded-lg text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-[#4A6FA5]/10"
             >
             @if (loading || isGenerating) {
               <span class="w-3.5 h-3.5 border-2 border-black/40 border-t-black rounded-full animate-spin"></span>
@@ -61,7 +61,7 @@ import { Transaction } from '../../models/transaction.model';
             @if (!loading && !isGenerating) {
               <span class="material-symbols-outlined text-[16px]">smart_toy</span>
             }
-            <span>{{ loading || isGenerating ? 'Synthesizing...' : 'Run AI Investigation' }}</span>
+            <span>{{ loading || isGenerating ? 'Working...' : 'Run AI Investigation' }}</span>
           </button>
         </div>
       </div>
@@ -85,12 +85,12 @@ import { Transaction } from '../../models/transaction.model';
       }
     
       <!-- Human-in-the-Loop Advisory Banner -->
-      <div class="bg-[#141414] border border-[#C5A059]/30 rounded-xl p-3.5 flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-[#C5A059]/10 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] shrink-0">
+      <div class="bg-[#141414] border border-[#4A6FA5]/30 rounded-xl p-3.5 flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-[#4A6FA5]/10 border border-[#4A6FA5]/30 flex items-center justify-center text-[#4A6FA5] shrink-0">
           <span class="material-symbols-outlined text-[18px]">verified_user</span>
         </div>
         <div class="text-xs">
-          <span class="text-[#C5A059] font-bold uppercase tracking-wider">Human-in-the-Loop Governance:</span>
+          <span class="text-[#4A6FA5] font-bold uppercase tracking-wider">Human review required:</span>
           <span class="text-[#D4D4D4] ml-1">
             Autonomous financial actions (account freezes, payment rejections, SAR filings) are prohibited. All AI recommendations require human sign-off.
           </span>
@@ -106,7 +106,7 @@ import { Transaction } from '../../models/transaction.model';
           <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 space-y-3">
             <div class="flex items-center justify-between border-b border-white/5 pb-2.5">
               <span class="text-[11px] font-mono-data text-[#737373] uppercase tracking-wider">Subject Case</span>
-              <span class="text-[11px] font-mono-data font-bold text-[#C5A059]">{{ currentTxn?.id }}</span>
+              <span class="text-[11px] font-mono-data font-bold text-[#4A6FA5]">{{ currentTxn?.id }}</span>
             </div>
     
             <div class="space-y-2 text-xs">
@@ -150,15 +150,15 @@ import { Transaction } from '../../models/transaction.model';
           <!-- Quick Investigation Prompts -->
           <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 space-y-3">
             <span class="text-[11px] font-mono-data text-[#737373] uppercase tracking-wider block">
-              Direct Copilot Inquiry
+              Quick checks
             </span>
             <div class="space-y-1.5">
               @for (p of quickPrompts; track p) {
                 <button
                   (click)="sendQuickPrompt(p.prompt)"
-                  class="w-full text-left p-2.5 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#C5A059]/30 text-[12px] text-[#D4D4D4] hover:text-[#C5A059] transition-all flex items-center gap-2 cursor-pointer"
+                  class="w-full text-left p-2.5 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-white/5 hover:border-[#4A6FA5]/30 text-[12px] text-[#D4D4D4] hover:text-[#4A6FA5] transition-all flex items-center gap-2 cursor-pointer"
                   >
-                  <span class="material-symbols-outlined text-[16px] text-[#C5A059] shrink-0">{{ p.icon }}</span>
+                  <span class="material-symbols-outlined text-[16px] text-[#4A6FA5] shrink-0">{{ p.icon }}</span>
                   <span class="truncate">{{ p.label }}</span>
                 </button>
               }
@@ -177,11 +177,11 @@ import { Transaction } from '../../models/transaction.model';
               <div class="space-y-2.5">
                 @for (cit of investigation?.policyReferences; track cit) {
                   <div class="p-2.5 rounded-lg bg-[#141414] border border-white/5 text-xs space-y-1">
-                    <div class="flex items-center gap-1 text-[#C5A059] font-medium text-[11px]">
+                    <div class="flex items-center gap-1 text-[#4A6FA5] font-medium text-[11px]">
                       <span class="material-symbols-outlined text-[14px]">menu_book</span>
                       <span class="truncate">{{ cit.source }}</span>
                     </div>
-                    <p class="text-[11px] text-[#A3A3A3] italic leading-relaxed pl-3 border-l border-[#C5A059]/30">
+                    <p class="text-[11px] text-[#A3A3A3] italic leading-relaxed pl-3 border-l border-[#4A6FA5]/30">
                       "{{ cit.excerpt }}"
                     </p>
                     <div class="text-[9px] text-[#737373] font-mono-data pt-0.5">
@@ -199,11 +199,11 @@ import { Transaction } from '../../models/transaction.model';
     
           <!-- Loading State -->
           @if (loading || isGenerating) {
-            <div class="bg-[#0D0D0D] border border-[#C5A059]/30 rounded-xl p-8 flex flex-col items-center justify-center text-center space-y-3">
-              <div class="w-8 h-8 border-2 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
-              <div class="text-sm font-semibold text-white">AI-Assisted Engine Synthesizing Multi-Vector Evidence…</div>
+            <div class="bg-[#0D0D0D] border border-[#4A6FA5]/30 rounded-xl p-8 flex flex-col items-center justify-center text-center space-y-3">
+              <div class="w-8 h-8 border-2 border-[#4A6FA5]/30 border-t-[#4A6FA5] rounded-full animate-spin"></div>
+              <div class="text-sm font-semibold text-white">Analysing transaction evidence…</div>
               <p class="text-xs text-[#A3A3A3] max-w-md">
-                Evaluating financial baseline deviation, checking device fingerprint, matching IP against VPN registries, and querying regulatory RAG SOPs.
+                Checking the amount against the customer's usual level, the device and location signals, and the policy documents.
               </p>
             </div>
           }
@@ -213,16 +213,16 @@ import { Transaction } from '../../models/transaction.model';
             <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-3">
               <div class="flex items-center justify-between border-b border-white/5 pb-2.5">
                 <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[#C5A059] text-[20px]">psychology</span>
+                  <span class="material-symbols-outlined text-[#4A6FA5] text-[20px]">psychology</span>
                   <span class="text-sm font-semibold text-white">AI Executive Investigation Dossier</span>
                 </div>
-                <span class="text-xs font-mono-data text-[#C5A059]">Case {{ investigation.investigationCode }}</span>
+                <span class="text-xs font-mono-data text-[#4A6FA5]">Case {{ investigation.investigationCode }}</span>
               </div>
               <div class="p-3.5 rounded-lg bg-[#141414] border border-white/5 text-xs text-[#D4D4D4] leading-relaxed">
                 {{ investigation.summary }}
               </div>
               <div class="p-2 rounded bg-white/5 text-[10px] text-[#737373] font-mono-data flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[13px] text-[#C5A059]">info</span>
+                <span class="material-symbols-outlined text-[13px] text-[#4A6FA5]">info</span>
                 <span>Facts segregated from AI reasoning. Provider: Deterministic Template Engine (Safe fallback mode).</span>
               </div>
             </div>
@@ -280,9 +280,9 @@ import { Transaction } from '../../models/transaction.model';
             <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-3">
               <div class="flex items-center justify-between border-b border-white/5 pb-2">
                 <span class="text-[11px] font-mono-data text-[#737373] uppercase tracking-wider">
-                  Multi-Vector Evidence Dossier ({{ investigation?.evidence?.length }})
+                  Evidence ({{ investigation?.evidence?.length }})
                 </span>
-                <span class="text-[10px] font-mono-data text-[#C5A059]">6-Pillar Framework</span>
+                <span class="text-[10px] font-mono-data text-[#4A6FA5]">6-Pillar Framework</span>
               </div>
               <div class="space-y-2">
                 @for (ev of investigation?.evidence; track ev) {
@@ -291,7 +291,7 @@ import { Transaction } from '../../models/transaction.model';
                     >
                     <div class="space-y-0.5 flex-1">
                       <div class="flex items-center gap-2">
-                        <span class="px-1.5 py-0.5 bg-white/5 text-[#C5A059] font-mono-data text-[9px] rounded uppercase font-bold">
+                        <span class="px-1.5 py-0.5 bg-white/5 text-[#4A6FA5] font-mono-data text-[9px] rounded uppercase font-bold">
                           {{ ev.category }}
                         </span>
                         <span class="font-medium text-white text-[12px]">{{ ev.findingType }}</span>
@@ -325,7 +325,7 @@ import { Transaction } from '../../models/transaction.model';
     
           <!-- Neural Gauge Card -->
           <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 text-center space-y-4">
-            <h3 class="font-serif italic text-lg text-white">Neural Anomaly Score</h3>
+            <h3 class="font-serif italic text-lg text-white">Model score</h3>
     
             <div class="relative w-36 h-36 mx-auto flex items-center justify-center">
               <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
@@ -346,7 +346,7 @@ import { Transaction } from '../../models/transaction.model';
                   <span class="text-3xl font-bold font-mono-data text-white">{{ fraudScore | number:'1.1-1' }}%</span>
                   <span
                     class="text-[10px] uppercase font-mono-data font-bold mt-0.5"
-                    [ngClass]="fraudScore >= 80 ? 'text-[#ffb4ab]' : 'text-[#C5A059]'"
+                    [ngClass]="fraudScore >= 80 ? 'text-[#ffb4ab]' : 'text-[#4A6FA5]'"
                     >
                     {{ investigation?.riskTier || currentTxn?.riskTier || 'EVALUATING' }}
                   </span>
@@ -359,11 +359,11 @@ import { Transaction } from '../../models/transaction.model';
             </div>
     
             <!-- AI Recommended Action Card -->
-            <div class="bg-[#0D0D0D] border border-[#C5A059]/30 rounded-xl p-4 space-y-2 text-center">
+            <div class="bg-[#0D0D0D] border border-[#4A6FA5]/30 rounded-xl p-4 space-y-2 text-center">
               <span class="text-[10px] font-mono-data text-[#737373] uppercase tracking-wider block">
                 AI Recommended Course of Action
               </span>
-              <div class="p-2.5 rounded-lg bg-[#141414] border border-[#C5A059]/25 text-xs font-bold text-[#C5A059]">
+              <div class="p-2.5 rounded-lg bg-[#141414] border border-[#4A6FA5]/25 text-xs font-bold text-[#4A6FA5]">
                 {{ investigation?.recommendedAction || 'ESCALATE_FOR_MANUAL_REVIEW' }}
               </div>
               <p class="text-[11px] text-[#A3A3A3]">
@@ -400,7 +400,7 @@ import { Transaction } from '../../models/transaction.model';
                 <button
                   (click)="onAction('Auto-Flag for Review')"
                   [disabled]="loading"
-                  class="w-full py-2.5 bg-[#C5A059]/15 hover:bg-[#C5A059]/25 text-[#C5A059] border border-[#C5A059]/30 rounded-lg text-[12px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
+                  class="w-full py-2.5 bg-[#4A6FA5]/15 hover:bg-[#4A6FA5]/25 text-[#4A6FA5] border border-[#4A6FA5]/30 rounded-lg text-[12px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
                   >
                   <span class="material-symbols-outlined text-[16px]">flag</span>
                   <span>Auto-Flag for Review</span>
@@ -437,7 +437,7 @@ import { Transaction } from '../../models/transaction.model';
                     <div class="flex items-start gap-2.5 text-xs">
                       <span
                         class="material-symbols-outlined text-[16px] shrink-0 mt-0.5"
-                        [ngClass]="step.status === 'completed' ? 'text-[#52b788]' : 'text-[#C5A059] animate-pulse'"
+                        [ngClass]="step.status === 'completed' ? 'text-[#52b788]' : 'text-[#4A6FA5] animate-pulse'"
                         >
                         {{ step.status === 'completed' ? 'check_circle' : 'pending' }}
                       </span>
@@ -558,7 +558,7 @@ export class AiInvestigatorComponent implements OnInit {
   get scoreColor(): string {
     const s = this.fraudScore;
     if (s >= 80) return '#e05353';
-    if (s >= 50) return '#C5A059';
+    if (s >= 50) return '#4A6FA5';
     return '#52b788';
   }
 

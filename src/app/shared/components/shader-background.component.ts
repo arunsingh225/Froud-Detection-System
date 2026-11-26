@@ -77,9 +77,9 @@ export class ShaderBackgroundComponent implements AfterViewInit, OnDestroy {
         n += 0.5 * noise(uv * 6.0 - u_time * 0.05);
         
         vec3 darkBase = vec3(0.039, 0.039, 0.039);
-        vec3 darkAccent = vec3(0.772, 0.627, 0.349);
-        vec3 lightBase = vec3(0.968, 0.964, 0.949);
-        vec3 lightAccent = vec3(0.612, 0.471, 0.168);
+        vec3 darkAccent = vec3(0.290, 0.435, 0.647);
+        vec3 lightBase = vec3(0.941, 0.945, 0.953);
+        vec3 lightAccent = vec3(0.247, 0.384, 0.561);
         
         vec3 baseColor = mix(darkBase, lightBase, u_is_light);
         vec3 accentColor = mix(darkAccent, lightAccent, u_is_light);
@@ -94,7 +94,7 @@ export class ShaderBackgroundComponent implements AfterViewInit, OnDestroy {
         vec2 m = u_mouse / u_resolution;
         float distToMouse = distance(uv, m);
         float mouseGlow = smoothstep(0.4, 0.0, distToMouse) * (u_is_light > 0.5 ? 0.12 : 0.18);
-        vec3 rippleColor = mix(vec3(0.85, 0.72, 0.45), vec3(0.92, 0.85, 0.70), u_is_light);
+        vec3 rippleColor = mix(vec3(0.45, 0.58, 0.80), vec3(0.80, 0.82, 0.86), u_is_light);
         finalColor += rippleColor * mouseGlow;
 
         gl_FragColor = vec4(finalColor, 1.0);

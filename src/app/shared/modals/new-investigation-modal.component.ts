@@ -26,7 +26,7 @@ import { Transaction } from '../../models/transaction.model';
             <span class="material-symbols-outlined text-[20px]">close</span>
           </button>
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-[#141414] border border-[#C5A059]/40 flex items-center justify-center text-[#C5A059] shadow-[0_0_12px_rgba(197,160,89,0.2)]">
+            <div class="w-10 h-10 rounded-xl bg-[#141414] border border-[#4A6FA5]/40 flex items-center justify-center text-[#4A6FA5] shadow-[0_0_12px_rgba(74,111,165,0.2)]">
               <span class="material-symbols-outlined text-[22px]">find_in_page</span>
             </div>
             <div>
@@ -40,7 +40,7 @@ import { Transaction } from '../../models/transaction.model';
             <label class="text-[11px] font-light uppercase tracking-wider text-[#A3A3A3] block mb-1.5">
               Transaction Identifier or Entity ID
             </label>
-            <div class="flex items-center bg-[#141414] rounded-xl px-3.5 py-2.5 border border-white/10 focus-within:border-[#C5A059] transition-all">
+            <div class="flex items-center bg-[#141414] rounded-xl px-3.5 py-2.5 border border-white/10 focus-within:border-[#4A6FA5] transition-all">
               <span class="material-symbols-outlined text-[#737373] text-[18px] mr-2">search</span>
               <input
                 type="text"
@@ -61,7 +61,7 @@ import { Transaction } from '../../models/transaction.model';
                     (click)="onSelect(txn)"
                     class="p-3 rounded-lg border cursor-pointer transition-all flex items-center justify-between text-[12px]"
               [ngClass]="isSelected(txn)
-                ? 'bg-[#141414] border-[#C5A059] text-white shadow-[0_0_12px_rgba(197,160,89,0.15)]'
+                ? 'bg-[#141414] border-[#4A6FA5] text-white shadow-[0_0_12px_rgba(74,111,165,0.15)]'
                 : 'bg-[#141414]/50 border-white/5 hover:bg-[#141414] text-[#A3A3A3]'"
                     >
                     <div>
@@ -91,7 +91,7 @@ import { Transaction } from '../../models/transaction.model';
               <button
                 (click)="handleStart()"
                 [disabled]="!txnInput.trim() && !selectedTxn"
-                class="px-5 py-2.5 bg-[#C5A059] hover:bg-[#dfba73] disabled:opacity-40 text-[#0A0A0A] font-bold uppercase tracking-[0.15em] rounded-lg text-[11px] transition-all shadow-[0_0_16px_rgba(197,160,89,0.25)] flex items-center gap-2 cursor-pointer"
+                class="px-5 py-2.5 bg-[#4A6FA5] hover:bg-[#6F8FC0] disabled:opacity-40 text-[#0A0A0A] font-bold uppercase tracking-[0.15em] rounded-lg text-[11px] transition-all shadow-[0_0_16px_rgba(74,111,165,0.25)] flex items-center gap-2 cursor-pointer"
                 >
                 <span class="material-symbols-outlined text-[18px]">psychology</span>
                 <span>Launch AI Investigation</span>

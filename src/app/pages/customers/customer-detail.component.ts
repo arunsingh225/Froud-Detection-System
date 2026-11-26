@@ -27,7 +27,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       <div class="flex items-center gap-3">
         <button
           (click)="goBack()"
-          class="p-2 rounded-lg bg-[#141414] border border-white/5 hover:border-[#C5A059] text-[#A3A3A3] hover:text-white transition-colors cursor-pointer"
+          class="p-2 rounded-lg bg-[#141414] border border-white/5 hover:border-[#4A6FA5] text-[#A3A3A3] hover:text-white transition-colors cursor-pointer"
           >
           <span class="material-symbols-outlined text-[18px]">arrow_back</span>
         </button>
@@ -87,14 +87,14 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
           <button
             (click)="activeTab = 'txns'"
             class="px-4 py-2 rounded-lg text-[13px] font-medium transition-colors cursor-pointer"
-            [ngClass]="activeTab === 'txns' ? 'bg-[#C5A059] text-[#0A0A0A] font-bold' : 'text-[#737373] hover:text-white'"
+            [ngClass]="activeTab === 'txns' ? 'bg-[#4A6FA5] text-[#0A0A0A] font-bold' : 'text-[#737373] hover:text-white'"
             >
             Transaction History ({{ relatedTransactions.length }})
           </button>
           <button
             (click)="activeTab = 'alerts'"
             class="px-4 py-2 rounded-lg text-[13px] font-medium transition-colors cursor-pointer"
-            [ngClass]="activeTab === 'alerts' ? 'bg-[#C5A059] text-[#0A0A0A] font-bold' : 'text-[#737373] hover:text-white'"
+            [ngClass]="activeTab === 'alerts' ? 'bg-[#4A6FA5] text-[#0A0A0A] font-bold' : 'text-[#737373] hover:text-white'"
             >
             Associated Alerts ({{ relatedAlerts.length }})
           </button>
@@ -129,7 +129,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                       <app-status-badge [status]="txn.status"></app-status-badge>
                     </td>
                     <td class="p-4 text-right">
-                      <a [routerLink]="['/transactions', txn.id]" class="text-[11px] text-[#C5A059] hover:underline uppercase tracking-wider">
+                      <a [routerLink]="['/transactions', txn.id]" class="text-[11px] text-[#4A6FA5] hover:underline uppercase tracking-wider">
                         View →
                       </a>
                     </td>

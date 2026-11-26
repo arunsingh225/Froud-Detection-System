@@ -45,7 +45,7 @@ export class ThemeService {
     } catch {
       // ignore
     }
-    return 'dark';
+    return 'light';
   }
 
   private applyTheme(theme: ThemeMode): void {
@@ -54,11 +54,11 @@ export class ThemeService {
       root.classList.remove('dark');
       root.classList.add('light');
       document.body.classList.remove('bg-[#0A0A0A]', 'text-[#D4D4D4]');
-      document.body.classList.add('bg-[#F7F6F2]', 'text-[#27272A]');
+      document.body.classList.add('bg-[#F0F1F3]', 'text-[#27272A]');
     } else {
       root.classList.remove('light');
       root.classList.add('dark');
-      document.body.classList.remove('bg-[#F7F6F2]', 'text-[#27272A]');
+      document.body.classList.remove('bg-[#F0F1F3]', 'text-[#27272A]');
       document.body.classList.add('bg-[#0A0A0A]', 'text-[#D4D4D4]');
     }
   }

@@ -41,12 +41,12 @@ type Step = 'review' | 'edit' | 'approved' | 'export';
             @for (s of steps; track s; let i = $index) {
               <div
                 class="flex items-center gap-2 text-[11px] whitespace-nowrap"
-                [ngClass]="i <= stepIdx ? 'text-[#C5A059]' : 'text-[#404040]'"
+                [ngClass]="i <= stepIdx ? 'text-[#4A6FA5]' : 'text-[#404040]'"
                 >
                 <div
                   class="w-7 h-7 rounded-full flex items-center justify-center border transition-all"
                 [ngClass]="i < stepIdx ? 'bg-[#52b788]/20 border-[#52b788]/40 text-[#52b788]' :
-                  (i === stepIdx ? 'bg-[#C5A059]/20 border-[#C5A059]/40 text-[#C5A059]' : 'bg-[#1A1A1A] border-white/5 text-[#404040]')"
+                  (i === stepIdx ? 'bg-[#4A6FA5]/20 border-[#4A6FA5]/40 text-[#4A6FA5]' : 'bg-[#1A1A1A] border-white/5 text-[#404040]')"
                   >
                   @if (i < stepIdx) {
                     <span class="material-symbols-outlined text-[14px]">check</span>
@@ -69,8 +69,8 @@ type Step = 'review' | 'edit' | 'approved' | 'export';
           <div class="flex-1 overflow-y-auto p-5 space-y-4">
             <!-- Step 1: Review -->
             @if (step === 'review') {
-              <div class="bg-[#141414] border border-[#C5A059]/25 rounded-xl p-4">
-                <div class="flex items-center gap-2 text-[#C5A059] text-[11px] uppercase tracking-wider font-semibold mb-3">
+              <div class="bg-[#141414] border border-[#4A6FA5]/25 rounded-xl p-4">
+                <div class="flex items-center gap-2 text-[#4A6FA5] text-[11px] uppercase tracking-wider font-semibold mb-3">
                   <span class="material-symbols-outlined text-[15px]">smart_toy</span>
                   AI-Generated Draft (Review Before Proceeding)
                 </div>
@@ -112,7 +112,7 @@ type Step = 'review' | 'edit' | 'approved' | 'export';
               </div>
               <button
                 (click)="step = 'edit'"
-                class="w-full py-2.5 bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] rounded-lg text-[12px] font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                class="w-full py-2.5 bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] rounded-lg text-[12px] font-semibold uppercase tracking-wider transition-colors cursor-pointer"
                 >
                 Review & Edit Narrative →
               </button>
@@ -123,7 +123,7 @@ type Step = 'review' | 'edit' | 'approved' | 'export';
                 <label class="text-[11px] text-[#737373] uppercase tracking-wider block mb-2">SAR Narrative (Editable)</label>
                 <textarea
                   [(ngModel)]="narrative"
-                  class="w-full h-52 bg-[#141414] border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-3 text-[12px] text-[#D4D4D4] leading-relaxed resize-none outline-none transition-colors font-mono-data"
+                  class="w-full h-52 bg-[#141414] border border-white/10 focus:border-[#4A6FA5] rounded-xl px-4 py-3 text-[12px] text-[#D4D4D4] leading-relaxed resize-none outline-none transition-colors font-mono-data"
                 ></textarea>
                 <p class="text-[10px] text-[#737373] mt-1">{{ narrative.length }} characters · Edit before officer review</p>
               </div>
@@ -136,7 +136,7 @@ type Step = 'review' | 'edit' | 'approved' | 'export';
                 </button>
                 <button
                   (click)="step = 'approved'"
-                  class="flex-1 py-2.5 bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] rounded-lg text-[12px] font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                  class="flex-1 py-2.5 bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] rounded-lg text-[12px] font-semibold uppercase tracking-wider transition-colors cursor-pointer"
                   >
                   Send for Officer Review →
                 </button>
@@ -145,8 +145,8 @@ type Step = 'review' | 'edit' | 'approved' | 'export';
             <!-- Step 3: Officer Sign-off -->
             @if (step === 'approved') {
               <div class="text-center py-6">
-                <div class="w-14 h-14 rounded-2xl bg-[#C5A059]/10 border border-[#C5A059]/30 flex items-center justify-center mx-auto mb-4">
-                  <span class="material-symbols-outlined text-[28px] text-[#C5A059]">gavel</span>
+                <div class="w-14 h-14 rounded-2xl bg-[#4A6FA5]/10 border border-[#4A6FA5]/30 flex items-center justify-center mx-auto mb-4">
+                  <span class="material-symbols-outlined text-[28px] text-[#4A6FA5]">gavel</span>
                 </div>
                 <h3 className="font-serif italic text-[18px] text-white mb-2">Awaiting Compliance Officer</h3>
                 <p className="text-[13px] text-[#737373] max-w-sm mx-auto">
@@ -156,7 +156,7 @@ type Step = 'review' | 'edit' | 'approved' | 'export';
               <div class="bg-[#141414] border border-white/5 rounded-xl p-4 space-y-2 text-[12px]">
                 <div class="text-[10px] text-[#737373] uppercase tracking-wider mb-2">Officer Sign-off (Demo Simulation)</div>
                 <div class="flex items-center gap-2">
-                  <div class="w-6 h-6 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-[10px] font-bold">PI</div>
+                  <div class="w-6 h-6 rounded-full bg-[#4A6FA5]/20 border border-[#4A6FA5]/30 flex items-center justify-center text-[#4A6FA5] text-[10px] font-bold">PI</div>
                   <div>
                     <div class="text-white font-medium">Priyanka Iyer</div>
                     <div class="text-[10px] text-[#737373]">Chief Compliance Officer</div>
@@ -207,7 +207,7 @@ type Step = 'review' | 'edit' | 'approved' | 'export';
                 </button>
                 <button
                   (click)="downloadPdf()"
-                  class="flex-1 py-2.5 bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] rounded-lg text-[12px] font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  class="flex-1 py-2.5 bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] rounded-lg text-[12px] font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer"
                   >
                   <span class="material-symbols-outlined text-[15px]">download</span>
                   Export PDF (Demo)

@@ -24,8 +24,8 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       @if (analyticsService.loading()) {
         <div class="flex items-center justify-center py-16">
           <div class="flex flex-col items-center gap-3">
-            <div class="w-8 h-8 border-2 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
-            <span class="text-[13px] text-[#A3A3A3] font-mono-data tracking-wide">Connecting to Fraud Intelligence Telemetry…</span>
+            <div class="w-8 h-8 border-2 border-[#4A6FA5]/30 border-t-[#4A6FA5] rounded-full animate-spin"></div>
+            <span class="text-[13px] text-[#A3A3A3] font-mono-data tracking-wide">Loading dashboard…</span>
           </div>
         </div>
       }
@@ -33,7 +33,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       <!-- Operational Health Status Ribbon -->
       <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-[11px] font-mono-data">
         <div class="flex items-center gap-4 flex-wrap">
-          <span class="text-[#737373] uppercase tracking-[0.15em]">System Mesh:</span>
+          <span class="text-[#737373] uppercase tracking-[0.15em]">Services:</span>
     
           <div class="flex items-center gap-1.5 text-[#52b788]">
             <span class="w-2 h-2 rounded-full bg-[#52b788] pulse-dot"></span>
@@ -50,8 +50,8 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
             <span>FastAPI (Port 8000)</span>
           </div>
     
-          <div class="flex items-center gap-1.5 text-[#C5A059]">
-            <span class="w-2 h-2 rounded-full bg-[#C5A059]"></span>
+          <div class="flex items-center gap-1.5 text-[#4A6FA5]">
+            <span class="w-2 h-2 rounded-full bg-[#4A6FA5]"></span>
             <span>LightGBM (464 feat)</span>
           </div>
     
@@ -73,15 +73,11 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       <!-- Top Banner -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
         <div>
-          <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#C5A059] tracking-[0.2em] uppercase">
-            <span class="w-2 h-2 rounded-full bg-[#C5A059] pulse-dot"></span>
-            Real-Time Threat Intelligence Active
-          </div>
           <h2 class="font-serif italic text-2xl lg:text-3xl text-white tracking-tight mt-1">
-            Fraud Operations Command Center
+            Fraud operations overview
           </h2>
           <p class="text-[13px] text-[#A3A3A3] mt-0.5">
-            Continuous transaction monitoring, neural anomaly inference, and agentic case triage.
+            Transaction monitoring, risk scores and open cases.
           </p>
         </div>
     
@@ -89,7 +85,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
           @if (authService.hasAnyRole(['ADMIN', 'INVESTIGATOR'])) {
             <button
               (click)="modalService.openNewTransactionModal()"
-              class="flex items-center gap-1.5 bg-[#141414] hover:bg-[#1C1C1C] border border-[#C5A059]/40 text-[#C5A059] hover:text-white px-3.5 py-2 rounded-lg text-[12px] font-medium tracking-wide transition-colors cursor-pointer"
+              class="flex items-center gap-1.5 bg-[#141414] hover:bg-[#1C1C1C] border border-[#4A6FA5]/40 text-[#4A6FA5] hover:text-white px-3.5 py-2 rounded-lg text-[12px] font-medium tracking-wide transition-colors cursor-pointer"
               >
               <span class="material-symbols-outlined text-[18px]">add_card</span>
               <span>Ingest Transaction</span>
@@ -99,12 +95,12 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
             routerLink="/ai-investigator"
             class="flex items-center gap-2 bg-[#141414] hover:bg-[#1C1C1C] border border-white/10 text-[#D4D4D4] hover:text-white px-3.5 py-2 rounded-lg text-[12px] font-medium tracking-wide transition-colors"
             >
-            <span class="material-symbols-outlined text-[18px] text-[#C5A059]">psychology</span>
-            <span>Launch AI Copilot</span>
+            <span class="material-symbols-outlined text-[18px] text-[#4A6FA5]">psychology</span>
+            <span>AI Investigator</span>
           </a>
           <button
             (click)="modalService.openNewInvestigationModal()"
-            class="flex items-center gap-2 bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.15em] transition-all shadow-[0_0_16px_rgba(197,160,89,0.25)] hover:shadow-[0_0_24px_rgba(197,160,89,0.4)] active:scale-95 cursor-pointer"
+            class="flex items-center gap-2 bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.15em] transition-all shadow-[0_0_16px_rgba(74,111,165,0.25)] hover:shadow-[0_0_24px_rgba(74,111,165,0.4)] active:scale-95 cursor-pointer"
             >
             <span class="material-symbols-outlined text-[17px]">add</span>
             <span>Investigate Transaction</span>
@@ -115,10 +111,10 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       <!-- 6 Real KPI Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <!-- Metric 1: Total Volume -->
-        <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 relative overflow-hidden group hover:border-[#C5A059]/40 transition-colors">
+        <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 relative overflow-hidden group hover:border-[#4A6FA5]/40 transition-colors">
           <div class="flex justify-between items-start mb-2">
             <span class="text-[10px] font-light text-[#A3A3A3] uppercase tracking-[0.15em]">Monitored Volume</span>
-            <span class="material-symbols-outlined text-[16px] text-[#C5A059]">payments</span>
+            <span class="material-symbols-outlined text-[16px] text-[#4A6FA5]">payments</span>
           </div>
           <div class="text-xl lg:text-2xl font-bold text-white font-mono-data">
             {{ kpis ? formatUsd(kpis.totalTransactionValueUsd) : '--' }}
@@ -171,10 +167,10 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
         </div>
     
         <!-- Metric 5: Investigations -->
-        <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 relative overflow-hidden group hover:border-[#C5A059]/40 transition-colors">
+        <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 relative overflow-hidden group hover:border-[#4A6FA5]/40 transition-colors">
           <div class="flex justify-between items-start mb-2">
             <span class="text-[10px] font-light text-[#A3A3A3] uppercase tracking-[0.15em]">Active Cases</span>
-            <span class="material-symbols-outlined text-[16px] text-[#C5A059]">policy</span>
+            <span class="material-symbols-outlined text-[16px] text-[#4A6FA5]">policy</span>
           </div>
           <div class="text-xl lg:text-2xl font-bold text-white font-mono-data">
             {{ kpis?.activeInvestigationsCount ?? '--' }}
@@ -219,7 +215,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                 <button
                   (click)="setPeriod(p)"
                   class="px-2.5 py-1 text-[11px] font-semibold rounded transition-colors cursor-pointer"
-                  [ngClass]="activePeriod === p ? 'bg-[#C5A059] text-[#0A0A0A]' : 'text-[#737373] hover:text-white'"
+                  [ngClass]="activePeriod === p ? 'bg-[#4A6FA5] text-[#0A0A0A]' : 'text-[#737373] hover:text-white'"
                   >
                   {{ p }}
                 </button>
@@ -232,8 +228,8 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
             <svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 600 200">
               <defs>
                 <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#C5A059" stop-opacity="0.3" />
-                  <stop offset="100%" stop-color="#C5A059" stop-opacity="0.0" />
+                  <stop offset="0%" stop-color="#4A6FA5" stop-opacity="0.3" />
+                  <stop offset="100%" stop-color="#4A6FA5" stop-opacity="0.0" />
                 </linearGradient>
               </defs>
     
@@ -244,7 +240,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
     
               <!-- Polyline Data Points -->
               <path [attr.d]="svgAreaPath" fill="url(#trendGrad)" />
-              <path [attr.d]="svgLinePath" fill="none" stroke="#C5A059" stroke-width="2.5" stroke-linecap="round" />
+              <path [attr.d]="svgLinePath" fill="none" stroke="#4A6FA5" stroke-width="2.5" stroke-linecap="round" />
     
               <!-- Data Point Circles -->
               @for (pt of trendPoints; track pt; let idx = $index) {
@@ -254,7 +250,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                     [attr.cy]="getY(pt.transactions)"
                     r="3.5"
                     fill="#0A0A0A"
-                    stroke="#C5A059"
+                    stroke="#4A6FA5"
                     stroke-width="2"
                     />
                   </g>
@@ -277,7 +273,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                 <h3 class="font-serif italic text-[18px] text-white tracking-tight">
                   Risk Tier Distribution
                 </h3>
-                <span class="text-[10px] font-mono-data text-[#C5A059] bg-[#C5A059]/10 px-2 py-0.5 rounded border border-[#C5A059]/20">
+                <span class="text-[10px] font-mono-data text-[#4A6FA5] bg-[#4A6FA5]/10 px-2 py-0.5 rounded border border-[#4A6FA5]/20">
                   Total: {{ riskDist?.total ?? 0 }}
                 </span>
               </div>
@@ -312,7 +308,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                 <!-- Medium -->
                 <div>
                   <div class="flex justify-between text-[12px] mb-1">
-                    <span class="flex items-center gap-1.5 text-[#C5A059] font-semibold">
+                    <span class="flex items-center gap-1.5 text-[#4A6FA5] font-semibold">
                       <span class="w-2 h-2 rounded-full bg-[#C5A059]"></span> Medium Risk
                     </span>
                     <span class="font-mono-data text-white font-bold">{{ riskDist?.medium ?? 0 }}</span>
@@ -340,9 +336,9 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
             <!-- Quick Navigation to Risk Analytics -->
             <a
               routerLink="/risk-analytics"
-              class="w-full mt-6 text-center text-[11px] uppercase tracking-[0.15em] font-semibold text-[#C5A059] hover:text-white py-2 rounded bg-[#141414] hover:bg-[#1F1F1F] transition-colors border border-white/5 block"
+              class="w-full mt-6 text-center text-[11px] uppercase tracking-[0.15em] font-semibold text-[#4A6FA5] hover:text-white py-2 rounded bg-[#141414] hover:bg-[#1F1F1F] transition-colors border border-white/5 block"
               >
-              Explore Deep Risk Telemetry →
+              View risk analytics →
             </a>
           </div>
         </div>
@@ -377,7 +373,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                   @for (alert of liveAlerts; track alert) {
                     <tr class="hover:bg-[#141414] transition-colors group">
                       <td class="py-2.5 pr-2">
-                        <div class="font-mono-data font-bold text-white group-hover:text-[#C5A059] transition-colors">
+                        <div class="font-mono-data font-bold text-white group-hover:text-[#4A6FA5] transition-colors">
                           {{ alert.alertCode }}
                         </div>
                         <div class="text-[10px] text-[#737373] font-mono-data">
@@ -409,7 +405,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                       <td class="py-2.5 text-right">
                         <a
                           routerLink="/ai-investigator"
-                          class="bg-[#C5A059]/10 hover:bg-[#C5A059] text-[#C5A059] hover:text-[#0A0A0A] px-2 py-1 rounded text-[10px] font-semibold uppercase tracking-wider transition-all border border-[#C5A059]/30 inline-flex items-center gap-1"
+                          class="bg-[#4A6FA5]/10 hover:bg-[#4A6FA5] text-[#4A6FA5] hover:text-[#0A0A0A] px-2 py-1 rounded text-[10px] font-semibold uppercase tracking-wider transition-all border border-[#4A6FA5]/30 inline-flex items-center gap-1"
                           >
                           <span class="material-symbols-outlined text-[13px]">psychology</span>
                           <span>Triage</span>
@@ -460,7 +456,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
     
             <a
               routerLink="/risk-analytics"
-              class="w-full mt-4 text-center text-[11px] uppercase tracking-[0.15em] font-semibold text-[#C5A059] hover:text-white py-2 rounded bg-[#141414] hover:bg-[#1F1F1F] transition-colors border border-white/5 block"
+              class="w-full mt-4 text-center text-[11px] uppercase tracking-[0.15em] font-semibold text-[#4A6FA5] hover:text-white py-2 rounded bg-[#141414] hover:bg-[#1F1F1F] transition-colors border border-white/5 block"
               >
               View All Merchants →
             </a>

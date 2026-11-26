@@ -33,7 +33,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       @if (investigationService.loading()) {
         <div class="flex items-center justify-center py-16">
           <div class="flex flex-col items-center gap-3">
-            <div class="w-8 h-8 border-2 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
+            <div class="w-8 h-8 border-2 border-[#4A6FA5]/30 border-t-[#4A6FA5] rounded-full animate-spin"></div>
             <span class="text-[13px] text-[#737373]">Loading investigations…</span>
           </div>
         </div>
@@ -76,7 +76,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
     
           <button
             (click)="modalService.openNewInvestigationModal()"
-            class="flex items-center gap-2 bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.15em] transition-all shadow-[0_0_16px_rgba(197,160,89,0.25)] active:scale-95 cursor-pointer"
+            class="flex items-center gap-2 bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.15em] transition-all shadow-[0_0_16px_rgba(74,111,165,0.25)] active:scale-95 cursor-pointer"
             >
             <span class="material-symbols-outlined text-[17px]">add</span>
             <span>New Investigation</span>
@@ -86,7 +86,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
     
       <!-- Filters -->
       <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 flex flex-wrap gap-3 items-center">
-        <div class="flex items-center bg-[#141414] rounded-lg px-3 py-1.5 border border-white/10 focus-within:border-[#C5A059] transition-all flex-1 min-w-[200px]">
+        <div class="flex items-center bg-[#141414] rounded-lg px-3 py-1.5 border border-white/10 focus-within:border-[#4A6FA5] transition-all flex-1 min-w-[200px]">
           <span class="material-symbols-outlined text-[#737373] text-[16px] mr-2">search</span>
           <input
             type="text"
@@ -98,7 +98,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
     
           <select
             [(ngModel)]="statusFilter"
-            class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#C5A059] cursor-pointer"
+            class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#4A6FA5] cursor-pointer"
             >
             <option value="All">All Statuses</option>
             <option value="New">New</option>
@@ -144,7 +144,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                       class="hover:bg-[#141414] transition-colors group cursor-pointer"
                       >
                       <td class="pl-4 py-3">
-                        <div class="font-mono-data font-bold text-white group-hover:text-[#C5A059] transition-colors text-[12px]">
+                        <div class="font-mono-data font-bold text-white group-hover:text-[#4A6FA5] transition-colors text-[12px]">
                           {{ inv.id }}
                         </div>
                         <div class="text-[10px] text-[#737373]">{{ inv.createdDate }}</div>
@@ -165,7 +165,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                       </td>
                       <td class="py-3 pr-3">
                         <div class="flex items-center gap-1.5">
-                          <span class="w-5 h-5 rounded-full bg-[#C5A059]/20 text-[#C5A059] flex items-center justify-center text-[9px] font-bold">
+                          <span class="w-5 h-5 rounded-full bg-[#4A6FA5]/20 text-[#4A6FA5] flex items-center justify-center text-[9px] font-bold">
                             {{ inv.assignedInvestigator.slice(0, 2).toUpperCase() }}
                           </span>
                           <span class="text-white text-[12px]">{{ inv.assignedInvestigator }}</span>
@@ -180,7 +180,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                       <td class="py-3 pr-4 text-right" (click)="$event.stopPropagation()">
                         <button
                           (click)="onSelect(inv)"
-                          class="px-2.5 py-1 bg-[#141414] hover:bg-[#C5A059] text-[#A3A3A3] hover:text-[#0A0A0A] border border-white/5 rounded text-[11px] font-semibold transition-all cursor-pointer"
+                          class="px-2.5 py-1 bg-[#141414] hover:bg-[#4A6FA5] text-[#A3A3A3] hover:text-[#0A0A0A] border border-white/5 rounded text-[11px] font-semibold transition-all cursor-pointer"
                           >
                           Open Dossier →
                         </button>

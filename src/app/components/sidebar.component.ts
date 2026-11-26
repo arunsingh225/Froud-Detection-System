@@ -24,13 +24,13 @@ interface NavItem {
       >
       <!-- Logo -->
       <div class="flex items-center gap-3 px-4 py-4 border-b border-white/5 shrink-0 overflow-hidden">
-        <div class="w-8 h-8 rounded-lg bg-[#C5A059]/10 border border-[#C5A059]/30 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-[18px] text-[#C5A059]">shield</span>
+        <div class="w-8 h-8 rounded-lg bg-[#4A6FA5]/10 border border-[#4A6FA5]/30 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-[18px] text-[#4A6FA5]">shield</span>
         </div>
         @if (!collapsed) {
           <div class="overflow-hidden whitespace-nowrap">
             <div class="font-serif italic text-[15px] text-white leading-none">FraudGuard AI</div>
-            <div class="text-[9px] text-[#C5A059] font-mono-data uppercase tracking-[0.15em] mt-0.5">Risk Intelligence</div>
+            <div class="text-[9px] text-[#4A6FA5] font-mono-data uppercase tracking-[0.15em] mt-0.5">Fraud Operations</div>
           </div>
         }
       </div>
@@ -43,7 +43,7 @@ interface NavItem {
           }
           <a
             [routerLink]="item.path"
-            routerLinkActive="bg-[#C5A059]/10 border-[#C5A059]/25 text-[#C5A059]"
+            routerLinkActive="bg-[#4A6FA5]/10 border-[#4A6FA5]/25 text-[#4A6FA5]"
             [routerLinkActiveOptions]="{ exact: false }"
             [title]="collapsed ? item.label : ''"
             class="group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all border border-transparent text-[#737373] hover:text-white hover:bg-[#141414]"
@@ -58,7 +58,7 @@ interface NavItem {
             }
             @if (!collapsed && item.badge !== undefined) {
               <span
-                class="text-[9px] font-bold px-1.5 py-0.5 rounded-full font-mono-data shrink-0"
+                class="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full text-[11px] font-semibold leading-none tabular-nums shrink-0"
                 [ngClass]="getBadgeColor(item.badgeSev)"
                 >
                 {{ item.badge }}
@@ -71,7 +71,7 @@ interface NavItem {
       <!-- User Footer with RBAC Badge -->
       <div class="px-2 py-3 border-t border-white/5 shrink-0">
         <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#141414] border border-white/5">
-          <div class="w-6 h-6 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-[10px] font-bold shrink-0">
+          <div class="w-6 h-6 rounded-full bg-[#4A6FA5]/10 border border-[#4A6FA5]/30 flex items-center justify-center text-[#4A6FA5] text-[10px] font-bold shrink-0">
             {{ authService.currentUser()?.initials || 'FG' }}
           </div>
           @if (!collapsed) {
@@ -101,7 +101,7 @@ export class SidebarComponent {
     { path: '/fraud-alerts', label: 'Fraud Alerts', icon: 'crisis_alert', badge: 4, badgeSev: 'critical' },
     { path: '/investigations', label: 'Investigations', icon: 'find_in_page', badge: 5 },
     { path: '/ai-investigator', label: 'AI Investigator', icon: 'psychology', badge: 'AI', badgeSev: 'ok' },
-    { path: '/customers', label: 'Customer Intelligence', icon: 'group', dividerBefore: true },
+    { path: '/customers', label: 'Customers', icon: 'group', dividerBefore: true },
     { path: '/risk-analytics', label: 'Risk Analytics', icon: 'bar_chart_4_bars' },
     { path: '/investigation-reports', label: 'Reports', icon: 'description' },
     { path: '/audit-logs', label: 'Audit Log', icon: 'history', dividerBefore: true, roles: ['ADMIN', 'COMPLIANCE'] },
@@ -126,20 +126,20 @@ export class SidebarComponent {
         return 'bg-blue-950/80 text-blue-300 border border-blue-500/40';
       case 'INVESTIGATOR':
       default:
-        return 'bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/40';
+        return 'bg-[#4A6FA5]/20 text-[#4A6FA5] border border-[#4A6FA5]/40';
     }
   }
 
   getBadgeColor(sev?: 'critical' | 'warn' | 'ok'): string {
     switch (sev) {
       case 'critical':
-        return 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/30';
+        return 'bg-red-100 text-red-700 dark:bg-[#ef4444]/20 dark:text-[#f87171]';
       case 'warn':
-        return 'bg-[#f59e0b]/20 text-[#f59e0b] border border-[#f59e0b]/30';
+        return 'bg-amber-100 text-amber-800 dark:bg-[#f59e0b]/20 dark:text-[#fbbf24]';
       case 'ok':
-        return 'bg-[#52b788]/20 text-[#52b788] border border-[#52b788]/30';
+        return 'bg-emerald-100 text-emerald-700 dark:bg-[#52b788]/20 dark:text-[#52b788]';
       default:
-        return 'bg-white/10 text-white/70';
+        return 'bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-white/80';
     }
   }
 }

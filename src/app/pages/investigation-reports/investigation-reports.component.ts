@@ -24,7 +24,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
         <div
           class="flex flex-col items-center justify-center py-20 gap-4"
           >
-          <div class="w-10 h-10 border-4 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
+          <div class="w-10 h-10 border-4 border-[#4A6FA5]/30 border-t-[#4A6FA5] rounded-full animate-spin"></div>
           <span class="text-[13px] text-[#737373] font-mono-data tracking-wide">Loading reports…</span>
         </div>
       }
@@ -40,7 +40,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
           </div>
           <button
             (click)="refreshData()"
-            class="flex items-center gap-1.5 bg-[#141414] hover:bg-[#1C1C1C] text-[#C5A059] border border-[#C5A059]/30 px-3 py-1.5 rounded-lg text-[11px] font-semibold uppercase tracking-wide transition-colors cursor-pointer"
+            class="flex items-center gap-1.5 bg-[#141414] hover:bg-[#1C1C1C] text-[#4A6FA5] border border-[#4A6FA5]/30 px-3 py-1.5 rounded-lg text-[11px] font-semibold uppercase tracking-wide transition-colors cursor-pointer"
             >
             <span class="material-symbols-outlined text-[14px]">refresh</span>
             Retry
@@ -52,9 +52,9 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
         <!-- Toast feedback -->
         @if (toastMsg) {
           <div
-            class="fixed bottom-6 right-6 z-50 bg-[#141414] border border-[#C5A059] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in"
+            class="fixed bottom-6 right-6 z-50 bg-[#141414] border border-[#4A6FA5] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in"
             >
-            <span class="material-symbols-outlined text-[#C5A059]">task_alt</span>
+            <span class="material-symbols-outlined text-[#4A6FA5]">task_alt</span>
             <span class="text-[13px]">{{ toastMsg }}</span>
           </div>
         }
@@ -68,7 +68,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
           </div>
           <button
             (click)="modalService.openSARModal()"
-            class="flex items-center gap-2 bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.15em] transition-all shadow-[0_0_16px_rgba(197,160,89,0.25)] active:scale-95 cursor-pointer"
+            class="flex items-center gap-2 bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.15em] transition-all shadow-[0_0_16px_rgba(74,111,165,0.25)] active:scale-95 cursor-pointer"
             >
             <span class="material-symbols-outlined text-[17px]">description</span>
             <span>Draft New SAR</span>
@@ -80,7 +80,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
             <button
               (click)="selectedCat = cat"
               class="px-3.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer"
-              [ngClass]="selectedCat === cat ? 'bg-[#C5A059] text-[#0A0A0A] font-semibold' : 'bg-[#141414] text-[#737373] hover:text-white'"
+              [ngClass]="selectedCat === cat ? 'bg-[#4A6FA5] text-[#0A0A0A] font-semibold' : 'bg-[#141414] text-[#737373] hover:text-white'"
               >
               {{ cat }}
             </button>
@@ -100,17 +100,17 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @for (rpt of filteredReports; track rpt) {
               <div
-                class="bg-[#0D0D0D] border border-white/5 hover:border-[#C5A059]/30 rounded-xl p-5 space-y-4 transition-all group"
+                class="bg-[#0D0D0D] border border-white/5 hover:border-[#4A6FA5]/30 rounded-xl p-5 space-y-4 transition-all group"
                 >
                 <div class="flex items-start justify-between gap-3">
                   <div>
                     <div class="flex items-center gap-2">
-                      <span class="font-mono-data font-bold text-white text-[13px] group-hover:text-[#C5A059] transition-colors">
+                      <span class="font-mono-data font-bold text-white text-[13px] group-hover:text-[#4A6FA5] transition-colors">
                         {{ rpt.id }}
                       </span>
                       <span
                         class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase font-mono-data"
-                        [ngClass]="rpt.riskLevel === 'CRITICAL' ? 'bg-[#e05353]/15 text-[#ffb4ab] border border-[#e05353]/30' : 'bg-[#C5A059]/15 text-[#C5A059] border border-[#C5A059]/30'"
+                        [ngClass]="rpt.riskLevel === 'CRITICAL' ? 'bg-[#e05353]/15 text-[#ffb4ab] border border-[#e05353]/30' : 'bg-[#4A6FA5]/15 text-[#4A6FA5] border border-[#4A6FA5]/30'"
                         >
                         {{ rpt.riskLevel }}
                       </span>
@@ -127,7 +127,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
                   <div class="flex items-center gap-2">
                     <span>Author: <strong class="text-white">{{ rpt.generatedBy }}</strong></span>
                     @if (rpt.isAiGenerated) {
-                      <span class="bg-[#C5A059]/15 text-[#C5A059] px-1.5 py-0.2 rounded font-mono-data font-semibold">
+                      <span class="bg-[#4A6FA5]/15 text-[#4A6FA5] px-1.5 py-0.2 rounded font-mono-data font-semibold">
                         AI DRAFT
                       </span>
                     }

@@ -24,9 +24,9 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       <!-- Toast feedback -->
       @if (toastMsg) {
         <div
-          class="fixed bottom-6 right-6 z-50 bg-[#141414] border border-[#C5A059] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in"
+          class="fixed bottom-6 right-6 z-50 bg-[#141414] border border-[#4A6FA5] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in"
           >
-          <span class="material-symbols-outlined text-[#C5A059]">task_alt</span>
+          <span class="material-symbols-outlined text-[#4A6FA5]">task_alt</span>
           <span class="text-[13px]">{{ toastMsg }}</span>
         </div>
       }
@@ -36,7 +36,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
         <div class="flex items-center gap-3">
           <button
             (click)="goBack()"
-            class="p-2 rounded-lg bg-[#141414] border border-white/5 hover:border-[#C5A059] text-[#A3A3A3] hover:text-white transition-colors cursor-pointer"
+            class="p-2 rounded-lg bg-[#141414] border border-white/5 hover:border-[#4A6FA5] text-[#A3A3A3] hover:text-white transition-colors cursor-pointer"
             >
             <span class="material-symbols-outlined text-[18px]">arrow_back</span>
           </button>
@@ -55,17 +55,17 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
         <div class="flex items-center gap-2">
           <button
             (click)="openSAR()"
-            class="px-3.5 py-2 rounded-lg bg-[#141414] border border-white/10 hover:border-[#C5A059] text-[12px] text-[#D4D4D4] hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+            class="px-3.5 py-2 rounded-lg bg-[#141414] border border-white/10 hover:border-[#4A6FA5] text-[12px] text-[#D4D4D4] hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-            <span class="material-symbols-outlined text-[16px] text-[#C5A059]">description</span>
+            <span class="material-symbols-outlined text-[16px] text-[#4A6FA5]">description</span>
             <span>Draft SAR</span>
           </button>
           <a
             routerLink="/ai-investigator"
-            class="px-4 py-2 rounded-lg bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_16px_rgba(197,160,89,0.25)] transition-all cursor-pointer"
+            class="px-4 py-2 rounded-lg bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_16px_rgba(74,111,165,0.25)] transition-all cursor-pointer"
             >
             <span class="material-symbols-outlined text-[16px]">psychology</span>
-            <span>AI Copilot</span>
+            <span>AI Investigator</span>
           </a>
         </div>
       </div>
@@ -78,7 +78,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
           <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-4">
             <div class="flex items-center justify-between">
               <h3 class="font-serif italic text-lg text-white">Investigation Lifecycle Timeline</h3>
-              <span class="text-[11px] font-mono-data text-[#C5A059]">8 STEPS TOTAL</span>
+              <span class="text-[11px] font-mono-data text-[#4A6FA5]">8 STEPS TOTAL</span>
             </div>
     
             <div class="space-y-4 pl-2">
@@ -94,7 +94,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                   <!-- Icon circle -->
                   <div
                     class="w-7 h-7 rounded-full flex items-center justify-center shrink-0 z-10 text-[12px]"
-                    [ngClass]="step.status === 'completed' ? 'bg-[#52b788]/20 text-[#52b788] border border-[#52b788]/40' : (step.status === 'active' ? 'bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/40 pulse-dot' : 'bg-[#141414] text-[#737373] border border-white/5')"
+                    [ngClass]="step.status === 'completed' ? 'bg-[#52b788]/20 text-[#52b788] border border-[#52b788]/40' : (step.status === 'active' ? 'bg-[#4A6FA5]/20 text-[#4A6FA5] border border-[#4A6FA5]/40 pulse-dot' : 'bg-[#141414] text-[#737373] border border-white/5')"
                     >
                     <span class="material-symbols-outlined text-[14px]">
                       {{ step.status === 'completed' ? 'check' : (step.status === 'active' ? 'play_arrow' : 'schedule') }}
@@ -115,7 +115,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
     
           <!-- 6 Evidence Categories -->
           <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-4">
-            <h3 class="font-serif italic text-lg text-white">Synthesized Evidence Vectors</h3>
+            <h3 class="font-serif italic text-lg text-white">Evidence</h3>
     
             <div class="space-y-3">
               @for (cat of evidence; track cat) {
@@ -124,7 +124,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                   >
                   <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2 text-white font-medium text-[13px]">
-                      <span class="material-symbols-outlined text-[18px] text-[#C5A059]">{{ cat.icon }}</span>
+                      <span class="material-symbols-outlined text-[18px] text-[#4A6FA5]">{{ cat.icon }}</span>
                       <span>{{ cat.category }} Vector</span>
                     </div>
                     <span class="text-[10px] text-[#737373] font-mono-data">{{ cat.items.length }} findings</span>
@@ -197,7 +197,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
               <!-- Safety Change: Auto-Flag for Review instead of Auto-Freeze -->
               <button
                 (click)="submitDecision('Pending Review')"
-                class="w-full py-2.5 bg-[#C5A059]/20 hover:bg-[#C5A059]/30 text-[#C5A059] border border-[#C5A059]/40 rounded-lg text-[12px] font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                class="w-full py-2.5 bg-[#4A6FA5]/20 hover:bg-[#4A6FA5]/30 text-[#4A6FA5] border border-[#4A6FA5]/40 rounded-lg text-[12px] font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                 <span class="material-symbols-outlined text-[16px]">flag</span>
                 <span>Auto-Flag for Review</span>

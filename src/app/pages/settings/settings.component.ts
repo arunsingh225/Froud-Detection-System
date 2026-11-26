@@ -18,9 +18,9 @@ import { ThemeService } from '../../services/theme.service';
       <!-- Toast feedback -->
       @if (toastMsg) {
         <div
-          class="fixed bottom-6 right-6 z-50 bg-[#141414] border border-[#C5A059] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in"
+          class="fixed bottom-6 right-6 z-50 bg-[#141414] border border-[#4A6FA5] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in"
           >
-          <span class="material-symbols-outlined text-[#C5A059]">task_alt</span>
+          <span class="material-symbols-outlined text-[#4A6FA5]">task_alt</span>
           <span class="text-[13px]">{{ toastMsg }}</span>
         </div>
       }
@@ -28,7 +28,7 @@ import { ThemeService } from '../../services/theme.service';
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 class="font-serif italic text-2xl lg:text-3xl text-white tracking-tight">System Settings & Policies</h2>
+          <h2 class="font-serif italic text-2xl lg:text-3xl text-white tracking-tight">Settings</h2>
           <p class="text-[13px] text-[#A3A3A3] mt-0.5">
             Configure appearance, autonomous guardrails, human review policies, and inference parameters.
           </p>
@@ -36,7 +36,7 @@ import { ThemeService } from '../../services/theme.service';
     
         <button
           (click)="saveSettings()"
-          class="flex items-center gap-2 bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.15em] transition-all shadow-[0_0_16px_rgba(197,160,89,0.25)] active:scale-95 cursor-pointer"
+          class="flex items-center gap-2 bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.15em] transition-all shadow-[0_0_16px_rgba(74,111,165,0.25)] active:scale-95 cursor-pointer"
           >
           <span class="material-symbols-outlined text-[17px]">save</span>
           <span>Save Policy Configuration</span>
@@ -47,7 +47,7 @@ import { ThemeService } from '../../services/theme.service';
       <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-6 space-y-4">
         <h3 class="font-serif italic text-lg text-white">Appearance & Theme</h3>
         <p class="text-[12px] text-[#A3A3A3]">
-          Choose between Dark Obsidian Mode and Light Paper Mode. Settings persist to your browser profile.
+          Choose a light or dark theme. Settings persist to your browser profile.
         </p>
     
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
@@ -56,15 +56,15 @@ import { ThemeService } from '../../services/theme.service';
             (click)="themeService.setTheme('dark')"
             class="p-4 rounded-xl border cursor-pointer transition-all flex items-center gap-4"
             [ngClass]="themeService.isDark()
-              ? 'bg-[#141414] border-[#C5A059] shadow-[0_0_16px_rgba(197,160,89,0.2)]'
+              ? 'bg-[#141414] border-[#4A6FA5] shadow-[0_0_16px_rgba(74,111,165,0.2)]'
               : 'bg-[#141414]/40 border-white/5 hover:border-white/20'"
             >
-            <div class="w-10 h-10 rounded-lg bg-[#0A0A0A] border border-white/10 flex items-center justify-center text-[#C5A059]">
+            <div class="w-10 h-10 rounded-lg bg-[#0A0A0A] border border-white/10 flex items-center justify-center text-[#4A6FA5]">
               <span class="material-symbols-outlined text-[22px]">dark_mode</span>
             </div>
             <div>
-              <div class="text-white font-semibold text-[13px]">Dark Obsidian</div>
-              <div class="text-[11px] text-[#737373]">Optimized for low-light trading rooms</div>
+              <div class="text-white font-semibold text-[13px]">Dark</div>
+              <div class="text-[11px] text-[#737373]">Easier on the eyes in low light</div>
             </div>
           </div>
     
@@ -73,15 +73,15 @@ import { ThemeService } from '../../services/theme.service';
             (click)="themeService.setTheme('light')"
             class="p-4 rounded-xl border cursor-pointer transition-all flex items-center gap-4"
             [ngClass]="!themeService.isDark()
-              ? 'bg-[#141414] border-[#C5A059] shadow-[0_0_16px_rgba(197,160,89,0.2)]'
+              ? 'bg-[#141414] border-[#4A6FA5] shadow-[0_0_16px_rgba(74,111,165,0.2)]'
               : 'bg-[#141414]/40 border-white/5 hover:border-white/20'"
             >
-            <div class="w-10 h-10 rounded-lg bg-[#F7F6F2] border border-black/10 flex items-center justify-center text-[#9C782B]">
+            <div class="w-10 h-10 rounded-lg bg-[#F0F1F3] border border-black/10 flex items-center justify-center text-[#3F628F]">
               <span class="material-symbols-outlined text-[22px]">light_mode</span>
             </div>
             <div>
-              <div class="text-white font-semibold text-[13px]">Light Paper</div>
-              <div class="text-[11px] text-[#737373]">High-contrast daylight view</div>
+              <div class="text-white font-semibold text-[13px]">Light</div>
+              <div class="text-[11px] text-[#737373]">Default theme</div>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ import { ThemeService } from '../../services/theme.service';
       <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-6 space-y-4">
         <div class="flex items-center justify-between">
           <div>
-            <h3 class="font-serif italic text-lg text-white">Autonomous Guardrails & Human Review Policies</h3>
+            <h3 class="font-serif italic text-lg text-white">Review policies</h3>
             <p class="text-[12px] text-[#A3A3A3] mt-0.5">
               Configure how the platform flags suspicious activity and coordinates mandatory investigator sign-off.
             </p>
@@ -107,7 +107,7 @@ import { ThemeService } from '../../services/theme.service';
             <div class="max-w-xl">
               <div class="text-white font-medium text-[13px] flex items-center gap-2">
                 <span>Auto-Flag for Review (>95% Risk)</span>
-                <span class="text-[9px] font-mono-data text-[#C5A059] bg-[#C5A059]/10 px-1.5 py-0.2 rounded border border-[#C5A059]/30">
+                <span class="text-[9px] font-mono-data text-[#4A6FA5] bg-[#4A6FA5]/10 px-1.5 py-0.2 rounded border border-[#4A6FA5]/30">
                   SAFETY GUARDRAIL
                 </span>
               </div>
@@ -118,7 +118,7 @@ import { ThemeService } from '../../services/theme.service';
             <input
               type="checkbox"
               [(ngModel)]="autoFlagForReview"
-              class="w-5 h-5 accent-[#C5A059] rounded cursor-pointer"
+              class="w-5 h-5 accent-[#4A6FA5] rounded cursor-pointer"
               />
             </div>
     
@@ -133,7 +133,7 @@ import { ThemeService } from '../../services/theme.service';
               <input
                 type="checkbox"
                 [(ngModel)]="autoDraftSAR"
-                class="w-5 h-5 accent-[#C5A059] rounded cursor-pointer"
+                class="w-5 h-5 accent-[#4A6FA5] rounded cursor-pointer"
                 />
               </div>
     
@@ -148,7 +148,7 @@ import { ThemeService } from '../../services/theme.service';
                 <input
                   type="checkbox"
                   [(ngModel)]="impossibleTravel"
-                  class="w-5 h-5 accent-[#C5A059] rounded cursor-pointer"
+                  class="w-5 h-5 accent-[#4A6FA5] rounded cursor-pointer"
                   />
                 </div>
               </div>
@@ -164,14 +164,14 @@ import { ThemeService } from '../../services/theme.service';
               <div class="max-w-md space-y-2">
                 <div class="flex justify-between text-[12px]">
                   <span class="text-[#737373]">Threshold Trigger</span>
-                  <span class="text-[#C5A059] font-mono-data font-bold">{{ threshold }}%</span>
+                  <span class="text-[#4A6FA5] font-mono-data font-bold">{{ threshold }}%</span>
                 </div>
                 <input
                   type="range"
                   min="50"
                   max="95"
                   [(ngModel)]="threshold"
-                  class="w-full accent-[#C5A059] cursor-pointer"
+                  class="w-full accent-[#4A6FA5] cursor-pointer"
                   />
                   <div class="flex justify-between text-[10px] text-[#737373] font-mono-data">
                     <span>50% (High Recall / More Flags)</span>

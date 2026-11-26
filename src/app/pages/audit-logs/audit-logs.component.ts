@@ -21,7 +21,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
       <!-- Loading State -->
       @if (analyticsService.loading()) {
         <div class="flex flex-col items-center justify-center py-20 space-y-4">
-          <div class="w-10 h-10 border-2 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
+          <div class="w-10 h-10 border-2 border-[#4A6FA5]/30 border-t-[#4A6FA5] rounded-full animate-spin"></div>
           <p class="text-[13px] text-[#737373] tracking-wide">Loading audit logs…</p>
         </div>
       }
@@ -33,7 +33,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
           <p class="text-[13px] text-red-300">{{ loadError }}</p>
           <button
             (click)="refreshData()"
-            class="mt-2 px-4 py-1.5 bg-[#141414] border border-[#C5A059]/40 text-[#C5A059] text-[11px] font-semibold uppercase tracking-[0.15em] rounded-lg hover:bg-[#1C1C1C] transition-all cursor-pointer"
+            class="mt-2 px-4 py-1.5 bg-[#141414] border border-[#4A6FA5]/40 text-[#4A6FA5] text-[11px] font-semibold uppercase tracking-[0.15em] rounded-lg hover:bg-[#1C1C1C] transition-all cursor-pointer"
           >Retry</button>
         </div>
       }
@@ -42,16 +42,16 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
         <!-- Toast feedback -->
         @if (toastMsg) {
           <div
-            class="fixed bottom-6 right-6 z-50 bg-[#141414] border border-[#C5A059] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in"
+            class="fixed bottom-6 right-6 z-50 bg-[#141414] border border-[#4A6FA5] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in"
             >
-            <span class="material-symbols-outlined text-[#C5A059]">verified_user</span>
+            <span class="material-symbols-outlined text-[#4A6FA5]">verified_user</span>
             <span class="text-[13px]">{{ toastMsg }}</span>
           </div>
         }
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#C5A059] tracking-[0.2em] uppercase">
+            <div class="flex items-center gap-2 text-[11px] font-mono-data text-[#4A6FA5] tracking-[0.2em] uppercase">
               <span class="w-2 h-2 rounded-full bg-[#52b788] pulse-dot"></span>
               WORM Cryptographic Log Active
             </div>
@@ -64,7 +64,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
           </div>
           <button
             (click)="exportLogProof()"
-            class="flex items-center gap-2 bg-[#141414] hover:bg-[#1C1C1C] border border-[#C5A059]/40 text-[#C5A059] px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.15em] transition-all cursor-pointer"
+            class="flex items-center gap-2 bg-[#141414] hover:bg-[#1C1C1C] border border-[#4A6FA5]/40 text-[#4A6FA5] px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-[0.15em] transition-all cursor-pointer"
             >
             <span class="material-symbols-outlined text-[16px]">lock_clock</span>
             <span>Verify SHA-256 Proof</span>
@@ -72,7 +72,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
         </div>
         <!-- Filters -->
         <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 flex flex-wrap gap-3 items-center">
-          <div class="flex items-center bg-[#141414] rounded-lg px-3 py-1.5 border border-white/10 focus-within:border-[#C5A059] transition-all flex-1 min-w-[200px]">
+          <div class="flex items-center bg-[#141414] rounded-lg px-3 py-1.5 border border-white/10 focus-within:border-[#4A6FA5] transition-all flex-1 min-w-[200px]">
             <span class="material-symbols-outlined text-[#737373] text-[16px] mr-2">search</span>
             <input
               type="text"
@@ -83,7 +83,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
             </div>
             <select
               [(ngModel)]="categoryFilter"
-              class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#C5A059] cursor-pointer"
+              class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#4A6FA5] cursor-pointer"
               >
               <option value="All">All Categories</option>
               <option value="Authentication">Authentication</option>
@@ -126,7 +126,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
                         </td>
                         <td class="py-3 pr-3">
                           <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[16px] text-[#C5A059]">
+                            <span class="material-symbols-outlined text-[16px] text-[#4A6FA5]">
                               {{ log.actor.icon || 'person' }}
                             </span>
                             <div>
@@ -141,7 +141,7 @@ import { EmptyStateComponent } from '../../shared/components/empty-state.compone
                             <div class="text-[11px] text-[#737373] font-mono-data">{{ log.subAction }}</div>
                           }
                         </td>
-                        <td class="py-3 pr-3 text-[#C5A059]">
+                        <td class="py-3 pr-3 text-[#4A6FA5]">
                           {{ log.resource }}
                         </td>
                         <td class="py-3 pr-3 font-sans text-[12px] text-[#A3A3A3]">

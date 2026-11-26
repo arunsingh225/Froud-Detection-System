@@ -31,7 +31,7 @@ import { CreateTransactionDto, TransactionDto } from '../../models/api-response.
           </button>
           <!-- Header -->
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-[#141414] border border-[#C5A059]/40 flex items-center justify-center text-[#C5A059] shadow-[0_0_12px_rgba(197,160,89,0.2)]">
+            <div class="w-10 h-10 rounded-xl bg-[#141414] border border-[#4A6FA5]/40 flex items-center justify-center text-[#4A6FA5] shadow-[0_0_12px_rgba(74,111,165,0.2)]">
               <span class="material-symbols-outlined text-[22px]">add_card</span>
             </div>
             <div>
@@ -114,7 +114,7 @@ import { CreateTransactionDto, TransactionDto } from '../../models/api-response.
                   (click)="viewCreatedTransaction()"
                   class="px-3.5 py-1.5 bg-[#141414] hover:bg-[#1C1C1C] border border-white/20 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 cursor-pointer"
                   >
-                  <span class="material-symbols-outlined text-[16px] text-[#C5A059]">visibility</span>
+                  <span class="material-symbols-outlined text-[16px] text-[#4A6FA5]">visibility</span>
                   <span>View Transaction</span>
                 </button>
                 @if (evalResult.status === 'Investigating') {
@@ -141,7 +141,7 @@ import { CreateTransactionDto, TransactionDto } from '../../models/api-response.
                     type="number"
                     [(ngModel)]="form.amountInr"
                     placeholder="50000"
-                    class="w-full bg-[#141414] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white focus:outline-none focus:border-[#C5A059] font-mono-data"
+                    class="w-full bg-[#141414] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white focus:outline-none focus:border-[#4A6FA5] font-mono-data"
                     />
                   </div>
                   <div>
@@ -150,7 +150,7 @@ import { CreateTransactionDto, TransactionDto } from '../../models/api-response.
                     </label>
                     <select
                       [(ngModel)]="form.paymentMethod"
-                      class="w-full bg-[#141414] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white focus:outline-none focus:border-[#C5A059] cursor-pointer"
+                      class="w-full bg-[#141414] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white focus:outline-none focus:border-[#4A6FA5] cursor-pointer"
                       >
                       <option value="Visa Credit">Visa Credit Card</option>
                       <option value="Mastercard Debit">Mastercard Debit</option>
@@ -169,7 +169,7 @@ import { CreateTransactionDto, TransactionDto } from '../../models/api-response.
                       [(ngModel)]="form.cardLast4"
                       placeholder="4321"
                       maxlength="4"
-                      class="w-full bg-[#141414] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white focus:outline-none focus:border-[#C5A059] font-mono-data"
+                      class="w-full bg-[#141414] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white focus:outline-none focus:border-[#4A6FA5] font-mono-data"
                       />
                     </div>
                     <div>
@@ -180,7 +180,7 @@ import { CreateTransactionDto, TransactionDto } from '../../models/api-response.
                         type="text"
                         [(ngModel)]="form.city"
                         placeholder="Mumbai"
-                        class="w-full bg-[#141414] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white focus:outline-none focus:border-[#C5A059]"
+                        class="w-full bg-[#141414] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white focus:outline-none focus:border-[#4A6FA5]"
                         />
                       </div>
                     </div>
@@ -193,7 +193,7 @@ import { CreateTransactionDto, TransactionDto } from '../../models/api-response.
                           type="number"
                           [(ngModel)]="form.distanceFromTypicalKm"
                           placeholder="15"
-                          class="w-full bg-[#141414] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white focus:outline-none focus:border-[#C5A059] font-mono-data"
+                          class="w-full bg-[#141414] border border-white/10 rounded-xl px-3.5 py-2.5 text-[13px] text-white focus:outline-none focus:border-[#4A6FA5] font-mono-data"
                           />
                         </div>
                         <div class="flex items-center gap-3 pt-6">
@@ -201,7 +201,7 @@ import { CreateTransactionDto, TransactionDto } from '../../models/api-response.
                             <input
                               type="checkbox"
                               [(ngModel)]="form.vpnOrProxyDetected"
-                              class="w-4 h-4 rounded border-white/20 bg-[#141414] text-[#C5A059] focus:ring-0 cursor-pointer"
+                              class="w-4 h-4 rounded border-white/20 bg-[#141414] text-[#4A6FA5] focus:ring-0 cursor-pointer"
                               />
                               <span>VPN / Anonymous Proxy Detected</span>
                             </label>
@@ -242,7 +242,7 @@ import { CreateTransactionDto, TransactionDto } from '../../models/api-response.
                       @if (evalResult) {
                         <button
                           (click)="evalResult = null"
-                          class="px-4 py-2 bg-[#141414] hover:bg-[#1C1C1C] text-[#C5A059] rounded-lg text-[11px] uppercase tracking-wider font-semibold border border-[#C5A059]/30 cursor-pointer"
+                          class="px-4 py-2 bg-[#141414] hover:bg-[#1C1C1C] text-[#4A6FA5] rounded-lg text-[11px] uppercase tracking-wider font-semibold border border-[#4A6FA5]/30 cursor-pointer"
                           >
                           Submit Another
                         </button>
@@ -252,7 +252,7 @@ import { CreateTransactionDto, TransactionDto } from '../../models/api-response.
                           (click)="submitTransaction()"
                           [disabled]="isSubmitting || !form.amountInr || !canIngest"
                           [title]="!canIngest ? 'Transaction ingestion is restricted to ADMIN and INVESTIGATOR roles' : ''"
-                          class="px-5 py-2.5 bg-[#C5A059] hover:bg-[#dfba73] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-bold uppercase tracking-[0.15em] rounded-lg text-[11px] transition-all shadow-[0_0_16px_rgba(197,160,89,0.25)] flex items-center gap-2 cursor-pointer"
+                          class="px-5 py-2.5 bg-[#4A6FA5] hover:bg-[#6F8FC0] disabled:opacity-40 disabled:cursor-not-allowed text-[#0A0A0A] font-bold uppercase tracking-[0.15em] rounded-lg text-[11px] transition-all shadow-[0_0_16px_rgba(74,111,165,0.25)] flex items-center gap-2 cursor-pointer"
                           >
                           @if (isSubmitting) {
                             <div class="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>

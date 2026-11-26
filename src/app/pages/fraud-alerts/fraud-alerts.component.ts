@@ -43,7 +43,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
         </div>
         <button
           (click)="refreshData()"
-          class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#141414] border border-white/10 hover:border-[#C5A059]/40 text-[#C5A059] text-[12px] font-semibold transition-colors cursor-pointer"
+          class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#141414] border border-white/10 hover:border-[#4A6FA5]/40 text-[#4A6FA5] text-[12px] font-semibold transition-colors cursor-pointer"
           >
           <span class="material-symbols-outlined text-[16px]">refresh</span>
           Refresh
@@ -53,8 +53,8 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
       <!-- Loading State -->
       @if (alertService.loading()) {
         <div class="flex items-center justify-center py-16">
-          <div class="flex items-center gap-3 text-[#C5A059]">
-            <div class="w-5 h-5 border-2 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
+          <div class="flex items-center gap-3 text-[#4A6FA5]">
+            <div class="w-5 h-5 border-2 border-[#4A6FA5]/30 border-t-[#4A6FA5] rounded-full animate-spin"></div>
             <span class="text-[13px]">Loading fraud alerts...</span>
           </div>
         </div>
@@ -84,7 +84,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
               <button
                 (click)="activeTab = tab.value"
                 class="px-3.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors whitespace-nowrap cursor-pointer"
-                [ngClass]="activeTab === tab.value ? 'bg-[#C5A059] text-[#0A0A0A] font-semibold' : 'bg-[#141414] text-[#A3A3A3] hover:text-white'"
+                [ngClass]="activeTab === tab.value ? 'bg-[#4A6FA5] text-[#0A0A0A] font-semibold' : 'bg-[#141414] text-[#A3A3A3] hover:text-white'"
                 >
                 {{ tab.label }}
                 <span class="ml-1 text-[10px] font-mono-data opacity-80">({{ getCount(tab.value) }})</span>
@@ -95,7 +95,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
             <span class="text-[11px] text-[#737373] uppercase tracking-wider">Severity:</span>
             <select
               [(ngModel)]="riskFilter"
-              class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#C5A059] cursor-pointer"
+              class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#4A6FA5] cursor-pointer"
               >
               <option value="All">All Tiers</option>
               <option value="Critical">Critical</option>
@@ -118,13 +118,13 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @for (alert of filteredAlerts; track alert) {
               <div
-                class="bg-[#0D0D0D] border border-white/5 hover:border-[#C5A059]/30 rounded-xl p-5 space-y-4 transition-all group"
+                class="bg-[#0D0D0D] border border-white/5 hover:border-[#4A6FA5]/30 rounded-xl p-5 space-y-4 transition-all group"
                 >
                 <!-- Top Row -->
                 <div class="flex items-start justify-between gap-3">
                   <div>
                     <div class="flex items-center gap-2">
-                      <span class="font-mono-data font-bold text-white text-[13px] group-hover:text-[#C5A059] transition-colors">
+                      <span class="font-mono-data font-bold text-white text-[13px] group-hover:text-[#4A6FA5] transition-colors">
                         {{ alert.id }}
                       </span>
                       <app-risk-badge [tier]="alert.riskTier"></app-risk-badge>
@@ -133,7 +133,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                     <div class="text-[11px] text-[#737373] mt-1 flex items-center gap-2">
                       <span>{{ alert.createdAt }} at {{ alert.createdTime }}</span>
                       <span>•</span>
-                      <span class="text-[#C5A059] font-mono-data">{{ alert.alertType }}</span>
+                      <span class="text-[#4A6FA5] font-mono-data">{{ alert.alertType }}</span>
                     </div>
                   </div>
                   <div class="text-right font-mono-data">
@@ -169,7 +169,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                     }
                     <button
                       (click)="investigateAlert(alert)"
-                      class="px-3 py-1 bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] rounded text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center gap-1 cursor-pointer"
+                      class="px-3 py-1 bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] rounded text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center gap-1 cursor-pointer"
                       >
                       <span class="material-symbols-outlined text-[14px]">psychology</span>
                       <span>Investigate</span>

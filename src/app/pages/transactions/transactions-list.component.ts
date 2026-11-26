@@ -41,8 +41,8 @@ type SortDir = 'asc' | 'desc';
       <!-- Loading State -->
       @if (transactionService.loading()) {
         <div class="flex items-center justify-center py-16">
-          <div class="flex items-center gap-3 text-[#C5A059]">
-            <div class="w-5 h-5 border-2 border-[#C5A059]/30 border-t-[#C5A059] rounded-full animate-spin"></div>
+          <div class="flex items-center gap-3 text-[#4A6FA5]">
+            <div class="w-5 h-5 border-2 border-[#4A6FA5]/30 border-t-[#4A6FA5] rounded-full animate-spin"></div>
             <span class="text-[13px]">Loading transactions from backend...</span>
           </div>
         </div>
@@ -53,7 +53,7 @@ type SortDir = 'asc' | 'desc';
         <div class="bg-[#e05353]/10 border border-[#e05353]/30 rounded-xl p-4 flex items-center gap-3">
           <span class="material-symbols-outlined text-[#e05353]">error</span>
           <span class="text-[13px] text-[#ffb4ab]">{{ transactionService.error() }}</span>
-          <button (click)="refreshData()" class="ml-auto px-3 py-1 bg-[#141414] border border-white/10 rounded-lg text-[11px] text-[#C5A059] cursor-pointer hover:border-[#C5A059]">Retry</button>
+          <button (click)="refreshData()" class="ml-auto px-3 py-1 bg-[#141414] border border-white/10 rounded-lg text-[11px] text-[#4A6FA5] cursor-pointer hover:border-[#4A6FA5]">Retry</button>
         </div>
       }
     
@@ -81,18 +81,18 @@ type SortDir = 'asc' | 'desc';
           </div>
           <div class="flex items-center gap-2">
             @if (selectedRows.size > 0) {
-              <span class="text-[12px] text-[#C5A059] bg-[#C5A059]/10 border border-[#C5A059]/25 px-3 py-1.5 rounded-lg">
+              <span class="text-[12px] text-[#4A6FA5] bg-[#4A6FA5]/10 border border-[#4A6FA5]/25 px-3 py-1.5 rounded-lg">
                 {{ selectedRows.size }} selected
               </span>
             }
             @if (authService.hasAnyRole(['ADMIN', 'INVESTIGATOR'])) {
-              <button (click)="modalService.openNewTransactionModal()" class="flex items-center gap-1.5 bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] px-3.5 py-2 rounded-lg text-[12px] font-semibold tracking-wide transition-all shadow-[0_0_12px_rgba(197,160,89,0.25)] cursor-pointer">
+              <button (click)="modalService.openNewTransactionModal()" class="flex items-center gap-1.5 bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] px-3.5 py-2 rounded-lg text-[12px] font-semibold tracking-wide transition-all shadow-[0_0_12px_rgba(74,111,165,0.25)] cursor-pointer">
                 <span class="material-symbols-outlined text-[16px]">add</span>
                 <span>Ingest Transaction</span>
               </button>
             }
             <button (click)="refreshData()" class="flex items-center gap-2 bg-[#141414] hover:bg-[#1C1C1C] border border-white/10 text-[#D4D4D4] px-3.5 py-2 rounded-lg text-[12px] font-medium transition-colors cursor-pointer">
-              <span class="material-symbols-outlined text-[16px] text-[#C5A059]">refresh</span>
+              <span class="material-symbols-outlined text-[16px] text-[#4A6FA5]">refresh</span>
               <span>Refresh</span>
             </button>
             <button
@@ -101,10 +101,10 @@ type SortDir = 'asc' | 'desc';
               class="flex items-center gap-2 bg-[#141414] hover:bg-[#1C1C1C] disabled:opacity-50 border border-white/10 text-[#D4D4D4] px-3.5 py-2 rounded-lg text-[12px] font-medium transition-colors cursor-pointer"
               >
               @if (isExporting) {
-                <span class="w-3.5 h-3.5 border-2 border-[#C5A059]/40 border-t-[#C5A059] rounded-full animate-spin"></span>
+                <span class="w-3.5 h-3.5 border-2 border-[#4A6FA5]/40 border-t-[#4A6FA5] rounded-full animate-spin"></span>
               }
               @if (!isExporting) {
-                <span class="material-symbols-outlined text-[16px] text-[#C5A059]">download</span>
+                <span class="material-symbols-outlined text-[16px] text-[#4A6FA5]">download</span>
               }
               <span>{{ isExporting ? 'Exporting...' : 'Export' }}</span>
             </button>
@@ -113,7 +113,7 @@ type SortDir = 'asc' | 'desc';
         <!-- Filters -->
         <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 flex flex-wrap gap-3 items-center">
           <!-- Search -->
-          <div class="flex items-center bg-[#141414] rounded-lg px-3 py-1.5 border border-white/10 focus-within:border-[#C5A059] transition-all flex-1 min-w-[200px]">
+          <div class="flex items-center bg-[#141414] rounded-lg px-3 py-1.5 border border-white/10 focus-within:border-[#4A6FA5] transition-all flex-1 min-w-[200px]">
             <span class="material-symbols-outlined text-[#737373] text-[16px] mr-2">search</span>
             <input
               type="text"
@@ -132,7 +132,7 @@ type SortDir = 'asc' | 'desc';
             <select
               [(ngModel)]="riskFilter"
               (ngModelChange)="page = 0"
-              class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#C5A059] cursor-pointer"
+              class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#4A6FA5] cursor-pointer"
               >
               <option value="All">All Risks</option>
               <option value="Critical">Critical</option>
@@ -144,7 +144,7 @@ type SortDir = 'asc' | 'desc';
             <select
               [(ngModel)]="statusFilter"
               (ngModelChange)="page = 0"
-              class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#C5A059] cursor-pointer"
+              class="bg-[#141414] border border-white/10 text-[#D4D4D4] text-[12px] px-3 py-1.5 rounded-lg focus:outline-none focus:border-[#4A6FA5] cursor-pointer"
               >
               <option value="All">All Statuses</option>
               <option value="Pending Review">Pending Review</option>
@@ -157,7 +157,7 @@ type SortDir = 'asc' | 'desc';
             @if (search || riskFilter !== 'All' || statusFilter !== 'All') {
               <button
                 (click)="clearFilters()"
-                class="text-[12px] text-[#C5A059] hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
+                class="text-[12px] text-[#4A6FA5] hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
                 >
                 <span class="material-symbols-outlined text-[14px]">filter_list_off</span>
                 Clear filters
@@ -187,13 +187,13 @@ type SortDir = 'asc' | 'desc';
                           type="checkbox"
                           [checked]="allPagedSelected"
                           (change)="toggleSelectAll()"
-                          class="accent-[#C5A059] cursor-pointer"
+                          class="accent-[#4A6FA5] cursor-pointer"
                           />
                         </th>
                         <th class="py-3 pr-3 cursor-pointer hover:text-white transition-colors" (click)="toggleSort('id')">
                           <div class="flex items-center gap-1">
                             Txn ID
-                            <span class="material-symbols-outlined text-[14px]" [ngClass]="sortKey === 'id' ? 'text-[#C5A059]' : 'text-[#404040]'">
+                            <span class="material-symbols-outlined text-[14px]" [ngClass]="sortKey === 'id' ? 'text-[#4A6FA5]' : 'text-[#404040]'">
                               {{ sortKey === 'id' ? (sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more' }}
                             </span>
                           </div>
@@ -202,7 +202,7 @@ type SortDir = 'asc' | 'desc';
                         <th class="py-3 pr-3 cursor-pointer hover:text-white transition-colors" (click)="toggleSort('amountInr')">
                           <div class="flex items-center gap-1">
                             Amount
-                            <span class="material-symbols-outlined text-[14px]" [ngClass]="sortKey === 'amountInr' ? 'text-[#C5A059]' : 'text-[#404040]'">
+                            <span class="material-symbols-outlined text-[14px]" [ngClass]="sortKey === 'amountInr' ? 'text-[#4A6FA5]' : 'text-[#404040]'">
                               {{ sortKey === 'amountInr' ? (sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more' }}
                             </span>
                           </div>
@@ -213,7 +213,7 @@ type SortDir = 'asc' | 'desc';
                         <th class="py-3 pr-3 cursor-pointer hover:text-white transition-colors" (click)="toggleSort('probability')">
                           <div class="flex items-center gap-1">
                             Fraud Prob
-                            <span class="material-symbols-outlined text-[14px]" [ngClass]="sortKey === 'probability' ? 'text-[#C5A059]' : 'text-[#404040]'">
+                            <span class="material-symbols-outlined text-[14px]" [ngClass]="sortKey === 'probability' ? 'text-[#4A6FA5]' : 'text-[#404040]'">
                               {{ sortKey === 'probability' ? (sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more' }}
                             </span>
                           </div>
@@ -223,7 +223,7 @@ type SortDir = 'asc' | 'desc';
                         <th class="py-3 pr-3 cursor-pointer hover:text-white transition-colors text-right" (click)="toggleSort('timestamp')">
                           <div class="flex items-center gap-1 justify-end">
                             Time
-                            <span class="material-symbols-outlined text-[14px]" [ngClass]="sortKey === 'timestamp' ? 'text-[#C5A059]' : 'text-[#404040]'">
+                            <span class="material-symbols-outlined text-[14px]" [ngClass]="sortKey === 'timestamp' ? 'text-[#4A6FA5]' : 'text-[#404040]'">
                               {{ sortKey === 'timestamp' ? (sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more' }}
                             </span>
                           </div>
@@ -236,18 +236,18 @@ type SortDir = 'asc' | 'desc';
                         <tr
                           (click)="onSelect(txn)"
                           class="hover:bg-[#141414] transition-colors group cursor-pointer"
-                          [ngClass]="isRowSelected(txn) ? 'bg-[#C5A059]/5 border-l-2 border-l-[#C5A059]' : ''"
+                          [ngClass]="isRowSelected(txn) ? 'bg-[#4A6FA5]/5 border-l-2 border-l-[#4A6FA5]' : ''"
                           >
                           <td class="pl-4 py-3" (click)="$event.stopPropagation()">
                             <input
                               type="checkbox"
                               [checked]="isRowSelected(txn)"
                               (change)="toggleRow(txn)"
-                              class="accent-[#C5A059] cursor-pointer"
+                              class="accent-[#4A6FA5] cursor-pointer"
                               />
                             </td>
                             <td class="py-3 pr-3">
-                              <div class="font-mono-data font-bold text-white group-hover:text-[#C5A059] transition-colors text-[12px]">
+                              <div class="font-mono-data font-bold text-white group-hover:text-[#4A6FA5] transition-colors text-[12px]">
                                 {{ txn.id }}
                               </div>
                               <div class="text-[10px] text-[#737373] font-mono-data">{{ txn.method }}</div>
@@ -268,7 +268,7 @@ type SortDir = 'asc' | 'desc';
                             </td>
                             <td class="py-3 pr-3">
                               <div class="flex items-center gap-1 text-[12px] text-white">
-                                <span class="material-symbols-outlined text-[13px] text-[#C5A059]">pin_drop</span>
+                                <span class="material-symbols-outlined text-[13px] text-[#4A6FA5]">pin_drop</span>
                                 <span class="truncate max-w-[90px]">{{ txn.location }}</span>
                               </div>
                               @if (txn.vpnDetected) {
@@ -297,14 +297,14 @@ type SortDir = 'asc' | 'desc';
                               <div class="flex items-center gap-1 justify-end">
                                 <button
                                   (click)="onSelect(txn)"
-                                  class="p-1.5 rounded hover:bg-[#C5A059]/10 text-[#737373] hover:text-[#C5A059] transition-colors cursor-pointer"
+                                  class="p-1.5 rounded hover:bg-[#4A6FA5]/10 text-[#737373] hover:text-[#4A6FA5] transition-colors cursor-pointer"
                                   title="View Details"
                                   >
                                   <span class="material-symbols-outlined text-[16px]">visibility</span>
                                 </button>
                                 <button
                                   (click)="onInvestigate(txn)"
-                                  class="p-1.5 rounded hover:bg-[#C5A059]/10 text-[#737373] hover:text-[#C5A059] transition-colors cursor-pointer"
+                                  class="p-1.5 rounded hover:bg-[#4A6FA5]/10 text-[#737373] hover:text-[#4A6FA5] transition-colors cursor-pointer"
                                   title="Investigate with AI"
                                   >
                                   <span class="material-symbols-outlined text-[16px]">psychology</span>
@@ -325,7 +325,7 @@ type SortDir = 'asc' | 'desc';
                       <button
                         (click)="page = Math.max(0, page - 1)"
                         [disabled]="page === 0"
-                        class="px-2.5 py-1 rounded bg-[#141414] border border-white/10 hover:border-[#C5A059] disabled:opacity-40 transition-colors cursor-pointer"
+                        class="px-2.5 py-1 rounded bg-[#141414] border border-white/10 hover:border-[#4A6FA5] disabled:opacity-40 transition-colors cursor-pointer"
                         >
                         ←
                       </button>
@@ -333,7 +333,7 @@ type SortDir = 'asc' | 'desc';
                         <button
                           (click)="page = i"
                           class="w-7 h-7 rounded text-[11px] font-mono-data transition-colors cursor-pointer"
-                          [ngClass]="i === page ? 'bg-[#C5A059] text-[#0A0A0A] font-bold' : 'bg-[#141414] border border-white/10 hover:border-[#C5A059] text-[#A3A3A3]'"
+                          [ngClass]="i === page ? 'bg-[#4A6FA5] text-[#0A0A0A] font-bold' : 'bg-[#141414] border border-white/10 hover:border-[#4A6FA5] text-[#A3A3A3]'"
                           >
                           {{ i + 1 }}
                         </button>
@@ -341,7 +341,7 @@ type SortDir = 'asc' | 'desc';
                       <button
                         (click)="page = Math.min(totalPages - 1, page + 1)"
                         [disabled]="page === totalPages - 1"
-                        class="px-2.5 py-1 rounded bg-[#141414] border border-white/10 hover:border-[#C5A059] disabled:opacity-40 transition-colors cursor-pointer"
+                        class="px-2.5 py-1 rounded bg-[#141414] border border-white/10 hover:border-[#4A6FA5] disabled:opacity-40 transition-colors cursor-pointer"
                         >
                         →
                       </button>

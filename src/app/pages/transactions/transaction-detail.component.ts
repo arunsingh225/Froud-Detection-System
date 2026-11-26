@@ -25,9 +25,9 @@ import { buildScoreExplanation, buildStoredExplanation, ScoreExplanation } from 
       <!-- Toast feedback -->
       @if (toastMsg) {
         <div
-          class="fixed bottom-6 right-6 z-50 bg-[#141414] border border-[#C5A059] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in"
+          class="fixed bottom-6 right-6 z-50 bg-[#141414] border border-[#4A6FA5] text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in"
           >
-          <span class="material-symbols-outlined text-[#C5A059]">task_alt</span>
+          <span class="material-symbols-outlined text-[#4A6FA5]">task_alt</span>
           <span class="text-[13px]">{{ toastMsg }}</span>
         </div>
       }
@@ -37,7 +37,7 @@ import { buildScoreExplanation, buildStoredExplanation, ScoreExplanation } from 
         <div class="flex items-center gap-3">
           <button
             (click)="goBack()"
-            class="p-2 rounded-lg bg-[#141414] border border-white/5 hover:border-[#C5A059] text-[#A3A3A3] hover:text-white transition-colors cursor-pointer"
+            class="p-2 rounded-lg bg-[#141414] border border-white/5 hover:border-[#4A6FA5] text-[#A3A3A3] hover:text-white transition-colors cursor-pointer"
             >
             <span class="material-symbols-outlined text-[18px]">arrow_back</span>
           </button>
@@ -54,14 +54,14 @@ import { buildScoreExplanation, buildStoredExplanation, ScoreExplanation } from 
         <div class="flex items-center gap-2">
           <button
             (click)="openSAR()"
-            class="px-3.5 py-2 rounded-lg bg-[#141414] border border-white/10 hover:border-[#C5A059] text-[12px] text-[#D4D4D4] hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+            class="px-3.5 py-2 rounded-lg bg-[#141414] border border-white/10 hover:border-[#4A6FA5] text-[12px] text-[#D4D4D4] hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-            <span class="material-symbols-outlined text-[16px] text-[#C5A059]">description</span>
+            <span class="material-symbols-outlined text-[16px] text-[#4A6FA5]">description</span>
             <span>Draft SAR</span>
           </button>
           <button
             (click)="investigateWithAI()"
-            class="px-4 py-2 rounded-lg bg-[#C5A059] hover:bg-[#dfba73] text-[#0A0A0A] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_16px_rgba(197,160,89,0.25)] transition-all cursor-pointer"
+            class="px-4 py-2 rounded-lg bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_16px_rgba(74,111,165,0.25)] transition-all cursor-pointer"
             >
             <span class="material-symbols-outlined text-[16px]">psychology</span>
             <span>Launch AI Agent</span>
@@ -72,7 +72,7 @@ import { buildScoreExplanation, buildStoredExplanation, ScoreExplanation } from 
       <!-- Anomaly Alert Banner -->
       <div
         class="border rounded-xl p-4 flex items-start gap-3"
-        [ngClass]="txn.probability > 75 ? 'bg-[#e05353]/10 border-[#e05353]/30 text-[#ffb4ab]' : 'bg-[#C5A059]/10 border-[#C5A059]/30 text-[#C5A059]'"
+        [ngClass]="txn.probability > 75 ? 'bg-[#e05353]/10 border-[#e05353]/30 text-[#ffb4ab]' : 'bg-[#4A6FA5]/10 border-[#4A6FA5]/30 text-[#4A6FA5]'"
         >
         <span class="material-symbols-outlined text-[20px] mt-0.5 shrink-0">
           {{ txn.probability > 75 ? 'crisis_alert' : 'warning' }}
@@ -92,7 +92,7 @@ import { buildScoreExplanation, buildStoredExplanation, ScoreExplanation } from 
             <div class="text-[11px] text-[#737373] uppercase tracking-wider mb-1">Transaction Amount</div>
             <div class="font-mono-data font-bold text-2xl text-white">{{ txn.amountInr | inrCurrency:true }}</div>
             @if (txn.amountUsd) {
-              <div class="text-[12px] text-[#C5A059] font-mono-data mt-0.5">
+              <div class="text-[12px] text-[#4A6FA5] font-mono-data mt-0.5">
                 ≈ \${{ txn.amountUsd.toLocaleString() }} USD
               </div>
             }
@@ -126,13 +126,13 @@ import { buildScoreExplanation, buildStoredExplanation, ScoreExplanation } from 
     
         <!-- Col 2: Telemetry & Device -->
         <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-4">
-          <h3 class="font-serif italic text-lg text-white">Session Telemetry</h3>
+          <h3 class="font-serif italic text-lg text-white">Session details</h3>
     
           <div class="space-y-3 text-[12px]">
             <div class="flex justify-between py-1 border-b border-white/5">
               <span class="text-[#737373]">Location</span>
               <span class="text-white font-medium flex items-center gap-1">
-                <span class="material-symbols-outlined text-[14px] text-[#C5A059]">pin_drop</span>
+                <span class="material-symbols-outlined text-[14px] text-[#4A6FA5]">pin_drop</span>
                 {{ txn.location }}
               </span>
             </div>
@@ -162,18 +162,18 @@ import { buildScoreExplanation, buildStoredExplanation, ScoreExplanation } from 
           </div>
         </div>
     
-        <!-- Col 3: Customer Intelligence & Action -->
+        <!-- Col 3: Customer & Action -->
         <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-4 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-3">
               <h3 class="font-serif italic text-lg text-white">Customer Dossier</h3>
-              <a [routerLink]="['/customers', txn.customerId]" class="text-[11px] text-[#C5A059] hover:underline uppercase tracking-wider">
+              <a [routerLink]="['/customers', txn.customerId]" class="text-[11px] text-[#4A6FA5] hover:underline uppercase tracking-wider">
                 360 Profile →
               </a>
             </div>
     
             <div class="p-3 bg-[#141414] rounded-lg border border-white/5 flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 rounded-full bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] font-bold">
+              <div class="w-10 h-10 rounded-full bg-[#4A6FA5]/15 border border-[#4A6FA5]/30 flex items-center justify-center text-[#4A6FA5] font-bold">
                 {{ customerInitials }}
               </div>
               <div class="overflow-hidden">
@@ -191,14 +191,14 @@ import { buildScoreExplanation, buildStoredExplanation, ScoreExplanation } from 
                     (click)="rescoreAndExplain()"
                     [disabled]="scoring"
                     title="Re-scores this transaction with the live model and updates the stored prediction"
-                    class="text-[11px] text-[#C5A059] hover:underline uppercase tracking-wider disabled:opacity-50 cursor-pointer"
+                    class="text-[11px] text-[#4A6FA5] hover:underline uppercase tracking-wider disabled:opacity-50 cursor-pointer"
                     >
                     {{ scoring ? 'Scoring…' : (explanation ? 'Re-score' : 'Re-score & explain') }}
                   </button>
                 }
               </div>
     
-              <div class="text-[10px] text-[#C5A059] leading-snug" data-testid="demo-notice">
+              <div class="text-[10px] text-[#4A6FA5] leading-snug" data-testid="demo-notice">
                 Demo model: trained on public card-fraud data (IEEE-CIS). Only some of its inputs exist for this
                 transaction; each factor below is tagged by where its value came from.
               </div>
@@ -236,7 +236,7 @@ import { buildScoreExplanation, buildStoredExplanation, ScoreExplanation } from 
                         <span class="text-[#D4D4D4] truncate">{{ f.label }} <span class="text-[#737373]">= {{ f.valueText }}</span>
                           @if (f.provenanceTag) {
                             <span class="ml-1 px-1 rounded border border-white/10 text-[9px] uppercase"
-                                  [ngClass]="f.provenance === 'placeholder' ? 'text-[#C5A059]' : 'text-[#737373]'"
+                                  [ngClass]="f.provenance === 'placeholder' ? 'text-[#4A6FA5]' : 'text-[#737373]'"
                                   data-testid="provenance-tag">{{ f.provenanceTag }}</span>
                           }
                         </span>
