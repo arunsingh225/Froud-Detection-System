@@ -59,6 +59,22 @@ docker compose up --build
 
 ---
 
+## Sign-in methods
+
+E-mail and password always work. Two more can be switched on in `.env`; the sign-in page shows only the ones that are configured, and **only existing, active accounts can sign in with them** (an admin creates accounts; nothing is created automatically).
+
+- **Phone (SMS one-time code):** set `SMS_PROVIDER`. `console` is a demo (the 6-digit code is written to the API log: `docker compose logs api`, nothing is sent); `twilio` sends real SMS and needs `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM` (not verified against a real Twilio account). Give a user a number with `PATCH /api/users/{id}/phone` (admin) or `--admin-phone/--user-phone` in `scripts/ops/setup_accounts.py`. Codes expire after 5 minutes, are single use, are stored only as a keyed hash, allow 5 wrong guesses, and are limited to 3 requests per account per 10 minutes. The answer to a code request is the same whether or not the number is registered.
+- **Google:** create an OAuth *Web application* client in Google Cloud Console, add your web address (for example `http://localhost:3001`) as an authorised JavaScript origin, and set `GOOGLE_CLIENT_ID`. The API verifies the ID token (signature, audience, expiry, verified e-mail) and signs in the user with the same e-mail. Verified with a fake token verifier in tests; **a live Google sign-in has not been tried** because it needs your client id.
+
+Existing databases get the new columns automatically: `docker compose up` runs the idempotent upgrade scripts (05, 06, 07) when a schema is already present.
+
+## Analyst feedback (ground truth) and accounts
+
+- **Alert verdicts.** Resolving an alert now asks whether it was *confirmed fraud* or a *false positive* (`PATCH /api/fraud-alerts/{id}/resolve` with `outcome`, required; an optional note is stored too). Risk Analytics, tab *Model monitoring*, shows the alert precision from these labels overall, by severity and by model-score band, and marks it provisional below 30 labels. Only alerts are judged, so this is precision of the alerts; recall cannot be measured from it. ADMIN and COMPLIANCE can export the labels (`GET /api/analytics/feedback/export`: alert, model score, verdict as 0/1) to re-check calibration or retrain on real outcomes. Existing databases get the new columns from `08_alert_feedback.sql`, which `docker compose up` applies automatically.
+- **Passwords.** One policy everywhere (8 to 128 characters, a letter and a number, no leading or trailing space): creating an account, resetting a password, and *Change password* in the user menu (top right). Changing or resetting a password signs that user out of every session; wrong current passwords count towards the account lockout. An admin can set a new password for a user with `PATCH /api/users/{id}/password`.
+
+---
+
 ## How to Run the Services
 
 ### Terminal 1: FastAPI AI Inference Engine

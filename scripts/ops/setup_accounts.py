@@ -18,8 +18,10 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--api", default="http://localhost:5000")
 ap.add_argument("--admin-email", required=True)
 ap.add_argument("--admin-name", default="Administrator")
+ap.add_argument("--admin-phone", default=None, help="optional, enables phone (SMS code) sign-in for the admin")
 ap.add_argument("--user-email", required=True)
 ap.add_argument("--user-name", default="Investigator")
+ap.add_argument("--user-phone", default=None)
 ap.add_argument("--keep-demo", action="store_true", help="do not deactivate the demo users")
 a = ap.parse_args()
 
@@ -50,10 +52,13 @@ try:
 except urllib.error.HTTPError as e:
     raise SystemExit(f"Could not sign in as the demo admin (HTTP {e.code}). Start the stack once with SEED_DEMO_DATA=true on an empty database.")
 
-for email, name, pw, role, dept in ((a.admin_email, a.admin_name, admin_pw, "ADMIN", "Administration"),
-                                    (a.user_email, a.user_name, user_pw, "INVESTIGATOR", "Fraud Operations")):
+for email, name, pw, role, dept, phone in ((a.admin_email, a.admin_name, admin_pw, "ADMIN", "Administration", a.admin_phone),
+                                           (a.user_email, a.user_name, user_pw, "INVESTIGATOR", "Fraud Operations", a.user_phone)):
     try:
-        call("POST", "/users", {"fullName": name, "email": email, "password": pw, "role": role, "department": dept}, cookie)
+        body = {"fullName": name, "email": email, "password": pw, "role": role, "department": dept}
+        if phone:
+            body["phone"] = phone
+        call("POST", "/users", body, cookie)
         print("created", role, email)
     except urllib.error.HTTPError as e:
         print("could not create", email, "HTTP", e.code, e.read().decode()[:160])
