@@ -12,7 +12,9 @@ import httpx
 from app.services.anthropic_provider import AnthropicProvider, LLMResponseRejected, SYSTEM_PROMPT
 
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
-GROQ_DEFAULT_MODEL = "llama-3.3-70b-versatile"
+# Groq retires models over time (llama-3.3-70b-versatile returned 404 in Nov 2026); check console.groq.com/docs/models.
+# gpt-oss-120b spends part of max_tokens on hidden reasoning, hence the larger default budget below.
+GROQ_DEFAULT_MODEL = "openai/gpt-oss-120b"
 
 
 class OpenAICompatProvider(AnthropicProvider):
@@ -62,4 +64,5 @@ class GroqProvider(OpenAICompatProvider):
 
     def __init__(self, api_key: str, model: str = GROQ_DEFAULT_MODEL, base_url: str = GROQ_BASE_URL, **kw: Any):
         kw.setdefault("json_mode", True)
+        kw.setdefault("max_tokens", 2500)
         super().__init__(api_key=api_key, base_url=base_url, model=model, **kw)

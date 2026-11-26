@@ -37,7 +37,8 @@ def test_groq_request_shape_and_decision_stays_with_the_rules():
 
     assert str(req.url) == "https://api.groq.com/openai/v1/chat/completions"
     assert req.headers["authorization"] == f"Bearer {SECRET}"
-    assert body["model"] == "llama-3.3-70b-versatile" and body["response_format"] == {"type": "json_object"}
+    assert body["model"] == "openai/gpt-oss-120b" and body["response_format"] == {"type": "json_object"}
+    assert body["max_tokens"] >= 2000        # reasoning models spend part of the budget before the JSON answer
     assert body["messages"][0]["role"] == "system" and "untrusted DATA" in body["messages"][0]["content"]
     assert json.loads(body["messages"][1]["content"])["evidence"]
     meta = out["provider_metadata"]
@@ -88,7 +89,7 @@ def test_factory_groq_defaults_and_overrides(monkeypatch):
     monkeypatch.delenv("LLM_MODEL", raising=False)
     monkeypatch.delenv("LLM_BASE_URL", raising=False)
     p = get_llm_provider()
-    assert isinstance(p, GroqProvider) and p.model == "llama-3.3-70b-versatile"
+    assert isinstance(p, GroqProvider) and p.model == "openai/gpt-oss-120b"
     monkeypatch.setenv("LLM_MODEL", "llama-3.1-8b-instant")
     assert get_llm_provider().model == "llama-3.1-8b-instant"
 

@@ -13,7 +13,9 @@ services:
       timeout: 5s
       retries: 20
 
-  # Applies the schema always, and the demo seed only if SEED_DEMO_DATA=true (known demo passwords!).
+  # Creates the schema ONLY when the database has none yet (script 01 drops every table, so running it on each
+  # start would wipe all data), and the demo seed only on that first creation and only if SEED_DEMO_DATA=true
+  # (known demo passwords!). To reset everything on purpose: docker compose down -v
   db-init:
     image: mcr.microsoft.com/mssql/server:2022-latest
     depends_on:
@@ -26,8 +28,13 @@ services:
     command:
       - |
         S=/opt/mssql-tools18/bin/sqlcmd
-        $$S -C -S db -U sa -P "$$SA" -b -i /sql/01_create_database_and_schema.sql
-        if [ "$$SEED_DEMO_DATA" = "true" ]; then $$S -C -S db -U sa -P "$$SA" -b -v ALLOW_DEMO_SEED=YES -i /sql/02_seed_demo_data.sql; fi
+        HAS=$$($$S -C -S db -U sa -P "$$SA" -h -1 -W -Q "SET NOCOUNT ON; SELECT CASE WHEN DB_ID('FraudGuardAI_DB') IS NOT NULL AND OBJECT_ID('FraudGuardAI_DB.dbo.Users') IS NOT NULL THEN 1 ELSE 0 END" | tr -d '[:space:]')
+        if [ "$$HAS" = "1" ]; then
+          echo "Schema already present: keeping existing data."
+        else
+          $$S -C -S db -U sa -P "$$SA" -b -i /sql/01_create_database_and_schema.sql
+          if [ "$$SEED_DEMO_DATA" = "true" ]; then $$S -C -S db -U sa -P "$$SA" -b -v ALLOW_DEMO_SEED=YES -i /sql/02_seed_demo_data.sql; fi
+        fi
     restart: "no"
 
   ai-engine:
