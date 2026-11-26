@@ -120,6 +120,7 @@ export interface FraudModelInfoDto {
 // Fraud Alert Backend DTO
 export interface FraudAlertDto {
   alertId: string;
+  outcome?: string | null;
   alertCode: string;
   transactionId: string;
   transactionCode: string;

@@ -2,13 +2,15 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { AnalyticsService } from '../services/analytics.service';
 import { UserRole } from '../models/types.model';
 
 interface NavItem {
   path: string;
   label: string;
   icon: string;
-  badge?: number | string;
+  badge?: string;                                          // fixed label, e.g. 'AI'
+  badgeKey?: 'transactions' | 'alerts' | 'investigations'; // live count from the dashboard KPIs
   badgeSev?: 'critical' | 'warn' | 'ok';
   dividerBefore?: boolean;
   roles?: UserRole[];
@@ -56,12 +58,12 @@ interface NavItem {
                 {{ item.label }}
               </span>
             }
-            @if (!collapsed && item.badge !== undefined) {
+            @if (!collapsed && badgeFor(item) !== null) {
               <span
                 class="inline-flex items-center justify-center min-w-[22px] h-[20px] px-1.5 rounded-full text-[11px] font-semibold leading-none tabular-nums shrink-0"
                 [ngClass]="getBadgeColor(item.badgeSev)"
                 >
-                {{ item.badge }}
+                {{ badgeFor(item) }}
               </span>
             }
           </a>
@@ -97,9 +99,9 @@ export class SidebarComponent {
 
   readonly navItems: NavItem[] = [
     { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-    { path: '/transactions', label: 'Transactions', icon: 'receipt_long', badge: 8 },
-    { path: '/fraud-alerts', label: 'Fraud Alerts', icon: 'crisis_alert', badge: 4, badgeSev: 'critical' },
-    { path: '/investigations', label: 'Investigations', icon: 'find_in_page', badge: 5 },
+    { path: '/transactions', label: 'Transactions', icon: 'receipt_long', badgeKey: 'transactions' },
+    { path: '/fraud-alerts', label: 'Fraud Alerts', icon: 'crisis_alert', badgeKey: 'alerts', badgeSev: 'critical' },
+    { path: '/investigations', label: 'Investigations', icon: 'find_in_page', badgeKey: 'investigations' },
     { path: '/ai-investigator', label: 'AI Investigator', icon: 'psychology', badge: 'AI', badgeSev: 'ok' },
     { path: '/customers', label: 'Customers', icon: 'group', dividerBefore: true },
     { path: '/risk-analytics', label: 'Risk Analytics', icon: 'bar_chart_4_bars' },
@@ -108,7 +110,22 @@ export class SidebarComponent {
     { path: '/settings', label: 'Settings', icon: 'settings', roles: ['ADMIN'] }
   ];
 
-  constructor(public authService: AuthService) {}
+  constructor(public authService: AuthService, private analytics: AnalyticsService) {}
+
+  /**
+   * The badge for a menu item: a fixed label, or a live count from the dashboard KPIs (refreshed by the analytics
+   * service every 15 s and on SignalR events). Alerts and investigations hide the badge at 0; large counts show 99+.
+   */
+  badgeFor(item: NavItem): string | null {
+    if (item.badge) return item.badge;
+    const k = this.analytics.advancedKpis();
+    if (!item.badgeKey || !k) return null;
+    const n = item.badgeKey === 'transactions' ? k.totalTransactions
+      : item.badgeKey === 'alerts' ? k.openAlertsCount
+      : k.activeInvestigationsCount;
+    if (!n || n < 0) return null;
+    return n > 99 ? '99+' : String(n);
+  }
 
   get visibleNavItems(): NavItem[] {
     const role = this.authService.userRole();

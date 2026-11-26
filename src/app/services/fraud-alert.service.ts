@@ -2,7 +2,7 @@ import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap, catchError, of, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { FraudAlert } from '../models/alert.model';
+import { AlertOutcome, FraudAlert } from '../models/alert.model';
 import { ApiResponse, PagedResult, FraudAlertDto } from '../models/api-response.model';
 import { AlertStatus } from '../models/types.model';
 import { asUnion } from '../shared/utils/cast';
@@ -10,6 +10,7 @@ import { asUnion } from '../shared/utils/cast';
 export function mapDtoToAlert(dto: FraudAlertDto): FraudAlert {
   return {
     id: dto.alertCode || dto.alertId,
+    alertGuid: dto.alertId,
     transactionId: dto.transactionCode || dto.transactionId,
     customerId: dto.customerId,
     customerName: dto.customerName || 'Unknown Customer',
@@ -18,6 +19,7 @@ export function mapDtoToAlert(dto: FraudAlertDto): FraudAlert {
     riskTier: asUnion<FraudAlert['riskTier']>(dto.riskTier || dto.severity, 'Medium'),
     reason: dto.reason,
     status: asUnion<FraudAlert['status']>(dto.status, 'Open'),
+    outcome: dto.outcome === 'CONFIRMED_FRAUD' || dto.outcome === 'FALSE_POSITIVE' ? dto.outcome : null,
     assignedTo: dto.assignedTo,
     createdAt: dto.createdDateFormatted || new Date(dto.createdAt).toLocaleDateString(),
     createdTime: dto.createdTimeFormatted || new Date(dto.createdAt).toLocaleTimeString(),
@@ -82,20 +84,27 @@ export class FraudAlertService {
     return this.alerts().find(a => a.id.toLowerCase() === id.toLowerCase() || (a as FraudAlert & { alertId?: string }).alertId === id);
   }
 
-  resolveAlert(id: string, notes: string = 'Resolved by investigator review'): Observable<ApiResponse<FraudAlertDto>> {
-    return this.http.patch<ApiResponse<FraudAlertDto>>(`${environment.apiUrl}/fraud-alerts/${id}/resolve`, {
-      resolutionNotes: notes
+  /** The API addresses an alert by its GUID, while the screen shows (and the list keys on) the alert code. */
+  private apiId(id: string): string {
+    return this.getAlertById(id)?.alertGuid ?? id;
+  }
+
+  /** Resolves an alert with the analyst's verdict (confirmed fraud or false positive), which is stored as ground truth. */
+  resolveAlert(id: string, outcome: AlertOutcome, notes?: string): Observable<ApiResponse<FraudAlertDto>> {
+    return this.http.patch<ApiResponse<FraudAlertDto>>(`${environment.apiUrl}/fraud-alerts/${this.apiId(id)}/resolve`, {
+      outcome,
+      notes: notes?.trim() || null
     }).pipe(
       tap(() => {
         this.alerts.update(alerts =>
-          alerts.map(a => (a.id.toLowerCase() === id.toLowerCase() ? { ...a, status: 'Resolved' as AlertStatus } : a))
+          alerts.map(a => (a.id.toLowerCase() === id.toLowerCase() ? { ...a, status: 'Resolved' as AlertStatus, outcome } : a))
         );
       })
     );
   }
 
   assignAlert(id: string, assignedUserId: string): Observable<ApiResponse<FraudAlertDto>> {
-    return this.http.patch<ApiResponse<FraudAlertDto>>(`${environment.apiUrl}/fraud-alerts/${id}/assign`, {
+    return this.http.patch<ApiResponse<FraudAlertDto>>(`${environment.apiUrl}/fraud-alerts/${this.apiId(id)}/assign`, {
       assignedToUserId: assignedUserId
     }).pipe(
       tap(() => {

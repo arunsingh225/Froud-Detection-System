@@ -15,7 +15,7 @@ import {
   EngineHealthDto,
   FraudModelInfoDto
 } from '../models/api-response.model';
-import {
+import { FeedbackMetrics,
   AdvancedDashboardKpis,
   FraudTrendPoint,
   FraudTrendResponse,
@@ -81,6 +81,7 @@ export class AnalyticsService {
 
   // Reactive Signals for Phase 10 Analytics
   advancedKpis = signal<AdvancedDashboardKpis | null>(null);
+  feedbackMetrics = signal<FeedbackMetrics | null>(null);
   fraudTrends = signal<FraudTrendPoint[]>([]);
   riskDistribution = signal<RiskDistribution | null>(null);
   categoryRisk = signal<CategoryRiskItem[]>([]);
@@ -447,6 +448,25 @@ export class AnalyticsService {
       }),
       catchError(() => of(null))
     );
+  }
+
+  /** Precision of the alerts, measured from the analysts' confirmed-fraud / false-positive verdicts. */
+  getFeedbackMetrics(): Observable<FeedbackMetrics | null> {
+    return this.http.get<ApiResponse<FeedbackMetrics>>(`${environment.apiUrl}/analytics/feedback`).pipe(
+      map(res => {
+        if (res.success && res.data) {
+          this.feedbackMetrics.set(res.data);
+          return res.data;
+        }
+        return null;
+      }),
+      catchError(() => of(null))
+    );
+  }
+
+  /** The labelled alerts as CSV (ADMIN and COMPLIANCE only): ground truth for re-checking calibration or retraining. */
+  exportFeedbackCsv(): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/analytics/feedback/export`, { responseType: 'blob' });
   }
 
   exportDataCsv(type: string = 'fraud-alerts'): Observable<Blob> {

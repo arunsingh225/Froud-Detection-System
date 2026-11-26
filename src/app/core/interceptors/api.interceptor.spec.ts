@@ -73,4 +73,17 @@ describe('apiInterceptor', () => {
     httpMock.expectOne('/api/f').error(new ProgressEvent('error'));
     expect(await result).toContain('Unable to connect');
   });
+
+  it('treats a 401 from the one-time-code and Google endpoints as wrong credentials, not an expired session', async () => {
+    for (const url of ['/api/auth/otp/verify', '/api/auth/google']) {
+      expect(await failWith(url, 401, { message: 'The code is wrong or has expired.' })).toBe('The code is wrong or has expired.');
+    }
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(localStorage.getItem('fraudguard_auth')).toBe('true');
+  });
+
+  it('explains rate limiting, and a sign-in method that is switched off', async () => {
+    expect(await failWith('/api/auth/otp/request', 429)).toContain('Too many attempts');
+    expect(await failWith('/api/auth/otp/request', 503, { message: 'Phone sign-in is not available.' })).toBe('Phone sign-in is not available.');
+  });
 });

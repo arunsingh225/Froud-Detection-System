@@ -25,6 +25,27 @@ export interface AdvancedDashboardKpis {
   };
 }
 
+/** One row of the precision breakdown (by severity or by model-score band). */
+export interface FeedbackBreakdown {
+  group: string;
+  labelled: number;
+  confirmedFraud: number;
+  precisionPercent: number | null;
+}
+
+/** How the alerts held up once analysts labelled them as confirmed fraud or false positive. */
+export interface FeedbackMetrics {
+  resolvedAlerts: number;
+  labelled: number;
+  confirmedFraud: number;
+  falsePositives: number;
+  precisionPercent: number | null;
+  minLabelsForReliableMetric: number;
+  reliable: boolean;
+  bySeverity: FeedbackBreakdown[];
+  byProbabilityBand: FeedbackBreakdown[];
+}
+
 export interface FraudTrendPoint {
   date: string;
   transactions: number;

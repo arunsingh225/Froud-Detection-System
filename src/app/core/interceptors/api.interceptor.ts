@@ -6,8 +6,9 @@ import { catchError, throwError } from 'rxjs';
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
-  // Check if request is login
-  const isLoginUrl = req.url.toLowerCase().includes('/auth/login');
+  // Sign-in requests (password, one-time code, Google): a 401 here means "wrong credentials", not "session expired"
+  const url = req.url.toLowerCase();
+  const isLoginUrl = url.includes('/auth/login') || url.includes('/auth/otp/') || url.includes('/auth/google');
 
   // Attach withCredentials so the browser sends the HttpOnly auth cookie automatically.
   // No Authorization header is injected — the JWT lives exclusively in the cookie.
@@ -47,6 +48,8 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
         } else {
           friendlyMessage = error.error?.message || 'Invalid email or password.';
         }
+      } else if (error.status === 429) {
+        friendlyMessage = 'Too many attempts. Please wait a minute and try again.';
       } else if (error.status === 403) {
         friendlyMessage = 'Access Denied: You do not possess the required permissions for this action.';
       } else if (error.status === 404) {
@@ -56,7 +59,9 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
       } else if (error.status === 500) {
         friendlyMessage = 'Backend service is temporarily experiencing difficulties. Please try again.';
       } else if (error.status === 503) {
-        friendlyMessage = 'Fraud detection engine is temporarily unavailable. The transaction was saved safely.';
+        friendlyMessage = url.includes('/auth/')
+          ? (error.error?.message || 'This sign-in method is not available right now.')
+          : 'Fraud detection engine is temporarily unavailable. The transaction was saved safely.';
       }
 
       console.error(`[API Error ${error.status}]`, friendlyMessage);

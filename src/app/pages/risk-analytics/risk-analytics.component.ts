@@ -184,7 +184,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                 <div class="p-3 bg-[#141414] rounded-lg border border-white/5">
                   <div class="text-[11px] text-[#A3A3A3]">Card Testing</div>
                   <div class="text-xl font-bold font-mono-data text-white mt-1">{{ kpis?.threatBreakdown?.cardTestingCount ?? 0 }}</div>
-                  <div class="text-[10px] text-[#818cf8] mt-1">Micro-authorization tests</div>
+                  <div class="text-[10px] text-[#8A8985] mt-1">Micro-authorization tests</div>
                 </div>
               </div>
             </div>
@@ -352,6 +352,74 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
       <!-- ================= TAB 4: MODEL MONITORING ================= -->
       @if (activeTab === 'model') {
         <div class="space-y-6">
+          <!-- Precision measured from analyst verdicts -->
+          <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-4" data-testid="feedback-card">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <div class="text-white font-serif text-[18px]">Alert precision from analyst feedback</div>
+                <p class="text-[12px] text-[#A3A3A3] mt-1 max-w-2xl">
+                  Every resolved alert is labelled confirmed fraud or false positive. This is the share of raised alerts that were real fraud.
+                  Fraud that raised no alert is not visible here, so recall cannot be measured from these labels.
+                </p>
+              </div>
+              @if (authService.hasAnyRole(['ADMIN', 'COMPLIANCE'])) {
+                <button type="button" (click)="downloadFeedbackCsv()" data-testid="feedback-export"
+                  class="shrink-0 px-3 py-2 rounded-lg border border-white/10 hover:border-white/30 text-[12px] text-[#D4D4D4] flex items-center gap-1.5 cursor-pointer">
+                  <span class="material-symbols-outlined text-[16px]">download</span> Export labels (CSV)
+                </button>
+              }
+            </div>
+
+            @if (analyticsService.feedbackMetrics(); as fb) {
+              @if (fb.labelled === 0) {
+                <div class="text-[13px] text-[#A3A3A3]" data-testid="feedback-empty">
+                  No labelled alerts yet. Resolve an alert on the Fraud Alerts page and choose confirmed fraud or false positive to start measuring.
+                </div>
+              } @else {
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div class="p-3 rounded-lg bg-[#141414]">
+                    <div class="text-[12px] text-[#A3A3A3]">Labelled alerts</div>
+                    <div class="text-2xl font-semibold text-white" data-testid="feedback-labelled">{{ fb.labelled }}</div>
+                  </div>
+                  <div class="p-3 rounded-lg bg-[#141414]">
+                    <div class="text-[12px] text-[#A3A3A3]">Confirmed fraud</div>
+                    <div class="text-2xl font-semibold text-white">{{ fb.confirmedFraud }}</div>
+                  </div>
+                  <div class="p-3 rounded-lg bg-[#141414]">
+                    <div class="text-[12px] text-[#A3A3A3]">False positives</div>
+                    <div class="text-2xl font-semibold text-white">{{ fb.falsePositives }}</div>
+                  </div>
+                  <div class="p-3 rounded-lg bg-[#141414]">
+                    <div class="text-[12px] text-[#A3A3A3]">Alert precision</div>
+                    <div class="text-2xl font-semibold text-white" data-testid="feedback-precision">{{ fb.precisionPercent }}%</div>
+                  </div>
+                </div>
+                @if (!fb.reliable) {
+                  <div class="text-[12px] text-[#f59e0b]" data-testid="feedback-provisional">
+                    Provisional: only {{ fb.labelled }} labels so far. Treat the percentages as reliable from {{ fb.minLabelsForReliableMetric }} labels.
+                  </div>
+                }
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  @for (table of [{ title: 'By severity', rows: fb.bySeverity }, { title: 'By model score', rows: fb.byProbabilityBand }]; track table.title) {
+                    <div>
+                      <div class="text-[13px] font-medium text-white mb-2">{{ table.title }}</div>
+                      <table class="w-full text-[12px]">
+                        <thead><tr class="text-left text-[#A3A3A3]"><th class="py-1 font-medium">Group</th><th class="py-1 font-medium">Labelled</th><th class="py-1 font-medium">Fraud</th><th class="py-1 font-medium">Precision</th></tr></thead>
+                        <tbody>
+                          @for (r of table.rows; track r.group) {
+                            <tr class="border-t border-white/5 text-[#D4D4D4]"><td class="py-1.5">{{ r.group }}</td><td>{{ r.labelled }}</td><td>{{ r.confirmedFraud }}</td><td>{{ r.precisionPercent }}%</td></tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  }
+                </div>
+              }
+            } @else {
+              <div class="text-[13px] text-[#A3A3A3]">Loading feedback…</div>
+            }
+          </div>
+
           <!-- Training Specifications vs Runtime Metrics -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-3">
@@ -383,7 +451,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
             </div>
             <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-5 space-y-3">
               <div class="flex items-center gap-2 text-white font-serif italic text-[18px]">
-                <span class="material-symbols-outlined text-[#818cf8]">monitor_heart</span>
+                <span class="material-symbols-outlined text-[#8A8985]">monitor_heart</span>
                 Runtime metrics
               </div>
               <p class="text-[12px] text-[#A3A3A3]">
@@ -514,7 +582,7 @@ type AnalyticsTab = 'overview' | 'trends' | 'segments' | 'model' | 'investigatio
                     class="w-full bg-[#141414] hover:bg-[#1C1C1C] border border-white/10 hover:border-[#4A6FA5]/40 text-white p-2.5 rounded-lg text-[12px] font-medium flex items-center justify-between transition-colors cursor-pointer"
                     >
                     <span class="flex items-center gap-2">
-                      <span class="material-symbols-outlined text-[16px] text-[#818cf8]">receipt_long</span>
+                      <span class="material-symbols-outlined text-[16px] text-[#8A8985]">receipt_long</span>
                       Transactions Ledger
                     </span>
                     <span class="text-[11px] text-[#4A6FA5] font-mono-data">CSV ↓</span>
@@ -566,6 +634,7 @@ export class RiskAnalyticsComponent implements OnInit {
     this.analyticsService.getDeviceRisk().subscribe();
     this.analyticsService.getModelMonitoring().subscribe();
     this.analyticsService.getInvestigationAnalytics().subscribe();
+    this.analyticsService.getFeedbackMetrics().subscribe();
   }
 
   changePeriod(p: string): void {
@@ -628,6 +697,20 @@ export class RiskAnalyticsComponent implements OnInit {
   getPercent(val?: number, total?: number): number {
     if (!val || !total || total === 0) return 0;
     return Math.round((val / total) * 100);
+  }
+
+  downloadFeedbackCsv(): void {
+    this.analyticsService.exportFeedbackCsv().subscribe({
+      next: blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `fraudguard_alert_feedback_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: err => console.error('Failed to export alert feedback:', err)
+    });
   }
 
   downloadCsv(type: string): void {

@@ -72,4 +72,35 @@ describe('AnalyticsService', () => {
     setup({ loggedIn: false });
     httpMock.expectNone(() => true);
   });
+
+  it('loads the alert feedback metrics into a signal', () => {
+    const service = setup({ loggedIn: false });
+    const metrics = {
+      resolvedAlerts: 4, labelled: 4, confirmedFraud: 3, falsePositives: 1, precisionPercent: 75, minLabelsForReliableMetric: 30,
+      reliable: false, bySeverity: [], byProbabilityBand: []
+    };
+    let result: unknown;
+    service.getFeedbackMetrics().subscribe(r => (result = r));
+    const req = httpMock.expectOne(environment.apiUrl + '/analytics/feedback');
+    expect(req.request.method).toBe('GET');
+    req.flush({ success: true, message: 'ok', timestamp: 't', data: metrics });
+
+    expect(result).toEqual(metrics);
+    expect(service.feedbackMetrics()?.precisionPercent).toBe(75);
+  });
+
+  it('leaves the feedback metrics empty when the request fails', () => {
+    const service = setup({ loggedIn: false });
+    service.getFeedbackMetrics().subscribe();
+    httpMock.expectOne(environment.apiUrl + '/analytics/feedback').flush(null, { status: 500, statusText: 'err' });
+    expect(service.feedbackMetrics()).toBeNull();
+  });
+
+  it('downloads the labelled alerts as a file from the export endpoint', () => {
+    const service = setup({ loggedIn: false });
+    service.exportFeedbackCsv().subscribe();
+    const req = httpMock.expectOne(environment.apiUrl + '/analytics/feedback/export');
+    expect(req.request.responseType).toBe('blob');
+    req.flush(new Blob(['AlertCode,Label']));
+  });
 });

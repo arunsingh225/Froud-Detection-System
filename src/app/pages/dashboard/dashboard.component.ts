@@ -55,8 +55,8 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
             <span>LightGBM (464 feat)</span>
           </div>
     
-          <div class="flex items-center gap-1.5 text-[#818cf8]">
-            <span class="w-2 h-2 rounded-full bg-[#818cf8]"></span>
+          <div class="flex items-center gap-1.5 text-[#8A8985]">
+            <span class="w-2 h-2 rounded-full bg-[#8A8985]"></span>
             <span>Local RAG</span>
           </div>
         </div>
@@ -128,7 +128,7 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
         <div class="bg-[#0D0D0D] border border-white/5 rounded-xl p-4 relative overflow-hidden group hover:border-white/20 transition-colors">
           <div class="flex justify-between items-start mb-2">
             <span class="text-[10px] font-light text-[#A3A3A3] uppercase tracking-[0.15em]">Total Transactions</span>
-            <span class="material-symbols-outlined text-[16px] text-[#818cf8]">receipt_long</span>
+            <span class="material-symbols-outlined text-[16px] text-[#8A8985]">receipt_long</span>
           </div>
           <div class="text-xl lg:text-2xl font-bold text-white font-mono-data">
             {{ kpis?.totalTransactions ?? '--' }}
@@ -225,22 +225,22 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
     
           <!-- SVG Trend Visualization -->
           <div class="h-64 w-full relative flex items-end pt-6 pb-2">
-            <svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 600 200">
+            <svg class="w-full h-full overflow-visible text-[#1C1B19] dark:text-[#F5F5F4]" preserveAspectRatio="none" viewBox="0 0 600 200">
               <defs>
                 <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#4A6FA5" stop-opacity="0.3" />
-                  <stop offset="100%" stop-color="#4A6FA5" stop-opacity="0.0" />
+                  <stop offset="0%" stop-color="currentColor" stop-opacity="0.18" />
+                  <stop offset="100%" stop-color="currentColor" stop-opacity="0.0" />
                 </linearGradient>
               </defs>
     
               <!-- Grid horizontal lines -->
-              <line x1="0" y1="40" x2="600" y2="40" stroke="#262626" stroke-dasharray="4 4" stroke-width="0.5" />
-              <line x1="0" y1="100" x2="600" y2="100" stroke="#262626" stroke-dasharray="4 4" stroke-width="0.5" />
-              <line x1="0" y1="160" x2="600" y2="160" stroke="#262626" stroke-dasharray="4 4" stroke-width="0.5" />
+              <line x1="0" y1="40" x2="600" y2="40" stroke="currentColor" stroke-opacity="0.16" stroke-dasharray="4 4" stroke-width="0.5" />
+              <line x1="0" y1="100" x2="600" y2="100" stroke="currentColor" stroke-opacity="0.16" stroke-dasharray="4 4" stroke-width="0.5" />
+              <line x1="0" y1="160" x2="600" y2="160" stroke="currentColor" stroke-opacity="0.16" stroke-dasharray="4 4" stroke-width="0.5" />
     
               <!-- Polyline Data Points -->
               <path [attr.d]="svgAreaPath" fill="url(#trendGrad)" />
-              <path [attr.d]="svgLinePath" fill="none" stroke="#4A6FA5" stroke-width="2.5" stroke-linecap="round" />
+              <path [attr.d]="svgLinePath" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
     
               <!-- Data Point Circles -->
               @for (pt of trendPoints; track pt; let idx = $index) {
@@ -249,8 +249,8 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                     [attr.cx]="getX(idx, trendPoints.length)"
                     [attr.cy]="getY(pt.transactions)"
                     r="3.5"
-                    fill="#0A0A0A"
-                    stroke="#4A6FA5"
+                    class="fill-[#FBFBFA] dark:fill-[#111111]"
+                    stroke="currentColor"
                     stroke-width="2"
                     />
                   </g>

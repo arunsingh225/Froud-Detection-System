@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { FraudAlertService } from '../../services/fraud-alert.service';
 import { TransactionService } from '../../services/transaction.service';
-import { FraudAlert } from '../../models/alert.model';
+import { AlertOutcome, FraudAlert } from '../../models/alert.model';
 import { RiskTier, AlertStatus } from '../../models/types.model';
 import { RiskBadgeComponent } from '../../shared/components/risk-badge.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge.component';
@@ -159,9 +159,16 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
                     Assigned: <strong class="text-white">{{ alert.assignedTo || 'Unassigned' }}</strong>
                   </span>
                   <div class="flex items-center gap-2">
+                    @if (alert.status === 'Resolved' && alert.outcome) {
+                      <span class="px-2 py-0.5 rounded text-[11px] font-medium"
+                        [class]="alert.outcome === 'CONFIRMED_FRAUD' ? 'bg-[#e05353]/15 text-[#e05353]' : 'bg-[#52b788]/15 text-[#52b788]'"
+                        data-testid="alert-outcome">
+                        {{ alert.outcome === 'CONFIRMED_FRAUD' ? 'Confirmed fraud' : 'False positive' }}
+                      </span>
+                    }
                     @if (alert.status !== 'Resolved') {
                       <button
-                        (click)="resolveAlert(alert)"
+                        (click)="openResolve(alert)"
                         class="px-2.5 py-1 rounded bg-[#52b788]/15 hover:bg-[#52b788]/25 text-[#52b788] text-[11px] font-semibold transition-colors cursor-pointer"
                         >
                         Mark Resolved
@@ -180,6 +187,48 @@ import { InrCurrencyPipe } from '../../shared/pipes/inr-currency.pipe';
             }
           </div>
         }
+      }
+
+      <!-- Ask for the verdict when an alert is resolved: this label is the ground truth for measuring the model -->
+      @if (resolving) {
+        <div class="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" (click)="closeResolve()" data-testid="resolve-dialog">
+          <div class="w-full max-w-md rounded-xl bg-[#0D0D0D] border border-white/10 p-6 shadow-xl" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="resolve-title">
+            <h3 id="resolve-title" class="text-lg font-semibold text-white">Resolve {{ resolving.id }}</h3>
+            <p class="mt-1 text-[13px] text-[#A3A3A3]">Was this alert real fraud? Your answer is used to measure how accurate the alerts are.</p>
+
+            <div class="mt-5 grid grid-cols-2 gap-3">
+              <button type="button" (click)="outcome = 'CONFIRMED_FRAUD'" data-testid="outcome-fraud"
+                class="p-3 rounded-lg border text-left cursor-pointer transition-colors"
+                [class]="outcome === 'CONFIRMED_FRAUD' ? 'border-[#e05353] bg-[#e05353]/10' : 'border-white/10 hover:border-white/30'">
+                <div class="text-[14px] font-semibold text-white">Confirmed fraud</div>
+                <div class="text-[12px] text-[#A3A3A3] mt-0.5">It was fraud</div>
+              </button>
+              <button type="button" (click)="outcome = 'FALSE_POSITIVE'" data-testid="outcome-false-positive"
+                class="p-3 rounded-lg border text-left cursor-pointer transition-colors"
+                [class]="outcome === 'FALSE_POSITIVE' ? 'border-[#52b788] bg-[#52b788]/10' : 'border-white/10 hover:border-white/30'">
+                <div class="text-[14px] font-semibold text-white">False positive</div>
+                <div class="text-[12px] text-[#A3A3A3] mt-0.5">It was legitimate</div>
+              </button>
+            </div>
+
+            <label for="resolve-notes" class="block mt-4 text-[13px] font-medium text-[#D4D4D4]">Note (optional)</label>
+            <textarea id="resolve-notes" [(ngModel)]="notes" maxlength="1000" rows="3"
+              class="mt-1.5 w-full rounded-lg bg-[#141414] border border-white/10 p-3 text-[13px] text-white outline-none focus:border-[#4A6FA5]"
+              placeholder="For example: customer confirmed the purchase by phone"></textarea>
+
+            @if (resolveError) {
+              <div class="mt-3 text-[13px] text-[#e05353]" role="alert">{{ resolveError }}</div>
+            }
+
+            <div class="mt-5 flex justify-end gap-3">
+              <button type="button" (click)="closeResolve()" class="px-4 py-2 rounded-lg border border-white/10 text-[13px] text-[#D4D4D4] cursor-pointer">Cancel</button>
+              <button type="button" (click)="confirmResolve()" [disabled]="!outcome || saving" data-testid="resolve-save"
+                class="px-4 py-2 rounded-lg bg-[#4A6FA5] hover:bg-[#6F8FC0] text-[#0A0A0A] text-[13px] font-semibold disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                {{ saving ? 'Saving' : 'Save and resolve' }}
+              </button>
+            </div>
+          </div>
+        </div>
       }
     </div>
     `
@@ -230,8 +279,39 @@ export class FraudAlertsComponent implements OnInit {
     return this.alerts.filter(a => a.status === tab).length;
   }
 
-  resolveAlert(alert: FraudAlert): void {
-    this.alertService.resolveAlert(alert.id).subscribe();
+  // ---------------------------------------------------------------- resolving with a verdict
+  resolving: FraudAlert | null = null;
+  outcome: AlertOutcome | null = null;
+  notes = '';
+  saving = false;
+  resolveError: string | null = null;
+
+  openResolve(alert: FraudAlert): void {
+    this.resolving = alert;
+    this.outcome = null;
+    this.notes = '';
+    this.resolveError = null;
+  }
+
+  closeResolve(): void {
+    if (this.saving) return;
+    this.resolving = null;
+  }
+
+  confirmResolve(): void {
+    if (!this.resolving || !this.outcome || this.saving) return;
+    this.saving = true;
+    this.resolveError = null;
+    this.alertService.resolveAlert(this.resolving.id, this.outcome, this.notes).subscribe({
+      next: () => {
+        this.saving = false;
+        this.resolving = null;
+      },
+      error: (err: unknown) => {
+        this.saving = false;
+        this.resolveError = (err instanceof Error && err.message) || 'Could not resolve the alert. Please try again.';
+      }
+    });
   }
 
   investigateAlert(alert: FraudAlert): void {

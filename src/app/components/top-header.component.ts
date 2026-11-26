@@ -10,10 +10,11 @@ import { AuthService } from '../services/auth.service';
 import { AnalyticsService } from '../services/analytics.service';
 import { AppNotification } from '../models/notification.model';
 import { SearchResultDto, ApiResponse } from '../models/api-response.model';
+import { ChangePasswordModalComponent } from '../shared/modals/change-password-modal.component';
 
 @Component({
     selector: 'app-top-header',
-    imports: [CommonModule, FormsModule, RouterModule],
+    imports: [CommonModule, FormsModule, RouterModule, ChangePasswordModalComponent],
     template: `
     <header class="bg-[#0D0D0D] border-b border-white/5 flex items-center justify-between px-4 py-3 shrink-0 relative z-30">
       <!-- Left: Toggle & Title -->
@@ -251,26 +252,47 @@ import { SearchResultDto, ApiResponse } from '../models/api-response.model';
             }
           </div>
     
-          <!-- User Profile & Logout -->
-          <div class="flex items-center gap-2 pl-1.5">
-            <div
-              (click)="authService.logout()"
-              title="Click to logout"
-              class="w-8 h-8 rounded-full bg-[#4A6FA5]/10 border border-[#4A6FA5]/30 flex items-center justify-center text-[#4A6FA5] text-[11px] font-bold cursor-pointer hover:border-[#e05353] hover:text-[#ffb4ab] transition-colors"
-              >
-              {{ authService.currentUser()?.initials || 'FG' }}
-            </div>
-            <div class="hidden md:block text-right">
-              <div class="text-[12px] font-semibold text-white leading-none">
-                {{ authService.currentUser()?.name || 'User' }}
+          <!-- User menu: account details, change password, sign out -->
+          <div class="relative pl-1.5">
+            <button type="button" (click)="userMenuOpen = !userMenuOpen" class="flex items-center gap-2 cursor-pointer"
+              aria-haspopup="menu" [attr.aria-expanded]="userMenuOpen" data-testid="user-menu-button" title="Account">
+              <div class="w-8 h-8 rounded-full bg-[#4A6FA5]/10 border border-[#4A6FA5]/30 flex items-center justify-center text-[#4A6FA5] text-[11px] font-bold">
+                {{ authService.currentUser()?.initials || 'FG' }}
               </div>
-              <div class="text-[9px] text-[#4A6FA5] font-mono-data uppercase mt-0.5">
-                {{ authService.userRole() || 'INVESTIGATOR' }}
+              <div class="hidden md:block text-right">
+                <div class="text-[12px] font-semibold text-white leading-none">
+                  {{ authService.currentUser()?.name || 'User' }}
+                </div>
+                <div class="text-[9px] text-[#4A6FA5] font-mono-data uppercase mt-0.5">
+                  {{ authService.userRole() || 'INVESTIGATOR' }}
+                </div>
               </div>
-            </div>
+              <span class="material-symbols-outlined text-[18px] text-[#737373]">expand_more</span>
+            </button>
+
+            @if (userMenuOpen) {
+              <div role="menu" class="absolute right-0 mt-2 w-60 rounded-lg bg-[#0D0D0D] border border-white/10 shadow-lg py-1 z-50" data-testid="user-menu">
+                <div class="px-3 py-2 border-b border-white/5">
+                  <div class="text-[13px] font-medium text-white truncate">{{ authService.currentUser()?.name }}</div>
+                  <div class="text-[12px] text-[#737373] truncate">{{ authService.currentUser()?.email }}</div>
+                </div>
+                <button type="button" role="menuitem" (click)="openChangePassword()" data-testid="menu-change-password"
+                  class="w-full px-3 py-2 text-left text-[13px] text-[#D4D4D4] hover:bg-[#1A1A1A] flex items-center gap-2 cursor-pointer">
+                  <span class="material-symbols-outlined text-[18px]">lock_reset</span> Change password
+                </button>
+                <button type="button" role="menuitem" (click)="userMenuOpen = false; authService.logout()" data-testid="menu-sign-out"
+                  class="w-full px-3 py-2 text-left text-[13px] text-[#D4D4D4] hover:bg-[#1A1A1A] flex items-center gap-2 cursor-pointer">
+                  <span class="material-symbols-outlined text-[18px]">logout</span> Sign out
+                </button>
+              </div>
+            }
           </div>
         </div>
       </header>
+
+      @if (changePasswordOpen) {
+        <app-change-password-modal (closed)="changePasswordOpen = false"></app-change-password-modal>
+      }
     `
 })
 export class TopHeaderComponent implements OnInit, OnDestroy {
@@ -278,6 +300,8 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   @Output() toggleSidebar = new EventEmitter<void>();
 
   searchOpen = false;
+  userMenuOpen = false;
+  changePasswordOpen = false;
   searchQuery = '';
   searchResults: SearchResultDto[] = [];
   searchLoading = false;
@@ -444,8 +468,14 @@ export class TopHeaderComponent implements OnInit, OnDestroy {
   onDocumentClick(event: MouseEvent): void {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.notifOpen = false;
+      this.userMenuOpen = false;
       this.closeSearch();
     }
+  }
+
+  openChangePassword(): void {
+    this.userMenuOpen = false;
+    this.changePasswordOpen = true;
   }
 
   private updateTitle(url: string): void {

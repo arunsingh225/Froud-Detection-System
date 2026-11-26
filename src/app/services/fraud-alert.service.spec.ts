@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { FraudAlertService } from './fraud-alert.service';
+import { FraudAlertService, mapDtoToAlert } from './fraud-alert.service';
 import { environment } from '../../environments/environment';
 import { ApiResponse, PagedResult, FraudAlertDto } from '../models/api-response.model';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -81,13 +81,30 @@ describe('FraudAlertService', () => {
       data: { ...mockAlertDto, status: 'Resolved' }
     };
 
-    service.resolveAlert('ALT-2026-0891', 'Investigator cleared').subscribe(res => {
+    service.resolveAlert('ALT-2026-0891', 'FALSE_POSITIVE', '  Investigator cleared ').subscribe(res => {
       expect(res.success).toBeTrue();
       expect(service.alerts()[0].status).toBe('Resolved');
+      expect(service.alerts()[0].outcome).toBe('FALSE_POSITIVE');
     });
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/fraud-alerts/ALT-2026-0891/resolve`);
+    // the API takes the alert's GUID, not the display code
+    const req = httpMock.expectOne(`${environment.apiUrl}/fraud-alerts/alert-1/resolve`);
     expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ outcome: 'FALSE_POSITIVE', notes: 'Investigator cleared' });
     req.flush(resolveResponse);
+  });
+
+  it('should send the verdict and no note when the analyst wrote none', () => {
+    loadAlerts();
+    service.resolveAlert('ALT-2026-0891', 'CONFIRMED_FRAUD').subscribe();
+    const req = httpMock.expectOne(`${environment.apiUrl}/fraud-alerts/alert-1/resolve`);
+    expect(req.request.body).toEqual({ outcome: 'CONFIRMED_FRAUD', notes: null });
+    req.flush({ success: true, message: 'ok', timestamp: 't', data: mockAlertDto });
+  });
+
+  it('should map the stored verdict from the API', () => {
+    expect(mapDtoToAlert({ ...mockAlertDto, status: 'Resolved', outcome: 'CONFIRMED_FRAUD' }).outcome).toBe('CONFIRMED_FRAUD');
+    expect(mapDtoToAlert({ ...mockAlertDto, outcome: 'garbage' }).outcome).toBeNull();
+    expect(mapDtoToAlert(mockAlertDto).alertGuid).toBe('alert-1');
   });
 });

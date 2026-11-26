@@ -329,7 +329,7 @@ import { Transaction } from '../../models/transaction.model';
     
             <div class="relative w-36 h-36 mx-auto flex items-center justify-center">
               <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#1A1A1A" stroke-width="8" />
+                <circle cx="50" cy="50" r="40" fill="none" class="stroke-[#E4E3DE] dark:stroke-[#1A1A1A]" stroke-width="8" />
                 <circle
                   cx="50"
                   cy="50"
@@ -558,7 +558,7 @@ export class AiInvestigatorComponent implements OnInit {
   get scoreColor(): string {
     const s = this.fraudScore;
     if (s >= 80) return '#e05353';
-    if (s >= 50) return '#4A6FA5';
+    if (s >= 50) return '#C5A059';   // amber: elevated, same as the medium-risk badge
     return '#52b788';
   }
 
